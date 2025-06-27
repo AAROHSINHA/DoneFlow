@@ -1,15 +1,18 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-
+const routes = require("../src/routes/routes.js");
+const mongoose = require("mongoose");
 dotenv.config();
+
+// connecting to the mongoose server
+const DB_LINK = process.env.MONGODB_SERVER;
+mongoose.connect(DB_LINK)
+.then(() => console.log("CONNECTED TO DATABASE"))
+.catch((err) => console.log(err))
+
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// this is a sample test data
-const sampleNames = [
-    "Aaroh", "Rishabh", "Unnati"
-]
 
 
 // MIDDLEWARES
@@ -19,20 +22,12 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use(routes);
 
 // simple get api to check if server runs or not
 app.get("/", (request, response) => {
-    return response.status(200).send(sampleNames);
+    return response.status(200).send("SERVER RUNS");
 });
-
-// sample post request to check connectivity between frontend and backend
-app.post("/api/names", (request, response) => {
-    const { body } = request;
-    const sample_name = body.name;
-    sampleNames.push(sample_name);
-    return response.status(201).send("CREATED");
-})
-
 
 // Connecting the backend app to server
 app.listen(PORT, () => {
