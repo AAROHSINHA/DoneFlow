@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const routes = require("../src/routes/routes.js");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 dotenv.config();
 
 // connecting to the mongoose server
@@ -21,6 +23,22 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }));
+app.set("trust proxy", 1); 
+app.use(session({
+    secret: "session123123123321321321",
+    resave:false,
+    saveUninitialized: false,
+    cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 3, // 2 days
+    sameSite: 'lax',
+    secure: false,
+    },
+    store:MongoStore.create({
+        mongoUrl: DB_LINK, // Mongo URI
+        collectionName: "sessions",
+        stringify: false
+    })
+}))
 app.use(express.json());
 app.use(routes);
 

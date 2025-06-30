@@ -1,6 +1,37 @@
 import DropDownButton from "./DropDownButton.tsx";
-import { Link  } from "react-router-dom";
+// import { Link  } from "react-router-dom";
+import LoginSigninButtons from "./LoginSigninButtons.tsx";
+import NavLinks from "./NavLinks.tsx";
+import Avatar from "./Avatar.tsx";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 const Navbar = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [initials, setInitials] = useState("U");
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/users/check-login", {
+          withCredentials: true,
+        });
+        setLoggedIn(res.data.loggedIn);
+        setInitials(res.data.user.name[0]);
+      } catch (error) {
+        console.error("Error checking login:", error);
+        setLoggedIn(false);
+      }
+    };
+
+    checkLogin();
+
+    const interval = setInterval(checkLogin, 60 * 1000); // every 60 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+
   return (
     <header className="w-full bg-white font-sans ">
       <div className="max-w-8xl mx-auto px-4  sm:px-6 lg:px-8">
@@ -12,39 +43,15 @@ const Navbar = () => {
           </div>
           
           {/* Navigation */}
-          <nav className="hidden md:flex space-x-12 mt-[0.8em]">
-            <a
-              href="#about"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
-            >
-              About
-            </a>
-            <a
-              href="#features"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
-            >
-              Features
-            </a>
-            <a
-              href="#faq"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
-            >
-              Tasks
-            </a>
-          </nav>
+          <NavLinks />
           
           {/* Auth Button */}
-          <div className="flex items-center space-x-4">
-            <Link to={"/login"}>
-            <button className="hidden sm:inline-flex px-4 py-2 border border-gray-300 rounded-[2em] text-base font-medium text-gray-700 hover:bg-gray-50 transition w-[7em] justify-center hover:cursor-pointer">
-              Sign In
-            </button>
-            </Link>
-            <Link to={"/create-account"}>
-            <button className="hidden sm:inline-flex px-4 py-2 bg-pink-400 text-white rounded-[2em] text-base font-medium hover:bg-pink-500 transition w-[7em] justify-center hover:cursor-pointer">
-              Sign Up
-            </button>
-            </Link>
+           <div className="flex items-center">
+            {loggedIn ? (
+              <Avatar initials={initials} />
+            ) : (
+              <LoginSigninButtons />
+            )}
           </div>
           
           {/* Mobile menu button */}

@@ -3,20 +3,50 @@ import { Eye, EyeOff } from 'lucide-react';
 import OAuth2Buttons from './components/OAuth2Buttons.tsx';
 import Divider from "./components/Divider.tsx";
 import LoginTopText from "./components/LoginTopText.tsx";
+import axios from 'axios';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const checkSession = async () => {
+  const res = await axios.get("http://localhost:5000/users/me", {
+    withCredentials: true
+  });
+  console.log(res.data);
+}
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempted with:', { email, password });
-    // Handle login logic here
+    try{
+      const res = await axios.post("http://localhost:5000/users/local-login", 
+        formData,
+      { withCredentials: true } 
+    );
+      console.log(res.data);
+      alert("Sucessfully logged in");
+      checkSession();
+    }catch(error){
+      alert("Some error occured");
+      console.log(error);
+    }
   };
 
   return (
@@ -29,8 +59,10 @@ const Login = () => {
             <input
               type="email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              name='email'
+              // onChange={(e) => setEmail(e.target.value)}
+              onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all"
               placeholder="Email"
             />
@@ -40,8 +72,10 @@ const Login = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              name='password'
+              // onChange={(e) => setPassword(e.target.value)}
+              onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent outline-none transition-all pr-12"
               placeholder="Enter your password"
             />
