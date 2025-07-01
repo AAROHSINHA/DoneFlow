@@ -29,7 +29,7 @@ app.use(session({
     resave:false,
     saveUninitialized: false,
     cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 3, // 2 days
+    maxAge: 1000 * 60, // temporarily 60s
     sameSite: 'lax',
     secure: false,
     },

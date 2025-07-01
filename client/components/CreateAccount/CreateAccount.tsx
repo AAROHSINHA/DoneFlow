@@ -1,4 +1,3 @@
-
 import ImageSection from './Components/ImageSection';
 import SignUpForm from './Components/SignUpForm';
 

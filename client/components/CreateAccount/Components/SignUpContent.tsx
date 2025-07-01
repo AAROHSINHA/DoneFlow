@@ -1,16 +1,18 @@
 import {Link} from "react-router-dom";
+import ReturnHome from "../../ProfilePage/components/ReturnHome.tsx";
 
 function SignUpContent() {
   return (
    <div className="relative z-10 flex flex-col justify-center items-start p-12 text-white w-full h-full">
         
         <div className="mb-8">
-          <div className="text-3xl font-bold mb-2">DONEFLOW</div>
+          {/* <div className="text-3xl font-bold mb-2">DONEFLOW</div> */}
           <button className="text-sm text-white hover:text-white flex items-center space-x-1">
-            <span><u><Link to={"/"}>Back to website</Link></u></span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* <span><u><Link to={"/"}>Back to website</Link></u></span> */}
+            <ReturnHome />
+            {/* <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            </svg> */}
           </button>
         </div>
         

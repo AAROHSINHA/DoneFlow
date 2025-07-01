@@ -4,6 +4,9 @@ import OAuth2Buttons from './components/OAuth2Buttons.tsx';
 import Divider from "./components/Divider.tsx";
 import LoginTopText from "./components/LoginTopText.tsx";
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import ReturnHome from '../ProfilePage/components/ReturnHome.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +16,7 @@ const Login = () => {
     email: '',
     password: ''
   })
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -41,7 +45,7 @@ const Login = () => {
       { withCredentials: true } 
     );
       console.log(res.data);
-      alert("Sucessfully logged in");
+      navigate("/");
       checkSession();
     }catch(error){
       alert("Some error occured");
@@ -51,6 +55,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <ReturnHome />
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
         <LoginTopText />
 
@@ -89,9 +94,10 @@ const Login = () => {
           </div>
 
           <div className="text-right">
-            <a href="#" className="text-pink-400 hover:text-pink-500 font-medium text-sm">
+            <Link to={"/reset-password"}>
+            <p className="text-pink-400 hover:text-pink-500 font-medium text-sm">
               Forgot password?
-            </a>
+            </p></Link>
           </div>
 
           <button

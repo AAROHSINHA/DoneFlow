@@ -1,5 +1,5 @@
-import img from "./signup.jpg";
 import SignUpContent from "./SignUpContent.tsx"
+import img from "./signup.jpg"
 
 const ImageSection = () => {
   return (
