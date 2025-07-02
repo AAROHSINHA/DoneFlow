@@ -4,6 +4,7 @@ import HomePage from "../components/homepage/HomePage.tsx"
 import Login from "../components/Login/Login.tsx";
 import Profile from "../components/ProfilePage/Profile.tsx";
 import ResetPassword from "../components/ResetPassword/ResetPassword.tsx";
+import WorkSpace from '../components/WorkSpace/WorkSpace.jsx';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path='/workspace' element={<WorkSpace />} />
     </Routes>
     </BrowserRouter>
   )

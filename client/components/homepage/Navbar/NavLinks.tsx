@@ -1,25 +1,30 @@
+import  { Link }  from "react-router-dom"
 function NavLinks() {
   return (
     <div>
       <nav className="hidden md:flex space-x-12 mt-[0.8em]">
-            <a
-              href="#about"
+            <p
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
             >
               About
-            </a>
-            <a
-              href="#features"
+            </p>
+            <p
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
             >
               Features
-            </a>
-            <a
-              href="#faq"
+            </p>
+            <Link to={"/workspace"}>
+            <p
               className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
             >
               Tasks
-            </a>
+            </p>
+            </Link>
+            <p
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
+            >
+              Notes
+            </p>
           </nav>
     </div>
   )

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 function Buttons() {
   const navigate = useNavigate();
   const handleLogout = async () => {
@@ -18,9 +18,13 @@ function Buttons() {
   };
   return (
     <div className="space-y-3">
+            
             <button className="w-full bg-pink-400 text-white py-4 px-6 rounded-xl font-semibold hover:bg-pink-500 hover:cursor-pointer transition-colors duration-200 shadow-sm hover:shadow-md">
-              Workspace
+              <Link to={"/workspace"}>
+              <p>Workspace</p>
+              </Link>
             </button>
+            
             
             <button className="w-full bg-white border-2 border-pink-400 text-pink-400 py-4 px-6 rounded-xl font-semibold hover:cursor-pointer  hover:bg-pink-50 transition-colors duration-200">
               Dashboard

@@ -2,12 +2,14 @@ import { LogOut } from 'lucide-react';
 import axios from 'axios';
 import { useContext } from 'react';
 import { LoginContext } from './LoggedInContext';
+import { useNavigate } from 'react-router-dom';
 
 interface LogoutButtonProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LogoutAvatar: React.FC<LogoutButtonProps> = ({ setIsOpen }) => {
+  const navigate = useNavigate();
     const {loggedIn, setLoggedIn} = useContext(LoginContext);
   const handleLogout = async () => {
     try{
@@ -17,6 +19,7 @@ const LogoutAvatar: React.FC<LogoutButtonProps> = ({ setIsOpen }) => {
             { withCredentials: true }
             );
         setLoggedIn(false);
+        navigate("/");
     }catch(error){
         console.log(error);
         alert("ERROR LOGGING OUT");
