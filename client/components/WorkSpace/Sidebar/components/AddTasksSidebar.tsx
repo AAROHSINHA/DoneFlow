@@ -1,8 +1,15 @@
 import React from 'react';
+import { useContext } from 'react';
+import { SidebarContext } from '../../SidebarContext';
 
 function AddTasksSidebar() {
+  const sidebarContext = useContext(SidebarContext);
+  const handleClick = () => {
+    sidebarContext?.onClose(false);
+    sidebarContext?.taskOnClose(true);
+  }
   return (
-    <div className="flex items-center px-3 py-2 text-green-600 hover:bg-red-50 rounded-lg cursor-pointer transition-colors">
+    <div className="flex items-center px-3 py-2 text-green-600 hover:bg-red-50 rounded-lg cursor-pointer transition-colors" onClick={handleClick}>
       <div className="w-5 h-5 mr-3">
         <svg
           fill="none"
@@ -17,7 +24,7 @@ function AddTasksSidebar() {
           />
         </svg>
       </div>
-      <span className="font-medium">Add Task</span>
+      <span className="font-medium">Add Task</span>  
     </div>
   );
 }

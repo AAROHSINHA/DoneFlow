@@ -1,6 +1,11 @@
 const mongoose = require("mongoose"); 
 
 const TaskSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: false
+  },
   title: {
     type: String,
     required: true,
@@ -43,15 +48,21 @@ const TaskSchema = new mongoose.Schema({
     required: false,
     unique: false
   },
-  deadLineMonth: {
-    type: String, // e.g., "Jan"
+  deadlineDate: {
+    type: Number,
+    required:false,
+    unique:false,
+    min:0,
+    max:31
+  },
+  deadlineMonth: {
+    type: Number, // e.g., "Jan"
     required: false,
     unique: false,
-    minlength: 3, 
-    maxlength: 3
+    min: 0, 
+    max: 12
   }
 });
 
 // ✅ Fix typo in model name and export
-const TaskModel = mongoose.model("Task", TaskSchema);
-module.exports = { TaskModel };
+module.exports = mongoose.model("Task", TaskSchema);

@@ -4,6 +4,7 @@ const Options = () => {
       const sidebarContext = useContext(SidebarContext);
     const handleClick = () => {
         sidebarContext?.onClose(true);
+        sidebarContext?.taskOnClose(false);
     }
     return (
         <div className="">

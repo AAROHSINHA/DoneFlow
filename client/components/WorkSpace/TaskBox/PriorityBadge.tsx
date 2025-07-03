@@ -1,7 +1,7 @@
 import { Flag } from 'lucide-react';
 
 interface PriorityProp {
-  priorityName: "High" | "Medium" | "Low";
+  priorityName: string
 }
 
 const PriorityBadge: React.FC<PriorityProp> = ({ priorityName }) => {
