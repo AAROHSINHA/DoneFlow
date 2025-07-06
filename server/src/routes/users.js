@@ -7,6 +7,7 @@ const User = require("../utils/models/UserModel.js");
 const ResetToken = require("../utils/models/ResetTokenModel.js");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
+const Stats = require("../utils/models/StatsModel.js");
 dotenv.config();
 
 const router = express.Router();
@@ -60,10 +61,25 @@ router.post("/users/create-local-account",
         const saltRounds = 10;
         const hashedData = await bcrypt.hash(data.password, saltRounds);
         data.password = hashedData;
-        const newUser = new User(data);
+        const email_id = data.email;
+
         try{
+          const newUser = new User(data);
+          // creating stats for user on account creation
+          const newStats = new Stats({
+            email: email_id,
+            totalTasks: 0,
+            tasksCompleted: 0,
+            totalTime: 0,
+            timeSpend: 0,
+            // focusPerHour, focusPerDay, and focusPerMonth will be filled by default values
+          });
+            const savedStats = await newStats.save();
             const savedUser = await newUser.save();
-            return response.status(201).send(savedUser);
+            return response.status(201).json({
+              user: savedUser,
+              stats: savedStats
+            });
         }catch(error){
             return response.status(400).send(error);
         }

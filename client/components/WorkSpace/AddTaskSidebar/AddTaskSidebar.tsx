@@ -13,14 +13,17 @@ interface AddTaskSidebarProps {
   isOpen: boolean
   onClose: () => void,
   setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
+  updateTags: boolean
+  setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function AddTaskSidebar({ isOpen, onClose, setTaskReload }: AddTaskSidebarProps) {
+export default function AddTaskSidebar({ isOpen, onClose, setTaskReload, updateTags, setUpdateStats }: AddTaskSidebarProps) {
   const [title, setTitle] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium")
   const [timerTime, setTimerTime] = useState("")
   const [deadline, setDeadline] = useState("")
+  const [reload, setReload] = useState(false);
 
   return (
     <>
@@ -47,17 +50,17 @@ export default function AddTaskSidebar({ isOpen, onClose, setTaskReload }: AddTa
         {/* Form Content */}
         <div className="p-4 md:p-6 space-y-6 md:space-y-8 overflow-y-auto h-full pb-40">
           {/* Title Field -> Tags -> Priority -> Timer&Deadline */}
-          <TitleField title={title} setTitle={setTitle} />
-          <Tags selectedTags={selectedTags} setSelectedTags={setSelectedTags}/>
-          <Priority priority={priority} setPriority={setPriority} />
+          <TitleField title={title} setTitle={setTitle} reload={reload} />
+          <Tags selectedTags={selectedTags} setSelectedTags={setSelectedTags} updateTags={updateTags} reload={reload}/>
+          <Priority priority={priority} setPriority={setPriority} reload={reload}/>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Timer timerTime={timerTime} setTimerTime={setTimerTime} />
-            <DeadLine deadline={deadline} setDeadline={setDeadline} />
+            <Timer timerTime={timerTime} setTimerTime={setTimerTime} reload={reload}/>
+            <DeadLine deadline={deadline} setDeadline={setDeadline} reload={reload}/>
           </div>
         </div>
 
         {/* Add Button */}
-        <AddTaskButton setTaskReload={setTaskReload}/>
+        <AddTaskButton setTaskReload={setTaskReload} setReload={setReload} onClose={onClose} setUpdateStats={setUpdateStats} />
       </div>
         </AddTaskContext.Provider>
     </>

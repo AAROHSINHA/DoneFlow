@@ -4,10 +4,12 @@ import axios from "axios";
 
 interface TagsInterface {
     selectedTags: string[],
-    setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>
+    setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>,
+    updateTags: boolean
+    reload: boolean
 }
 
-const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags}) => {
+const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags}) => {
     const [existingTags, setExistingTags] = useState<string[]>([]);
     const [reloadTag, setRealoadTag] = useState(false);
     const [showAddTag, setShowAddTag] = useState(false);
@@ -26,6 +28,10 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags}) => {
       if(addTagInput && !existingTags.includes(addTagInput)) setExistingTags(prev => [...prev, addTagInput]);
       setShowAddTag(false);
     }
+
+    // useEffect(() => {
+    //   setSelectedTags([]);
+    // }, [reload])
 
 
     useEffect(() => {
@@ -46,7 +52,7 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags}) => {
       }
 
       loadTags();
-    }, [])
+    }, [updateTags])
 
 
     return (

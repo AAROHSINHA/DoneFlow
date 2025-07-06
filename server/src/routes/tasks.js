@@ -3,7 +3,9 @@ const express_validator = require("express-validator");
 const express_session = require("express-session");
 const dotenv = require("dotenv");
 const {createTaskValidationSchema} = require("../utils/schemas/TaskValidationSchema.js");
+const {createTaskDeletionSchema} = require("../utils/schemas/TaskDeletionSchema.js");
 const Task = require("../utils/models/TaskModel.js");
+const Stats = require("../utils/models/StatsModel.js");
 dotenv.config();
 
 const router = express.Router();
@@ -55,8 +57,48 @@ router.get("/tasks/get-tasks", async (req, res) => {
   }
 });
 
+// 3. DELETE TASKS
+router.post("/tasks/delete-task",
+  express_validator.checkSchema(createTaskDeletionSchema),
+  async (req, res) => {
+    const validationErrors = express_validator.validationResult(req);
+    if (!validationErrors.isEmpty())
+      return res.status(400).json({ title: "Validation Error", error: validationErrors.array() });
 
-// 3. GET THE TAGS.
+    const data = express_validator.matchedData(req);
+    const email = data.email;
+    const title = data.title;
+    try {
+      const updatedStats = await Stats.findOneAndUpdate(
+              { email },
+              {
+                $pull: {
+                  startedTasks: title  // this works since it's just an array of strings
+                }
+              },
+              { new: true }
+            ).exec(); // <-- this ensures the query is executed
+      
+            if (!updatedStats) {
+              return response.status(404).json({ message: "Stats not found for user" });
+            }
+      const result = await Task.deleteOne({
+        email: data.email,
+        title: data.title,
+        tags: data.tags
+      });
+
+      if (result.deletedCount === 0)
+        return res.status(404).json({ error: "Task not found" });
+
+      return res.status(202).json({ message: "Task deleted successfully!" });
+    } catch (error) {
+      return res.status(500).json({ error: error });
+    }
+  }
+);
+
+// 4. GET THE TAGS.
 router.get("/tasks/get-tags", async (request, response) => {
   try {
     const uniqueTags = await Task.aggregate([

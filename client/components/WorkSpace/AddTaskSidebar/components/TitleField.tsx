@@ -1,16 +1,23 @@
 import {Plus} from "lucide-react";
+import { useRef, useEffect } from "react";
 
 interface TitleFieldInterface {
     title: string,
     setTitle: React.Dispatch<React.SetStateAction<string>>
+    reload: boolean
 }
 
 
-const TitleField:React.FC<TitleFieldInterface> = ({title, setTitle}) => {
+const TitleField:React.FC<TitleFieldInterface> = ({title, setTitle, reload}) => {
+    const ref = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      if(ref.current) ref.current.value = "";
+    }, [reload])
     return (
         <div className="space-y-3">
             <label className="block text-sm font-medium text-gray-700">Task Title</label>
             <input
+              ref={ref}
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}

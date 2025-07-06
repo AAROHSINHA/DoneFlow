@@ -1,6 +1,7 @@
 interface PriorityInterface {
     priority: "low" | "medium" | "high",
     setPriority: React.Dispatch<React.SetStateAction<"low" | "medium" | "high">>
+    reload: boolean
 
 }
 const Priority:React.FC<PriorityInterface> = ({priority, setPriority}) => {

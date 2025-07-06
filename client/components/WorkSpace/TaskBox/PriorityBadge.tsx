@@ -7,9 +7,9 @@ interface PriorityProp {
 const PriorityBadge: React.FC<PriorityProp> = ({ priorityName }) => {
   // Determine color based on priority
   const colorClasses = {
-    High: "bg-red-500",
-    Medium: "bg-amber-500",
-    Low: "bg-green-500",
+    high: "bg-red-200",
+    medium: "bg-amber-200",
+    low: "bg-green-200",
   };
 
   return (

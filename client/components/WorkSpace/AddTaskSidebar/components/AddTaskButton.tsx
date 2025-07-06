@@ -12,9 +12,12 @@ WORKFLOW -
 
 interface AddTaskButtonInterface {
     setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
+    setReload: React.Dispatch<React.SetStateAction<boolean>>
+    onClose: () => void,
+    setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload}) => {
+const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReload, onClose, setUpdateStats}) => {
     const navigate = useNavigate();
     const addTaskContext = useContext(AddTaskContext);
     const handleAddTask = async () => {
@@ -26,14 +29,17 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload}) => {
         });
         if(res.data.loggedIn){
             AddTaskToDB(res.data.user.email);
+            IncrementTaskInStats(res.data.user.email);
         }else{
             navigate("/");
         }
        }catch(error){
-            alert("Error Adding Task");
             console.log(error);
        }
        setTaskReload(prev => !prev);
+       setReload(prev => !prev);
+       setUpdateStats(prev => !prev);
+       onClose();
     }
 
     const convertTime = (time: string) => {
@@ -77,12 +83,25 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload}) => {
         }
     }
 
+    // To increase totalTaskCount in stats db
+    const IncrementTaskInStats = async (email_id: string) => {
+        try{
+            await axios.patch("http://localhost:5000/stats/add-task", 
+                {email: email_id},
+                {withCredentials: true}
+            )
+        }catch(error){
+            alert("ERROR ENCOUNTERED IN STATS UPDATION");
+            console.log(error);
+        }
+    }
+
     return (
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-gray-100 hover:cursor-pointer">
           <button
             onClick={handleAddTask}
             disabled={!addTaskContext?.title.trim()}
-            className="w-full bg-pink-400 text-white py-4 px-6 rounded-xl font-medium hover:bg-pink-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center space-x-2 shadow-sm"
+            className="w-full bg-pink-400 text-white py-4 px-6 rounded-xl font-medium hover:bg-pink-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-all flex items-center justify-center space-x-2 shadow-sm hover:cursor-pointer"
           >
             <Plus size={20} />
             <span>Create Task</span>

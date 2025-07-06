@@ -1,14 +1,21 @@
 import { Clock } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface TimerInterface {
   timerTime: string;
   setTimerTime: React.Dispatch<React.SetStateAction<string>>;
+  reload: boolean
 }
 
-const Timer: React.FC<TimerInterface> = ({ timerTime, setTimerTime }) => {
+const Timer: React.FC<TimerInterface> = ({ timerTime, setTimerTime, reload }) => {
   const [hours, setHours] = useState<string>("");   // initially empty
   const [minutes, setMinutes] = useState<string>("");
+  const ref1 = useRef<HTMLInputElement>(null);
+  const ref2 = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+      if(ref1.current) ref1.current.value = "";
+      if(ref2.current) ref2.current.value = "";
+    }, [reload])
 
   useEffect(() => {
     const finalHours = hours === "" ? "00" : hours.padStart(2, "0");
@@ -25,6 +32,7 @@ const Timer: React.FC<TimerInterface> = ({ timerTime, setTimerTime }) => {
 
       <div className="flex gap-3">
         <input
+          ref={ref1}
           type="number"
           min={0}
           max={23}
@@ -34,6 +42,7 @@ const Timer: React.FC<TimerInterface> = ({ timerTime, setTimerTime }) => {
           className="w-1/2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all placeholder-gray-400"
         />
         <input
+          ref={ref2}
           type="number"
           min={0}
           max={59}

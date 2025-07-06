@@ -9,7 +9,6 @@ import WorkSpace from '../components/WorkSpace/WorkSpace.jsx';
 const App = () => {
   return (
     <BrowserRouter>
-
     {/* ROUTES*/}
     <Routes >
       <Route path="/" element={<HomePage />}/>

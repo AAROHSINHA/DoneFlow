@@ -7,6 +7,7 @@ import SearchBarArea from "./SearchBarArea/SearchBarArea.tsx"
 import AddTaskSidebar from "./AddTaskSidebar/AddTaskSidebar.tsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import TaskActions from "./TaskBox/TaskActions.tsx";
 
 
 
@@ -32,8 +33,15 @@ const WorkSpace = () => {
     }, [])
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [addTaskSidebarOpen, setAddTaskSidebarOpen] = useState(false);
+    const [overlay, setShowOverlay] = useState(false);
+    const [updateTags, setUpdateTags] = useState(false);
+    const [updateStats, setUpdateStats] = useState(false);
     return (
         <div className="">
+            {overlay && <div
+        className="fixed inset-0 bg-black/50 z-40 transition-opacity"
+       
+    /> }
             <SidebarContext.Provider value={{ 
             isOpen: sidebarOpen,
             onClose: setSidebarOpen, 
@@ -41,10 +49,10 @@ const WorkSpace = () => {
             taskOnClose: setAddTaskSidebarOpen
             }}>
             <WorkspaceNavbar />
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            <AddTaskSidebar isOpen={addTaskSidebarOpen} onClose={() => setAddTaskSidebarOpen(false)}  setTaskReload={ setTaskReload}/>
-            <SearchBarArea /> 
-            <TaskArea taskReload={taskReload} />
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} updateTags={updateTags} />
+            <AddTaskSidebar isOpen={addTaskSidebarOpen} onClose={() => setAddTaskSidebarOpen(false)}  setTaskReload={ setTaskReload} updateTags={updateTags} setUpdateStats={setUpdateStats} />
+            <SearchBarArea updateStats={updateStats} /> 
+            <TaskArea taskReload={taskReload} setTaskReload={setTaskReload} setShowOverlay={setShowOverlay} setUpdateTags={setUpdateTags} setUpdateStats={setUpdateStats}/>
         </SidebarContext.Provider>
     
         </div>

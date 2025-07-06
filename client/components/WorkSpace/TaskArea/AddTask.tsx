@@ -1,8 +1,8 @@
 "use client"
 
 import { Plus } from "lucide-react"
-import { useContext, useEffect } from "react"
-import { SidebarContext, SidebarContextInterface } from "../SidebarContext"
+import { useContext } from "react"
+import { SidebarContext } from "../SidebarContext"
 
 export default function AddTask() {
     const sidebarContext  = useContext(SidebarContext);

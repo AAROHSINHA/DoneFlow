@@ -5,9 +5,10 @@ import  NavigationSection  from "../Sidebar/NavigationSection.tsx";
 interface SidebarProps {
   isOpen: boolean
   onClose: () => void
+  updateTags: boolean
 }
 
-function Sidebar({ isOpen, onClose }: SidebarProps) {
+function Sidebar({ isOpen, onClose, updateTags }: SidebarProps) {
   return (
     <>
       {/* Overlay */}
@@ -41,7 +42,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
           <ProfileSection />
 
           {/* Navigation Section */}
-          <NavigationSection />
+          <NavigationSection updateTags={updateTags} />
 
           {/* Bottom Section */}
           <BottomSection />
