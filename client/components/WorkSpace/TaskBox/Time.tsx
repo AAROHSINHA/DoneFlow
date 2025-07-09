@@ -23,7 +23,7 @@ const Time: React.FC<TimeProp> = ({ estimateTime, spentTime }) => {
           <span className="text-white/70 text-xs">Spent</span>
         </div>
         <span className="text-white font-semibold text-sm">
-          {spentTime !== 0 ? spentTime.toFixed(1) + "h" : "--"}
+          {spentTime !== 0 ? (spentTime/60).toFixed(1) + "h" : "--"}
         </span>
       </div>
     </div>

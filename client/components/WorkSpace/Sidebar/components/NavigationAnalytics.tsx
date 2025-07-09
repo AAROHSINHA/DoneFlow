@@ -1,12 +1,41 @@
-import React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronDownIcon, ChevronRightIcon } from "../icons.tsx";
+import axios from 'axios';
 
 function NavigationAnalytics() {
-    const [expandedItems, setExpandedItems] = useState<string[]>([])
+    const [expandedItems, setExpandedItems] = useState<string[]>([]);
+    const [loadAnalytics, setLoadAnalytics] = useState<boolean>(false);
+    const [hoursFocused, setHoursFocused] = useState(0);
+    const [tasksCompleted, setTasksCompleted] = useState(0);
     const toggleExpanded = (item: string) => {
-    setExpandedItems((prev) => (prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]))
-  }
+  setExpandedItems((prev) => {
+    const isExpanded = prev.includes(item);
+
+      if (!isExpanded) {
+        setLoadAnalytics(prev => !prev);
+        return [...prev, item];
+      } else {
+        return prev.filter((i) => i !== item);
+      }
+    });
+  };
+
+  useEffect(() => {
+    const getNavigationAnalytics = async () => {
+      try{
+        const res = await axios.get("http://localhost:5000/stats/navigation-analytics", {
+          withCredentials: true
+        });
+        setHoursFocused(res.data.hours);
+        setTasksCompleted(res.data.tasks);
+      }catch(error){
+        alert("ERROR LOADING NAVIGATION ANALYTICS");
+        console.log(error);
+      }
+    }
+    getNavigationAnalytics();
+  }, [loadAnalytics])
+
   return (
     <div>
               <div
@@ -34,16 +63,16 @@ function NavigationAnalytics() {
                   <div className="p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Hours Focused</span>
-                      <span className="text-sm font-semibold text-pink-600">+12%</span>
+                      <span className="text-sm font-semibold text-pink-600">+0%</span>
                     </div>
-                    <div className="text-lg font-bold text-gray-900 mt-1">24.5h</div>
+                    <div className="text-lg font-bold text-gray-900 mt-1">{Math.floor(hoursFocused/60)}h {(hoursFocused%60).toFixed(0)}m</div>
                   </div>
                   <div className="p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Tasks Completed</span>
-                      <span className="text-sm font-semibold text-pink-600">+8%</span>
+                      <span className="text-sm font-semibold text-pink-600">+0%</span>
                     </div>
-                    <div className="text-lg font-bold text-gray-900 mt-1">47</div>
+                    <div className="text-lg font-bold text-gray-900 mt-1">{tasksCompleted}</div>
                   </div>
                 </div>
               )}

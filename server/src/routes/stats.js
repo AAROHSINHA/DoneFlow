@@ -2,6 +2,7 @@ const express = require("express");
 const {createStatsTaskUpdateSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
 const {createCompleteTaskUpdateSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
 const {createProgressTaskUpdateSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
+const session = require('express-session');
 const express_validator = require("express-validator");
 const Stats = require("../utils/models/StatsModel.js");
 
@@ -170,5 +171,42 @@ router.post("/stats/start-progress",
 
 
 })
+
+// navigation analytics
+router.get("/stats/navigation-analytics", async (request, response) => {
+  const user = request.session?.user;
+  if (!user || !user.email) {
+    return response.status(400).json({
+      success: false,
+      message: "Email not found in session"
+    });
+  }
+  try {
+    const stats = await Stats.findOne({ email: user.email });
+    if (!stats) {
+      return response.status(404).json({
+        success: false,
+        message: "Stats not found for user"
+      });
+    }
+    const todayHours = stats.focusPerHour || [];
+    const tasksCompleted = stats.tasksCompleted || 0;
+    const hours = todayHours.reduce((sum, hour) => sum + hour, 0);
+    return response.status(200).json({
+      success: true,
+      hours: hours,
+      tasks: tasksCompleted
+    });
+
+  } catch (error) {
+    return response.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+
+
 
 module.exports = router

@@ -28,6 +28,7 @@ interface TaskBoxInterface {
   setTaskTitle:  React.Dispatch<React.SetStateAction<string>>
   setTaskEstimateTimer: React.Dispatch<React.SetStateAction<number>>
   setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
+  setTaskSpendTime: React.Dispatch<React.SetStateAction<number>>
 }
 
 const colorClasses: Record<string, string> = {
@@ -68,7 +69,8 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
   setStopwatchModal,
   setTaskTitle,
   setTaskEstimateTimer,
-  setUpdateStats
+  setUpdateStats,
+  setTaskSpendTime
 }) => {
   const navigate = useNavigate();
   const gradient = colorClasses[color] || "from-gray-400 to-gray-600";
@@ -91,6 +93,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
   }
 
   const handleTaskClick = () => {
+    console.log({estimateTime, spendTime});
     setHidden(false);
     setShowOverlay(true); 
   }
@@ -103,6 +106,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
     setStopwatchModal(true);
     setTaskTitle(title);
     setTaskEstimateTimer(estimateTime*60);
+    setTaskSpendTime(spendTime);
     try{
       const email = await getEmail();
       await axios.post("http://localhost:5000/stats/start-progress", 
@@ -134,7 +138,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
 
       {/* Middle Section */}
       <div className="space-y-4">
-        <ProgressBar percentage={progress} />
+        <ProgressBar percentage={(spendTime*100)/(estimateTime*60)} />
         <Time estimateTime={estimateTime} spentTime={spendTime} />
         <Deadline month={deadlineMonth} date={deadlineDate} />
       </div>

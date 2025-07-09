@@ -4,6 +4,7 @@ const express_session = require("express-session");
 const dotenv = require("dotenv");
 const {createTaskValidationSchema} = require("../utils/schemas/TaskValidationSchema.js");
 const {createTaskDeletionSchema} = require("../utils/schemas/TaskDeletionSchema.js");
+const {createAddTimeSchema} = require("../utils/schemas/TaskValidationSchema.js");
 const Task = require("../utils/models/TaskModel.js");
 const Stats = require("../utils/models/StatsModel.js");
 dotenv.config();
@@ -112,6 +113,80 @@ router.get("/tasks/get-tags", async (request, response) => {
     return response.status(400).json({ error });
   }
 });
+
+// 5. ADD SPENT TIME 
+router.post("/tasks/add-time", 
+  express_validator.checkSchema(createAddTimeSchema),
+  async (req, res) => {
+    const validationErrors = express_validator.validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.status(400).json({ title: "Validation Error", error: validationErrors.array() });
+    }
+
+    const data = express_validator.matchedData(req);
+    const { email, title, spendTime } = data;
+
+    try {
+      // 1. Increment spendTime
+      await Task.findOneAndUpdate(
+        { email, title },
+        { $inc: { spendTime } },
+        { new: true }
+      );
+
+      // 2. Fetch updated values to compare
+      const task = await Task.findOne({ email, title }).select("spendTime estimateTime").lean();
+
+     // 3. Incrementing the Stats
+      let currentHour = new Date().getHours();       
+      const currentMinute = new Date().getMinutes();  
+      let timeFocused = data.spendTime;     
+
+      let updates = {};
+      const originalHour = currentHour;
+
+      while (timeFocused > 0 && currentHour >= 0) {
+        if (currentHour === originalHour) {
+          // The current hour, so we only account for minutes up to now
+          if (currentMinute - timeFocused >= 0) {
+            updates[`focusPerHour.${currentHour}`] = timeFocused;
+            timeFocused = 0;
+          } else {
+            updates[`focusPerHour.${currentHour}`] = currentMinute;
+            timeFocused -= currentMinute;
+          }
+        } else {
+          if (timeFocused >= 60) {
+            updates[`focusPerHour.${currentHour}`] = 60;
+            timeFocused -= 60;
+          } else {
+            updates[`focusPerHour.${currentHour}`] = timeFocused;
+            timeFocused = 0;
+          }
+        }
+
+        currentHour -= 1;
+      }
+      // adding stats 
+      await Stats.findOneAndUpdate(
+        { email: data.email },
+        { $inc: updates },
+        { new: true }
+      );
+
+
+      if (task) {
+        const exceeds = task.spendTime > task.estimateTime;
+        return res.status(200).json({ message: "SpendTime successfully incremented", exceeds });
+      } else {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+});
+
 
 
 module.exports = router;

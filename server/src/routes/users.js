@@ -8,6 +8,7 @@ const ResetToken = require("../utils/models/ResetTokenModel.js");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 const Stats = require("../utils/models/StatsModel.js");
+const session = require('express-session');
 dotenv.config();
 
 const router = express.Router();

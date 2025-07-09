@@ -1,13 +1,35 @@
 import { Play, Pause, Square } from 'lucide-react';
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
 interface Props {
+    time: number
+    title: string
     isRunning: boolean
     isPaused: boolean
     setIsRunning: React.Dispatch<React.SetStateAction<boolean>>
     setIsPaused: React.Dispatch<React.SetStateAction<boolean>>
     setTime: React.Dispatch<React.SetStateAction<number>> 
+    setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime}: Props) {
+function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload}: Props) {
+  const navigate = useNavigate();
+    const getEmail = async () => {
+    try{
+           const res = await axios.get("http://localhost:5000/users/check-login", {
+            withCredentials: true,
+          });
+          if(!res.data.loggedIn){
+              navigate("/");
+          }
+          return res.data.user.email;
+         }catch(error){
+              console.log(error);
+         }
+         return null;
+  }
+
   const handleStart = () => {
     setIsRunning(true);
     setIsPaused(false);
@@ -17,9 +39,30 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     setIsPaused(true);
   };
 
-  const handleStop = () => {
+  const handleStop = async () => {
     setIsRunning(false);
     setIsPaused(false);
+    const timeInMinutes = (time / 60).toFixed(1);
+    const email = await getEmail();
+
+    try{
+      const res = await axios.post("http://localhost:5000/tasks/add-time",
+        {
+          email: email,
+          title: title,
+          spendTime: timeInMinutes
+        }
+      )
+
+      // if(res.data.exceeds){
+      //   // add task completion logic
+      //   alert("TASK DONE");
+      // }
+    }catch(error){
+      alert("Error in saving time");
+      console.log(error);
+    }
+    setTaskReload(prev => !prev);
     setTime(0);
   };
   return (

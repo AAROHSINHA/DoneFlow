@@ -10,7 +10,7 @@ interface TaskInterface {
   priority?: string;
   progress?: number;
   estimateTime?: number;
-  spendTime?: number;
+  spendTime: number;
   deadlineDate?: number;
   deadlineMonth?: number;
 }
@@ -31,6 +31,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
   const [taskEstimateTime, setTaskEstimateTime] = useState<number>(0);
   const [taskTitle, setTaskTitle] = useState("");
   const [tasks, setTasks] = useState<TaskInterface[]>([]);
+  const [taskSpendTime, setTaskSpendTime] = useState<number>(0);
   const shuffleArray = (arr: string[]) => {
   const array = [...arr]; // Copy to avoid mutating the original
     for (let i = array.length - 1; i > 0; i--) {
@@ -53,7 +54,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
         priority: task.priority ?? "low",
         progress: task.progress ?? 0,
         estimateTime: task.estimateTime ? task.estimateTime / 60 : 0,
-        spendTime: task.spendTime ? task.spendTime / 60 : 0,
+        spendTime: task.spendTime ? task.spendTime: 0, // this is in minutes
         deadlineDate: task.deadlineDate ?? 0,
         deadlineMonth: task.deadlineMonth ?? 0
       }));
@@ -91,11 +92,12 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
               setTaskTitle={setTaskTitle}
               setTaskEstimateTimer={setTaskEstimateTime}
               setUpdateStats={setUpdateStats}
+              setTaskSpendTime={setTaskSpendTime}
   />
         ))}
         <AddTask />
       </div>
-      <StopwatchModal taskTitle={taskTitle} isOpen={stopwatchModal} onClose={() => setStopwatchModal(false)} estimateTime={taskEstimateTime}/>
+      <StopwatchModal taskTitle={taskTitle} isOpen={stopwatchModal} onClose={() => setStopwatchModal(false)} estimateTime={taskEstimateTime} setTaskReload={setTaskReload} spendTime={taskSpendTime}/>
     </div>
   );
 }
