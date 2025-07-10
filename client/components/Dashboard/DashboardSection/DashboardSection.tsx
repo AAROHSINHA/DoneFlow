@@ -8,11 +8,25 @@ import { useState } from "react";
 
 export default function DashboardSection() {
   const [taskStats, ] = useState({
-  "Tasks Completed": 127,
-  "Tasks Pending": 23,
+  "Total Tasks": 127,
+  "Tasks Completed": 23,
   "Tasks In Progress": 8,
-  "Tasks Overdue": 3,
-  "Total Tasks": 161
+  "Tasks Remaining": 3,
+  "Total Deleted": 161
+});
+const [performanceStats, ] = useState({
+  "Completion %": 18,
+  "Efficiency %": 68,
+  "On-Time Completion %": 72,
+  "Hourly Focus %": 55,
+  "Daily Focus %": 80
+});
+const [focusMetrics, ] = useState({
+  "Average Focus Time (min)": 42,
+  "Longest Focus Session (min)": 155, // 2h 35m = 155 min
+  "Most Productive Period (start hour)": 15, // 3 PM
+  "Least Productive Time (start hour)": 2,   // 2 AM
+  "Active Days": 5
 });
 
   return (
@@ -29,8 +43,8 @@ export default function DashboardSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatsContainer title="Task Statistics" stats={taskStats} />
-          <StatsContainer title="Task Statistics" stats={taskStats} />
-          <StatsContainer title="Task Statistics" stats={taskStats} />
+          <StatsContainer title="Performance Parameters" stats={performanceStats} />
+          <StatsContainer title="Focus Metrics" stats={focusMetrics} />
         </div>
       </div>
     </div>
