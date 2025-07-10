@@ -37,6 +37,25 @@ router.get("/stats/summary", async (request, response) => {
   }
 });
 
+// Get stats for dashboard
+router.get("/stats/get-stats", async (request, response) => {
+   const user = request.session?.user;
+    if (!user || !user.email) {
+    return response.status(400).json({
+      success: false,
+      message: "Email not found in session"
+    });
+  }
+    const email = user.email;
+    try{
+      const res = await Stats.findOne({email: email}).lean();
+      return response.status(200).json({success: true, body: res});
+    }catch(error){
+      console.log(error);
+      return response.status(400).json({success: false, error: error});
+    }
+});
+
 // 1. ADD TASKS
 router.patch("/stats/add-task", 
   express_validator.checkSchema(createStatsTaskUpdateSchema),
@@ -51,7 +70,7 @@ router.patch("/stats/add-task",
     try {
       const updatedStats = await Stats.findOneAndUpdate(
         { email },
-        {$inc: { totalTasks: 1 }},  // you can add more fields to increment
+        {$inc: { totalTasks: 1, netTotalTasks: 1 }},  // you can add more fields to increment
         { new: true } // return updated doc
       );
 
@@ -76,15 +95,22 @@ router.patch("/stats/complete-task",
       return response.status(400).json({ title: "Validation Error", error: validation_errors.array() });
     }
 
-    const { email, title } = express_validator.matchedData(request);
+    const { email, title, deadlineDate, deadlineMonth } = express_validator.matchedData(request);
 
     try {
       const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
+      const todayObj = new Date();
+      const todayDate = todayObj.getDate();
+      const todayMonth = todayObj.getMonth() + 1;
+      let onTimeIncrement = 0;
+      if(deadlineDate >= todayDate && deadlineMonth >= todayMonth) onTimeIncrement = 1;
+      if(todayDate == 0) onTimeIncrement = 0;
+
       const updatedStats = await Stats.findOneAndUpdate(
         { email },
         {
-          $inc: { tasksCompleted: 1 },
+          $inc: { tasksCompleted: 1, onTimeCompletedTasks: onTimeIncrement },
           $push: {
             completedTasks: {
               title,

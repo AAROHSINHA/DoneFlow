@@ -67,14 +67,27 @@ router.post("/users/create-local-account",
         try{
           const newUser = new User(data);
           // creating stats for user on account creation
+          const today = new Date();
           const newStats = new Stats({
             email: email_id,
+            netTotalTasks: 0,
             totalTasks: 0,
             tasksCompleted: 0,
             totalTime: 0,
             timeSpend: 0,
-            // focusPerHour, focusPerDay, and focusPerMonth will be filled by default values
-          });
+            onTimeCompletedTasks: 0,
+            focusPerHour: Array(24).fill(0),
+            focusPerDay: [],
+            focusLastWeek: Array(7).fill(0),
+            completedTasks: [],
+            startedTasks: [],
+            focusPhase: Array(8).fill(0),
+            currentDate: today.getDate(),
+            currentMonth: today.getMonth() + 1,
+            currentYear: today.getFullYear(),
+            todaysFocusTime: 0,
+            focusSession: 0
+        });
             const savedStats = await newStats.save();
             const savedUser = await newUser.save();
             return response.status(201).json({
@@ -82,7 +95,8 @@ router.post("/users/create-local-account",
               stats: savedStats
             });
         }catch(error){
-            return response.status(400).send(error);
+            console.log(error);
+            return response.status(400).json({message:"error", error: error});
         }
 })
 

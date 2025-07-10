@@ -11,9 +11,11 @@ interface ActionOptionsProps {
   handleMouseLeave: () => void,
   setUpdateTags: React.Dispatch<React.SetStateAction<boolean>>
   setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
+  deadlineDate: number,
+  deadlineMonth: number
 }
 
-const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, title, tags, setTaskReload, handleMouseLeave, setUpdateTags, setUpdateStats }) => {
+const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, title, tags, setTaskReload, handleMouseLeave, setUpdateTags, setUpdateStats, deadlineDate, deadlineMonth }) => {
   const isLastColumn = (taskIndex + 1) % 4 === 0;
   if(hidden) return;
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
         {withCredentials: true}
       )
       await axios.patch("http://localhost:5000/stats/complete-task", 
-        {email: email_id, title: title},
+        {email: email_id, title: title, deadlineDate: deadlineDate, deadlineMonth: deadlineMonth},
         {withCredentials: true}
       )
     }catch(error){

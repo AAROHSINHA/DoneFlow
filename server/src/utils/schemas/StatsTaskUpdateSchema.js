@@ -14,7 +14,7 @@ export const createCompleteTaskUpdateSchema = {
     normalizeEmail: true,
     trim: true
   },
-  title:{
+  title: {
     isString: { errorMessage: "Title must be a string" },
     notEmpty: { errorMessage: "Title is required" },
     isLength: {
@@ -22,6 +22,20 @@ export const createCompleteTaskUpdateSchema = {
       errorMessage: "Title must be between 1 and 32 characters"
     },
     trim: true
+  },
+  deadlineDate: {
+    isInt: {
+      options: { min: 1, max: 31 },
+      errorMessage: "Deadline date must be between 1 and 31"
+    },
+    notEmpty: { errorMessage: "Deadline date is required" }
+  },
+  deadlineMonth: {
+    isInt: {
+      options: { min: 1, max: 12 },
+      errorMessage: "Deadline month must be between 1 and 12"
+    },
+    notEmpty: { errorMessage: "Deadline month is required" }
   }
 }
 

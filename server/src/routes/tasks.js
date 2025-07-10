@@ -35,10 +35,14 @@ router.post("/tasks/add-task",
         const newTask = new Task(task);
         try{
             const savedTask = await newTask.save();
+            await Stats.findOneAndUpdate({email: data.email},
+              {$inc: {totalTime: data.estimateTime}}
+            )
             return response.status(201).json({
                 title: "Created Tasks",
                 task: savedTask
             })
+            
         }catch(errors){
              return response.status(400).json({title:"Task Save Error", error: errors});     
         }
@@ -100,6 +104,7 @@ router.post("/tasks/delete-task",
 );
 
 // 4. GET THE TAGS.
+
 router.get("/tasks/get-tags", async (request, response) => {
   try {
     const uniqueTags = await Task.aggregate([
@@ -115,6 +120,318 @@ router.get("/tasks/get-tags", async (request, response) => {
 });
 
 // 5. ADD SPENT TIME 
+router.post("/tasks/add-time", 
+  express_validator.checkSchema(createAddTimeSchema),
+  async (req, res) => {
+    const validationErrors = express_validator.validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.status(400).json({ title: "Validation Error", error: validationErrors.array() });
+    }
+
+    const data = express_validator.matchedData(req);
+    const { email, title, spendTime } = data;
+
+    try {
+      // 1. Increment spendTime in Task
+      await Task.findOneAndUpdate(
+        { email, title },
+        { $inc: { spendTime: spendTime } },
+        { new: true }
+      );
+
+      // 2. Fetch updated Task
+      const task = await Task.findOne({ email, title }).select("spendTime estimateTime").lean();
+      if (!task) return res.status(404).json({ message: "Task not found" });
+
+      // 3. Prepare Date
+      const now = new Date();
+      const nowDate = now.getDate();
+      const nowMonth = now.getMonth() + 1;
+      const nowYear = now.getFullYear();
+      const nowHour = now.getHours();
+      const nowMinute = now.getMinutes();
+
+      // 4. Get Stats
+      const stats = await Stats.findOne({ email }).lean();
+      if (!stats) return res.status(404).json({ message: "Stats not found" });
+
+      const isSameDay =
+        stats.currentDate === nowDate &&
+        stats.currentMonth === nowMonth &&
+        stats.currentYear === nowYear;
+
+      // 5. Distribute spent time across hours
+      const todayDateData = new Date();
+      let currentHour = todayDateData.getHours();       
+      const currentMinute = todayDateData.getMinutes();  
+      let timeFocused = data.spendTime;     
+
+      let updates = {};
+      const originalHour = currentHour;
+
+      while (timeFocused > 0 && currentHour >= 0) {
+        if (currentHour === originalHour) {
+          // The current hour, so we only account for minutes up to now
+          if (currentMinute - timeFocused >= 0) {
+            updates[`focusPerHour.${currentHour}`] = timeFocused;
+            timeFocused = 0;
+          } else {
+            updates[`focusPerHour.${currentHour}`] = currentMinute;
+            timeFocused -= currentMinute;
+          }
+        } else {
+          if (timeFocused >= 60) {
+            updates[`focusPerHour.${currentHour}`] = 60;
+            timeFocused -= 60;
+          } else {
+            updates[`focusPerHour.${currentHour}`] = timeFocused;
+            timeFocused = 0;
+          }
+        }
+
+        currentHour -= 1;
+      }
+
+      // -------------------------------
+      // CASE 1: SAME DAY
+      // -------------------------------
+      if (isSameDay) {
+        await Stats.findOneAndUpdate(
+          { email },
+          {
+            $inc: {
+              ...updates,
+              todaysFocusTime: spendTime,
+              timeSpend: spendTime,
+              focusSession: 1
+            }
+          },
+          { new: true }
+        );
+
+        const exceeds = task.spendTime > task.estimateTime;
+        return res.status(200).json({
+          message: "SpendTime successfully incremented",
+          exceeds
+        });
+      }
+
+      // -------------------------------
+      // CASE 2: NEW DAY
+      // -------------------------------
+
+      // 1. Sum up yesterday's focusPerHour
+      const lastDayFocus = Math.max(0, spendTime - (nowHour * 60 + nowMinute));
+      const yesterdayTotal = stats.focusPerHour.reduce((sum, val) => sum + val, 0);
+      const totalYesterdayFocus = yesterdayTotal + lastDayFocus;
+
+      // 2. Generate focusPhase array
+      let focusPhaseArr = [];
+      for (let i = 0; i < 24; i += 3) {
+        const chunkSum = stats.focusPerHour
+          .slice(i, i + 3)
+          .reduce((sum, val) => sum + val, 0);
+        focusPhaseArr.push(chunkSum);
+      }
+
+      // 3. Shift focusLastWeek
+      const lastWeek = [...stats.focusLastWeek.slice(1), totalYesterdayFocus];
+
+      // 4. Set + Inc Updates
+      await Stats.findOneAndUpdate(
+        { email },
+        {
+          $set: {
+            currentDate: nowDate,
+            currentMonth: nowMonth,
+            currentYear: nowYear,
+            focusPhase: focusPhaseArr,
+            focusLastWeek: lastWeek,
+            focusPerHour: Array(24).fill(0),
+            todaysFocusTime: spendTime
+          },
+          $inc: {
+            ...updates,
+            timeSpend: spendTime,
+            focusSession: 1
+          }
+        },
+        { new: true }
+      );
+
+      const exceeds = task.spendTime > task.estimateTime;
+      return res.status(200).json({
+        message: "SpendTime added and day rollover handled",
+        exceeds
+      });
+
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+
+
+/*
+router.post("/tasks/add-time", 
+  express_validator.checkSchema(createAddTimeSchema),
+  async (req, res) => {
+    const validationErrors = express_validator.validationResult(req);
+    if (!validationErrors.isEmpty()) {
+      return res.status(400).json({ title: "Validation Error", error: validationErrors.array() });
+    }
+
+    const data = express_validator.matchedData(req);
+    const { email, title, spendTime } = data;
+
+    try {
+      // 1. Increment spendTime
+      await Task.findOneAndUpdate(
+        { email, title },
+        { $inc: { spendTime } },
+        { new: true }
+      );
+
+      // 2. Fetch updated values to compare
+      const task = await Task.findOne({ email, title }).select("spendTime estimateTime").lean();
+
+     // 3. Incrementing the Stats
+     const todayDateData = new Date();
+      let currentHour = todayDateData.getHours();       
+      const currentMinute = todayDateData.getMinutes();  
+      let timeFocused = data.spendTime;     
+
+      let updates = {};
+      const originalHour = currentHour;
+
+      while (timeFocused > 0 && currentHour >= 0) {
+        if (currentHour === originalHour) {
+          // The current hour, so we only account for minutes up to now
+          if (currentMinute - timeFocused >= 0) {
+            updates[`focusPerHour.${currentHour}`] = timeFocused;
+            timeFocused = 0;
+          } else {
+            updates[`focusPerHour.${currentHour}`] = currentMinute;
+            timeFocused -= currentMinute;
+          }
+        } else {
+          if (timeFocused >= 60) {
+            updates[`focusPerHour.${currentHour}`] = 60;
+            timeFocused -= 60;
+          } else {
+            updates[`focusPerHour.${currentHour}`] = timeFocused;
+            timeFocused = 0;
+          }
+        }
+
+        currentHour -= 1;
+      }
+
+      // checking the date (10pm->1am or start at 1am->4am type cases)
+      const statsDateData = await Stats.findOne({ email: email })
+      .select("currentDate currentMonth currentYear")
+      .lean();
+      const currentDate = statsDateData.currentDate;
+      const currentMonth = statsDateData.currentMonth;
+      const currentYear = statsDateData.currentYear;
+
+      const todayDate = todayDateData.getDate();
+      const todayMonth = todayDateData.getMonth() + 1;
+      const todayYear = todayDateData.getFullYear();
+
+      const isSameDay =
+          currentDate === todayDate &&
+          currentMonth === todayMonth &&
+          currentYear === todayYear;
+      
+      if(isSameDay){
+      await Stats.findOneAndUpdate(
+        { email: data.email },
+        { $inc: updates, todaysFocusTime: timeFocused },
+        { new: true }
+      );
+
+
+      if (task) {
+        const exceeds = task.spendTime > task.estimateTime;
+        return res.status(200).json({ message: "SpendTime successfully incremented", exceeds });
+      } else {
+        return res.status(404).json({ message: "Task not found" });
+      }
+    }else{
+      // main logic
+      
+      // 1. Sum up hourly array. add it to todayFocusedHours. add lastdaysession to todayFocusedHours
+      // 2. implement the focusPhases functionality
+      // 3. clear the hourly array
+      // 4. add todayFocusHours to lastWeekFocus
+      // -> if last active day was 10 july and we are adding on 15july, have the reasonable gap
+      // 5. update currentDate
+      
+
+      // 1.
+     let lastDayFocus = timeFocused - (60*currentHour + currentMinute);
+     lastDayFocus = min(0, lastDayFocus);
+      let totalCurrentDayFocusHour = await Stats.findOne({email: email}).select("todaysFocusTime");
+      totalCurrentDayFocusHour += lastDayFocus;
+
+      // 2. FocusPhases
+      const focusPhases = await Stats.find({email: email}).select("focusPerHour");
+      let focusPhaseArr = [];
+      for(let i = 0; i < focusPhases.size(); i+=3){
+        let focusMinutes = focusPhases[i] + focusPhases[i + 1] + focusPhases[i + 2];
+        focusPhaseArr.push(focusMinutes);
+      }
+
+
+      // 3. clear the hourly array
+      await Stats.findOneAndUpdate(
+        { email: email },
+        {
+          $set: { focusPerHour: Array(24).fill(0) },
+          $inc: updates
+        },
+        { new: true }
+    );
+
+      // 4. Add todayFocusHours to last week
+      let lastWeekData = Array(7).fill(0); 
+      if(currentMonth!=todayMonth || currentYear!=todayYear){
+        lastWeekData[0] = totalCurrentDayFocusHour;
+      }else{
+        // dates
+        const dateDifference = todayDate - currentDate;
+        for(let i = dateDifference; i < 7; i+=1){
+          lastWeekData[i - dateDifference] = lastWeekData[i];
+          lastWeekData[i] = 0;
+        }
+        lastWeekData[6] = totalCurrentDayFocusHour;
+      }
+
+      // update current date, focus Phase and lastWeek difference
+      await Stats.findOneAndUpdate(
+        {email: email},
+        {$set: {
+          currentDate: todayDate,
+          currentMonth: todayMonth,
+          currentYear: todayYear,
+          focusPhase: focusPhaseArr,
+          focusLastWeek: lastWeekData,
+          todaysFocusTime: timeFocused - totalCurrentDayFocusHour
+        }}
+      )
+
+
+
+
+    }} catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+});
+*/
+/* 
 router.post("/tasks/add-time", 
   express_validator.checkSchema(createAddTimeSchema),
   async (req, res) => {
@@ -187,6 +504,7 @@ router.post("/tasks/add-time",
     }
 });
 
+*/
 
 
 module.exports = router;

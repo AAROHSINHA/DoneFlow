@@ -26,13 +26,13 @@ const StopwatchModal: React.FC<StopwatchModalProps> = ({
   const [time, setTime] = useState(0); // in seconds
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
   if (isRunning && !isPaused) {
     // ⏱ Simulate 1 second = 1 minute (60 seconds)
     intervalRef.current = setInterval(() => {
-      setTime(prevTime => prevTime + 1); // 60 seconds per tick
+      setTime(prevTime => prevTime + 60*10); // 60 seconds per tick
     }, 1000); // run every 1 second
   } else {
     if (intervalRef.current) {
@@ -56,7 +56,7 @@ const StopwatchModal: React.FC<StopwatchModalProps> = ({
         <CloseBtn onClose={onClose} setIsRunning={setIsRunning} setIsPaused={setIsPaused} time={time} setTime={setTime} setTaskReload={setTaskReload} title={taskTitle}/>
         <Header taskTitle={taskTitle}/>
         <TimeDisplay time={time} estimateTime={estimateTime} spendTime={spendTime} />
-        <ControlButtons time={time} title={taskTitle} isRunning={isRunning} isPaused={isPaused} setIsRunning={setIsRunning} setIsPaused={setIsPaused} setTime={setTime} setTaskReload={setTaskReload} />
+        <ControlButtons time={time} title={taskTitle} isRunning={isRunning} isPaused={isPaused} setIsRunning={setIsRunning} setIsPaused={setIsPaused} setTime={setTime} setTaskReload={setTaskReload} onClose={onClose} />
         <StatusText isRunning={isRunning} isPaused={isPaused} time={time} />
       </div>
     </div>

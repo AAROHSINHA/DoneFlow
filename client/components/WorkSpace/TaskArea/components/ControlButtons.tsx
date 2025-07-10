@@ -11,9 +11,10 @@ interface Props {
     setIsPaused: React.Dispatch<React.SetStateAction<boolean>>
     setTime: React.Dispatch<React.SetStateAction<number>> 
     setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
+    onClose: () => void;
 }
 
-function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload}: Props) {
+function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload, onClose}: Props) {
   const navigate = useNavigate();
     const getEmail = async () => {
     try{
@@ -44,7 +45,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     setIsPaused(false);
     const timeInMinutes = (time / 60).toFixed(1);
     const email = await getEmail();
-
+    console.log(timeInMinutes);
     try{
       const res = await axios.post("http://localhost:5000/tasks/add-time",
         {
@@ -53,7 +54,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
           spendTime: timeInMinutes
         }
       )
-
+      
       // if(res.data.exceeds){
       //   // add task completion logic
       //   alert("TASK DONE");
@@ -64,6 +65,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     }
     setTaskReload(prev => !prev);
     setTime(0);
+    onClose();
   };
   return (
     <div className="flex justify-center space-x-4">

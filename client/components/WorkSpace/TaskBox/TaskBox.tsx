@@ -152,7 +152,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
       </button>
     </div>
         {!hidden && <TaskActions taskIndex={taskIndex} hidden={hidden} title={title} tags={tags} setTaskReload={setTaskReload} handleMouseLeave={handleMouseLeave} setUpdateTags={setUpdateTags}
-        setUpdateStats={setUpdateStats}
+        setUpdateStats={setUpdateStats} deadlineDate={deadlineDate} deadlineMonth={deadlineMonth}
         />}
         
     </div>
