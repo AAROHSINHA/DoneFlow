@@ -32,7 +32,7 @@ const StopwatchModal: React.FC<StopwatchModalProps> = ({
   if (isRunning && !isPaused) {
     // ⏱ Simulate 1 second = 1 minute (60 seconds)
     intervalRef.current = setInterval(() => {
-      setTime(prevTime => prevTime + 60*10); // 60 seconds per tick
+      setTime(prevTime => prevTime + 1); // 60 seconds per tick
     }, 1000); // run every 1 second
   } else {
     if (intervalRef.current) {

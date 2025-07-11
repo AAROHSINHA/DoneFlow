@@ -4,11 +4,17 @@ import StatsContainer from "./components/StatsContainer.tsx";
 import TodayQuickStats from "./components/TodayQuickStats.tsx";
 import Percent from "./components/Percent.tsx";
 import MetricsModal from "./components/MetricsModal.tsx";
+import MainStats from "./components/MainStats.tsx";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Sidebar from "../Sidebar/Sidebar.tsx";
 
+interface Prop {
+  isOpen: boolean,
+  onClose: () => void
+}
 
-export default function DashboardSection() {
+export default function DashboardSection({isOpen, onClose}: Prop) {
   const [taskStats, setTaskStats] = useState({
     "Total Tasks": 0,
     "Tasks Completed": 0,
@@ -28,21 +34,32 @@ export default function DashboardSection() {
     "Longest Focus Session (min)": 0, // 2h 35m = 155 min
     "Most Productive Period (start hour)": 0, // 3 PM
     "Least Productive Time (start hour)": 0,   // 2 AM
-    "Active Days": 0
+    "Total Hours Focused": 0
   });
+  const [hourlyData, setHourlyData] = useState<number[]>(Array(24).fill(0));
+  const [weeklyData, setWeeklyData] = useState<number[]>(Array(7).fill(0));
 
+  const [mainStatsData, setMainStatsData] = useState({
+    "timeSpend": 0,
+    "totalTime": 0,
+    "tasksCompleted": 0,
+    "totalTasks": 0,
+    "onTimeCompletedTasks": 0
+  })
+    
   useEffect(() => {
     const getStats = async () => {
       try{
       const res = await axios.get("http://localhost:5000/stats/get-stats", {withCredentials: true});
       const data = res.data.body;
       setTaskStats({
-        "Total Tasks": data.netTotalTasks | 0,
-        "Tasks Completed": data.tasksCompleted | 0,
-        "Tasks In Progress": data.startedTasks.length | 0,
-        "Tasks Remaining": data.totalTasks - data.tasksCompleted | 0,
-        "Total Deleted": data.netTotalTasks - data.TotalTasks | 0
-      })
+        "Total Tasks": data.netTotalTasks ?? 0,
+        "Tasks Completed": data.tasksCompleted ?? 0,
+        "Tasks In Progress": data.startedTasks?.length ?? 0,
+        "Tasks Remaining": (data.totalTasks ?? 0) - (data.tasksCompleted ?? 0),
+        "Total Deleted": (data.netTotalTasks ?? 0) - (data.totalTasks ?? 0)
+      });
+
       const completion =
       data.netTotalTasks > 0
         ? Math.min(Math.round((data.tasksCompleted / data.netTotalTasks) * 100), 100)
@@ -90,7 +107,7 @@ export default function DashboardSection() {
           ? ((daysFocused * 24) / (7 * 24)) * 100 
           : 0;
 
-        return percent;
+        return Math.round(percent);
       };
       setPerformanceStats({
         "Completion %": completion,
@@ -100,15 +117,51 @@ export default function DashboardSection() {
         "Daily Focus %": dailyFocusPercent()
       });
 
+      const averageFocusTime = () => {
+        const spendTime = data.timeSpend ?? 0;
+        const focusSession = data.focusSession ?? 0;
+        return (focusSession > 0) ? Number((spendTime/focusSession).toFixed(2)) : 0
+      }
+
+      const productivePeriods = () => {
+        const hourlyData = data.focusPhase;
+        let maxIndex = -1;
+        let minIndex = -1;
+        let maxHours = 0;
+        let minHours = 3;
+        for(let i = 0; i < hourlyData.length; i++){
+          const hours = hourlyData[i];
+          if(hours >= maxHours){
+            maxIndex = i;
+            maxHours = hours;
+          }
+          if(hours <= minHours){
+            minIndex = hours;
+            minHours = hours;
+          }
+        }
+        return {minIndex, maxIndex};
+      }
+      const productiveHoursVals = productivePeriods();
+
       setFocusMetrics({
-        "Average Focus Time (min)": 0,
-        "Longest Focus Session (min)": 0, // 2h 35m = 155 min
-        "Most Productive Period (start hour)": 0, // 3 PM
-        "Least Productive Time (start hour)": 0,   // 2 AM
-        "Active Days": 0
+        "Average Focus Time (min)": averageFocusTime(),
+        "Longest Focus Session (min)": data.longestFocusSession ?? 1,
+        "Most Productive Period (start hour)": productiveHoursVals.maxIndex,
+        "Least Productive Time (start hour)": productiveHoursVals.minIndex,
+        "Total Hours Focused": Math.round(data.timeSpend ?? 0 / 60) 
       })
 
+      setHourlyData(data.focusPerHour);
+      setWeeklyData(data.focusLastWeek);
 
+      setMainStatsData({
+        "timeSpend": data.timeSpend ?? 1,
+        "totalTime": data.totalTime ?? 1,
+        "tasksCompleted": data.tasksCompleted ?? 0,
+        "totalTasks": data.netTotalTasks ?? 1,
+        "onTimeCompletedTasks": data.onTimeCompletedTasks ?? 0       
+      })
     
     }catch(error){
         alert("ERROR IN LOADING STATS");
@@ -124,19 +177,26 @@ export default function DashboardSection() {
   return (
     <div className="min-h-screen bg-white p-6">
       <div className="max-w-7xl mx-auto space-y-8">
+        <Sidebar 
+        isOpen={isOpen} 
+        onClose={onClose} 
+      />
         <Profile />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
-        <Barchart />
+        <Barchart hourlyData={hourlyData} weeklyData={weeklyData} />
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">Today's Overview</h3>
-            <Percent />
-            <TodayQuickStats />
+            <MainStats data={mainStatsData} />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatsContainer title="Task Statistics" stats={taskStats} />
-          <StatsContainer title="Performance Parameters" stats={performanceStats} />
-          <StatsContainer title="Focus Metrics" stats={focusMetrics} />
+          <StatsContainer title="Task Statistics" stats={taskStats} which="task" taskStatstics={
+            [taskStats["Total Tasks"], taskStats["Tasks In Progress"], taskStats["Tasks Remaining"]]}/>
+          <StatsContainer title="Performance Parameters" stats={performanceStats} which="performance" efficiency={performanceStats["Efficiency %"]} />
+          <StatsContainer title="Focus Metrics" stats={focusMetrics} which="focus"
+          userFocus={[focusMetrics["Average Focus Time (min)"], focusMetrics["Longest Focus Session (min)"] , 
+            Math.round(focusMetrics["Average Focus Time (min)"]/focusMetrics["Longest Focus Session (min)"])
+          ]}
+          />
         </div>
         <MetricsModal />
       </div>

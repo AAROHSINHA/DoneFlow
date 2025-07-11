@@ -155,6 +155,13 @@ router.post("/tasks/add-time",
       const stats = await Stats.findOne({ email }).lean();
       if (!stats) return res.status(404).json({ message: "Stats not found" });
 
+      const updatedSession = Math.max(stats.longestFocusSession || 0, spendTime);
+      await Stats.findOneAndUpdate(
+        {email: email},
+        {$set: {longestFocusSession: updatedSession}},
+        {new: true}
+      )
+
       const isSameDay =
         stats.currentDate === nowDate &&
         stats.currentMonth === nowMonth &&
@@ -238,6 +245,7 @@ router.post("/tasks/add-time",
       const lastWeek = [...stats.focusLastWeek.slice(1), totalYesterdayFocus];
 
       // 4. Set + Inc Updates
+      // Step 1: Clear old day & set metadata
       await Stats.findOneAndUpdate(
         { email },
         {
@@ -248,16 +256,25 @@ router.post("/tasks/add-time",
             focusPhase: focusPhaseArr,
             focusLastWeek: lastWeek,
             focusPerHour: Array(24).fill(0),
-            todaysFocusTime: spendTime
-          },
+            todaysFocusTime: 0 // reset for new day
+          }
+        }
+      );
+
+      // Step 2: Apply new day’s data via increment
+      await Stats.findOneAndUpdate(
+        { email },
+        {
           $inc: {
             ...updates,
             timeSpend: spendTime,
-            focusSession: 1
+            focusSession: 1,
+            todaysFocusTime: spendTime
           }
         },
         { new: true }
       );
+
 
       const exceeds = task.spendTime > task.estimateTime;
       return res.status(200).json({

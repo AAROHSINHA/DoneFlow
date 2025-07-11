@@ -1,5 +1,10 @@
-const Options = () => {
+interface Prop {
+  onClose: () => void
+}
+
+const Options = ({onClose}:Prop) => {
     const handleClick = () => {
+      onClose();
     }
     return (
         <div className="">

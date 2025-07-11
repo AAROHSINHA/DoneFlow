@@ -119,6 +119,12 @@ focusSession: {
   required: true,
   default: 0,
   min: 0
+},
+longestFocusSession: {
+  type: Number,
+  required: true,
+  default: 0,
+  min: 0
 }
 
 

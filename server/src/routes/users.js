@@ -86,7 +86,8 @@ router.post("/users/create-local-account",
             currentMonth: today.getMonth() + 1,
             currentYear: today.getFullYear(),
             todaysFocusTime: 0,
-            focusSession: 0
+            focusSession: 0,
+            longestFocusSession: 0
         });
             const savedStats = await newStats.save();
             const savedUser = await newUser.save();

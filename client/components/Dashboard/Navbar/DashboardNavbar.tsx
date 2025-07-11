@@ -4,7 +4,11 @@ import AvatarDropDown from "../../homepage/Navbar/AvatarDropDown.tsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function DashboardNavbar() {
+interface Prop {
+  onClose: () => void
+}
+
+function DashboardNavbar({onClose} : Prop) {
     const [loggedIn, setLoggedIn] = useState(false);
   const [initials, setInitials] = useState("U");
   const [name, setName] = useState("User");
@@ -38,7 +42,7 @@ function DashboardNavbar() {
     <header className="w-full bg-white font-sans">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-34 pl-[3em] pr-[3em]">
-            <Options />
+            <Options onClose={onClose}/>
       <div>
         <h1
               className="text-gray-700 text-[1.5em] hover:text-gray-900 px-3 py-2 text-base transition-colors font-semibold tracking-[3px]"

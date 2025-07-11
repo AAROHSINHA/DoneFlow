@@ -9,7 +9,7 @@ interface CircularPercentCounterProps {
 
 const CircularPercentCounter: React.FC<CircularPercentCounterProps> = ({
   percentage,
-  label = "Progress",
+  label = "Efficiency Rate",
   size = 200,
   strokeWidth = 18
 }) => {
