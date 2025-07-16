@@ -31,6 +31,7 @@ const WorkSpace = () => {
       }
       checkLogin();
     }, [])
+
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [addTaskSidebarOpen, setAddTaskSidebarOpen] = useState(false);
     const [overlay, setShowOverlay] = useState(false);
@@ -46,10 +47,11 @@ const WorkSpace = () => {
             isOpen: sidebarOpen,
             onClose: setSidebarOpen, 
             taskIsOpen: addTaskSidebarOpen,
-            taskOnClose: setAddTaskSidebarOpen
+            taskOnClose: setAddTaskSidebarOpen,
+            taskReload: taskReload
             }}>
             <WorkspaceNavbar />
-            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} updateTags={updateTags} />
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} updateTags={updateTags} taskReload={taskReload} />
             <AddTaskSidebar isOpen={addTaskSidebarOpen} onClose={() => setAddTaskSidebarOpen(false)}  setTaskReload={ setTaskReload} updateTags={updateTags} setUpdateStats={setUpdateStats} />
             <SearchBarArea updateStats={updateStats} /> 
             <TaskArea taskReload={taskReload} setTaskReload={setTaskReload} setShowOverlay={setShowOverlay} setUpdateTags={setUpdateTags} setUpdateStats={setUpdateStats}/>

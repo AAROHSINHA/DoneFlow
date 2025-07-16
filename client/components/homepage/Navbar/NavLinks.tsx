@@ -1,30 +1,53 @@
 import  { Link }  from "react-router-dom"
-function NavLinks() {
+import { useNavigate } from "react-router-dom"
+import { LoginContext } from "../Context.ts";
+import { useContext } from "react";
+
+interface Prop {
+  scrollTo: React.RefObject<HTMLDivElement | null>;
+}
+
+function NavLinks({scrollTo}: Prop) {
+  const navigate = useNavigate();
+  const loginContext = useContext(LoginContext);
+  const about = () => {
+    loginContext?.scrollTo.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    })
+  }
+  const workspace = () => {
+    if(loginContext?.loggedIn) navigate("/workspace");
+    else navigate("/create-account");
+  }
+  const dashboard = () => {
+    if(loginContext?.loggedIn) navigate("/dashboard");
+    else navigate("/create-account");
+  }
   return (
     <div>
-      <nav className="hidden md:flex space-x-12 mt-[0.8em]">
+      <nav className="font-['Inter'] hidden md:flex space-x-12 mt-[0.8em]">
             <p
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
+              className="text-gray-700 hover:text-gray-900 hover:cursor-pointer px-3 py-2 text-base transition-colors font-light"
+              onClick={about}
             >
               About
             </p>
+            
             <p
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
-            >
-              Features
-            </p>
-            <Link to={"/workspace"}>
-            <p
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
+              className="text-gray-700 hover:text-gray-900 hover:cursor-pointer px-3 py-2 text-base transition-colors font-light"
+              onClick={workspace}
             >
               Tasks
             </p>
-            </Link>
-            <p
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 text-base transition-colors font-light"
+         
+              <p
+              className="text-gray-700 hover:text-gray-900 hover:cursor-pointer px-3 py-2 text-base transition-colors font-light"
+              onClick={dashboard}
             >
-              Notes
+              Dashboard
             </p>
+            
           </nav>
     </div>
   )

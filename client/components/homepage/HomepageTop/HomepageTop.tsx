@@ -1,25 +1,30 @@
-import CoverText from "./CoverText.tsx"
-import img from "./temp.png";
+import CoverText from "./CoverText.tsx";
+import hero1 from "./images/hero2.webp";
+
 
 export default function Homepage() {
   return (
-    <div className="min-h-screen bg-white ">
+    <div className="min-h-auto bg-[#fdfdfd] ">
       {/* Hero Section */}
       <CoverText />
       {/* Dashboard Preview with Pink Glow */}
       <div className="mx-auto max-w-[100em] px-4 pb-16 sm:px-6 lg:px-8">
-        <div
-          className="overflow-hidden rounded-2xl bg-white border border-gray-100"
-          style={{
-            boxShadow:
-                "0 0 0 1px rgba(244, 114, 182, 0.1), 0 0 20px rgba(244, 114, 182, 0.15), 0 0 40px rgba(244, 114, 182, 0.1), 0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-            }}
+        <div className="overflow-hidden rounded-2xl bg-white border border-gray-100"
+    style={{
+  boxShadow: 
+    "0 -4px 6px rgba(0, 0, 0, 0.1), " +  // Top shadow (spread out)
+    "4px -2px 6px rgba(0, 0, 0, 0.04), " + // Slight offset to the right for top-right shadow
+    "-4px -2px 10px rgba(0, 0, 0, 0.12)"  // Stronger shadow at top-left
+}}
 
-        >
-          <div className="h-230 bg-gray-50">
-            <img src={img} alt="" />
-          </div>  
-        </div>
+>
+  <img
+    src={hero1}
+    alt="Screenshot preview"
+    className="w-full h-auto block"
+  />
+</div>
+
       </div>
     </div>
   )

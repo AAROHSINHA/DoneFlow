@@ -11,10 +11,11 @@ interface Props {
     setIsPaused: React.Dispatch<React.SetStateAction<boolean>>
     setTime: React.Dispatch<React.SetStateAction<number>> 
     setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
+    setStartTimestamp: React.Dispatch<React.SetStateAction<number | null>>
     onClose: () => void;
 }
 
-function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload, onClose}: Props) {
+function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload, onClose, setStartTimestamp}: Props) {
   const navigate = useNavigate();
     const getEmail = async () => {
     try{
@@ -32,9 +33,19 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
   }
 
   const handleStart = () => {
-    setIsRunning(true);
-    setIsPaused(false);
-  };
+  setStartTimestamp(prev => {
+    if (prev === null) {
+      // First time starting
+      return Date.now();
+    } else {
+      // Resuming → offset start time
+      return Date.now() - time * 1000;
+    }
+  });
+  setIsRunning(true);
+  setIsPaused(false);
+};
+
 
   const handlePause = () => {
     setIsPaused(true);

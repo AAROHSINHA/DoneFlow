@@ -69,7 +69,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
   }, [taskReload])
 
   return (
-    <div className="w-full flex justify-center  py-4">
+    <div className="w-full flex justify-center  py-4 bg-[#fdfdfd]">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[2.2em]">
         {tasks.map((task, index) => (
           
@@ -97,7 +97,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
         ))}
         <AddTask />
       </div>
-      <StopwatchModal taskTitle={taskTitle} isOpen={stopwatchModal} onClose={() => setStopwatchModal(false)} estimateTime={taskEstimateTime} setTaskReload={setTaskReload} spendTime={taskSpendTime}/>
+      <StopwatchModal taskTitle={taskTitle} isOpen={stopwatchModal} onClose={() => setStopwatchModal(false)} estimateTime={taskEstimateTime} setTaskReload={setTaskReload} spendTime={taskSpendTime} randomIndex = {Math.floor(Math.random()*5)} />
     </div>
   );
 }

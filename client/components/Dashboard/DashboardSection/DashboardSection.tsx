@@ -56,7 +56,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
         "Total Tasks": data.netTotalTasks ?? 0,
         "Tasks Completed": data.tasksCompleted ?? 0,
         "Tasks In Progress": data.startedTasks?.length ?? 0,
-        "Tasks Remaining": (data.totalTasks ?? 0) - (data.tasksCompleted ?? 0),
+        "Tasks Remaining": (data.totalTasks ?? 0) - (data.tasksCompleted ?? 0) - ((data.netTotalTasks ?? 0) - (data.totalTasks ?? 0)),
         "Total Deleted": (data.netTotalTasks ?? 0) - (data.totalTasks ?? 0)
       });
 
@@ -183,7 +183,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
       />
         <Profile />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
-        <Barchart hourlyData={hourlyData} weeklyData={weeklyData} />
+        <Barchart hourlyData={Array.from({ length: 24 }, () => Math.floor(Math.random() * 61))} weeklyData={weeklyData} />
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <MainStats data={mainStatsData} />
           </div>

@@ -6,9 +6,10 @@ interface SidebarProps {
   isOpen: boolean
   onClose: () => void
   updateTags: boolean
+  taskReload: boolean
 }
 
-function Sidebar({ isOpen, onClose, updateTags }: SidebarProps) {
+function Sidebar({ isOpen, onClose, updateTags, taskReload }: SidebarProps) {
   return (
     <>
       {/* Overlay */}

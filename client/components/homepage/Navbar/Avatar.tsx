@@ -7,11 +7,13 @@ const Avatar: React.FC<AvatarProps> = ({
 }) => {
   return (
     <div className="
+        hidden
+        sm:flex
+
       w-10
       h-10
       bg-pink-400
       rounded-full
-      flex
       items-center
       justify-center
       text-white
@@ -23,6 +25,7 @@ const Avatar: React.FC<AvatarProps> = ({
       duration-300
       select-none
       cursor-pointer
+      font-['Inter']
     ">
       {initials}
     </div>

@@ -12,16 +12,19 @@ const Timer: React.FC<TimerInterface> = ({ timerTime, setTimerTime, reload }) =>
   const [minutes, setMinutes] = useState<string>("");
   const ref1 = useRef<HTMLInputElement>(null);
   const ref2 = useRef<HTMLInputElement>(null);
-    useEffect(() => {
-      if(ref1.current) ref1.current.value = "";
-      if(ref2.current) ref2.current.value = "";
-    }, [reload])
+  useEffect(() => {
+  setHours("");
+  setMinutes("");
+  setTimerTime("");
+}, [reload]);
+
 
   useEffect(() => {
     const finalHours = hours === "" ? "00" : hours.padStart(2, "0");
     const finalMinutes = minutes === "" ? "00" : minutes.padStart(2, "0");
     setTimerTime(`${finalHours}:${finalMinutes}`);
   }, [hours, minutes]);
+
 
   return (
     <div className="space-y-3">

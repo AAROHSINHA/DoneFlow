@@ -41,13 +41,13 @@ const Navbar = () => {
 
 
   return (
-    <header className="w-full bg-white font-sans ">
+    <header className="w-full bg-[#fdfdfd] font-sans ">
       <div className="max-w-8xl mx-auto px-4  sm:px-6 lg:px-8">
         <div className="flex justify-around items-center h-34">
           
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to={"/"}><h1 className="text-3xl font-bold text-pink-400">DoneFlow</h1></Link>
+            <Link to={"/"}><h1 className="font-['Inter'] text-3xl font-bold text-pink-400">DoneFlow</h1></Link>
           </div>
           
           {/* Navigation */}

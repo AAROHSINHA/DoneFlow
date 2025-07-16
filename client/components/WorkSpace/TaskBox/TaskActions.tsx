@@ -66,12 +66,12 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
   const completeTask = async () => {
     const email_id = await getEmail();
     try{
-      await axios.post("http://localhost:5000/tasks/delete-task", 
-        {email: email_id, title: title, tags: tags},
-        {withCredentials: true}
-      )
       await axios.patch("http://localhost:5000/stats/complete-task", 
         {email: email_id, title: title, deadlineDate: deadlineDate, deadlineMonth: deadlineMonth},
+        {withCredentials: true}
+      )
+      await axios.post("http://localhost:5000/tasks/delete-task", 
+        {email: email_id, title: title, tags: tags},
         {withCredentials: true}
       )
     }catch(error){

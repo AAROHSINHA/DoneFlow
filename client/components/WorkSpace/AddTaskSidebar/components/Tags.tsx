@@ -9,7 +9,7 @@ interface TagsInterface {
     reload: boolean
 }
 
-const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags}) => {
+const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags, reload}) => {
     const [existingTags, setExistingTags] = useState<string[]>([]);
     const [reloadTag, setRealoadTag] = useState(false);
     const [showAddTag, setShowAddTag] = useState(false);
@@ -29,9 +29,9 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags
       setShowAddTag(false);
     }
 
-    // useEffect(() => {
-    //   setSelectedTags([]);
-    // }, [reload])
+     useEffect(() => {
+       setSelectedTags([]);
+     }, [reload])
 
 
     useEffect(() => {

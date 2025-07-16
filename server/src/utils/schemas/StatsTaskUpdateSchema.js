@@ -25,14 +25,14 @@ export const createCompleteTaskUpdateSchema = {
   },
   deadlineDate: {
     isInt: {
-      options: { min: 1, max: 31 },
+      options: { min: 0, max: 31 },
       errorMessage: "Deadline date must be between 1 and 31"
     },
     notEmpty: { errorMessage: "Deadline date is required" }
   },
   deadlineMonth: {
     isInt: {
-      options: { min: 1, max: 12 },
+      options: { min: 0, max: 12 },
       errorMessage: "Deadline month must be between 1 and 12"
     },
     notEmpty: { errorMessage: "Deadline month is required" }

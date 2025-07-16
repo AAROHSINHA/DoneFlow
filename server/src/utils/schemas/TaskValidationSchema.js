@@ -15,13 +15,13 @@ export const createTaskValidationSchema = {
     trim: true
   },
   tags: {
-    isArray: { errorMessage: "Tags must be an array" },
-    notEmpty: { errorMessage: "Tags are required" },
-    custom: {
-      options: (value) => Array.isArray(value) && value.length <= 4,
-      errorMessage: "You can assign a maximum of 4 tags"
-    }
-  },
+  optional: true,  // ✅ allow it to be skipped
+  isArray: { errorMessage: "Tags must be an array" },
+  custom: {
+    options: (value) => Array.isArray(value) && value.length <= 4,
+    errorMessage: "You can assign a maximum of 4 tags"
+  }
+},
   "tags.*": {
     isString: { errorMessage: "Each tag must be a string" },
     notEmpty: { errorMessage: "Tags cannot be empty strings" },
@@ -56,14 +56,14 @@ export const createTaskValidationSchema = {
     optional: true,
     isInt: {
       options: { min: 0, max: 31 },
-      errorMessage: "Deadline date must be between 1 and 31"
+      errorMessage: "Deadline date must be between 0 and 31"
     }
   },
   deadlineMonth: {
     optional: true,
     isInt: {
       options: { min: 0, max: 12 },
-      errorMessage: "Deadline date must be between 1 and 31"
+      errorMessage: "Deadline date must be between 0 and 31"
     }
   }
 };

@@ -36,7 +36,7 @@ const WorkspaceNavbar = () => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <header className="w-full bg-white font-sans">
+    <header className="w-full bg-[#fdfdfd] font-sans">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-34 pl-[3em] pr-[3em]">
             <Options />

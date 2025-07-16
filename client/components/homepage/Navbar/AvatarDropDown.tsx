@@ -39,7 +39,7 @@ const AvatarDropDown: React.FC<AvatarProps> = ({
   };
 
   return (
-    <div className="relative inline-block" ref={dropdownRef}>
+    <div className="hidden relative md:inline-block" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-1 p-1 rounded hover:cursor-pointer"

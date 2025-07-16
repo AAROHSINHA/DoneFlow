@@ -107,17 +107,25 @@ router.post("/tasks/delete-task",
 
 router.get("/tasks/get-tags", async (request, response) => {
   try {
+    const userEmail = request.session.user.email; // or request.user.email if using a different structure
+    
+    if (!userEmail) {
+      return response.status(401).json({ error: 'User not authenticated' });
+    }
+
     const uniqueTags = await Task.aggregate([
+      { $match: { email: userEmail } }, // Filter tasks by user's email
       { $unwind: "$tags" },
       { $group: { _id: "$tags" } },
       { $sort: { _id: 1 } }
     ]);
-    
+
     return response.status(200).json({ tags: uniqueTags.map(tag => tag._id) });
   } catch (error) {
-    return response.status(400).json({ error });
+    return response.status(400).json({ error: error.message });
   }
 });
+
 
 // 5. ADD SPENT TIME 
 router.post("/tasks/add-time", 

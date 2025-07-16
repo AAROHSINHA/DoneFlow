@@ -1,5 +1,6 @@
 import {Plus} from "lucide-react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
+import {SidebarContext} from "../../SidebarContext.ts";
 
 interface TitleFieldInterface {
     title: string,
@@ -9,9 +10,10 @@ interface TitleFieldInterface {
 
 
 const TitleField:React.FC<TitleFieldInterface> = ({title, setTitle, reload}) => {
+  const sidebarcontext = useContext(SidebarContext);
     const ref = useRef<HTMLInputElement>(null);
     useEffect(() => {
-      if(ref.current) ref.current.value = "";
+      setTitle(""); 
     }, [reload])
     return (
         <div className="space-y-3">

@@ -15,7 +15,7 @@ const TaskSchema = new mongoose.Schema({
   },
   tags: {
     type: [String],
-    required: true,
+    required: false,
     validate: [
       {
         validator: function (val) {

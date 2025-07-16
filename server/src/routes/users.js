@@ -9,6 +9,7 @@ const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 const Stats = require("../utils/models/StatsModel.js");
 const session = require('express-session');
+const {createFeedbackSchema} = require("../utils/schemas/FeedbackSchema.js");
 dotenv.config();
 
 const router = express.Router();
@@ -285,5 +286,66 @@ router.patch("/users/change-password", async (request, response) =>{
   }
 
 })
+
+// 7. Send Feedback
+router.post(
+  "/send-feedback",
+  express_validator.checkSchema(createFeedbackSchema),
+  async (request, response) => {
+    const validation_errors = express_validator.validationResult(request);
+    if (!validation_errors.isEmpty()) {
+      return response.status(400).json({
+        success: false,
+        type: "validation error",
+        error: validation_errors.array(), // fixed typo: should be .array()
+      });
+    }
+
+    const data = express_validator.matchedData(request);
+
+    // No fields provided
+    if (!data.email && !data.rating && !data.feedback) {
+      return response.status(200).json({
+        success: true,
+        type: "no feedback",
+        message: "No feedback data provided. Skipping email.",
+      });
+    }
+
+    const mailOptions = {
+      from: "doneflow94@gmail.com",
+      to: "doneflow94@gmail.com",
+      subject: "New Feedback On Site",
+      text: `
+You received the following feedback about the site:
+
+Message: ${data.feedback || "Feedback Not Provided"}
+
+Rating: ${data.rating || "Rating Not Provided"}
+
+Sender: ${data.email || "Anonymous"}
+      `.trim(),
+      ...(data.email ? { replyTo: data.email } : {}), // Optional reply-to
+    };
+
+    try {
+      const info = await emailTransporter.sendMail(mailOptions);
+      console.log("Feedback email sent:", info.response);
+
+      return response.status(200).json({
+        success: true,
+        type: "feedback sent",
+        message: "Feedback email sent successfully.",
+      });
+    } catch (error) {
+      console.error("Error sending feedback email:", error);
+      return response.status(500).json({
+        success: false,
+        type: "email error",
+        message: "Failed to send feedback email. Please try again later.",
+      });
+    }
+  }
+);
 
 module.exports = router

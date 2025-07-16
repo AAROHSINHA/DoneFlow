@@ -1,12 +1,14 @@
 import { ChevronDownIcon, ChevronRightIcon } from "../icons.tsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { SidebarContext } from "../../SidebarContext.ts";
 
 interface TagProp {
   updateTags: boolean
 }
 
 const NavigationTags = ({updateTags}: TagProp) => {
+  const sidebarcontext = useContext(SidebarContext);
     const [expandedItems, setExpandedItems] = useState<string[]>([])
     const toggleExpanded = (item: string) => {setExpandedItems((prev) => (prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]))}
     const [tags, setExistingTags] = useState<string[]>([]);
@@ -28,7 +30,7 @@ const NavigationTags = ({updateTags}: TagProp) => {
       }
 
       loadTags();
-    }, [updateTags])
+    }, [sidebarcontext?.taskReload])
     return (
         <div>
                   <div

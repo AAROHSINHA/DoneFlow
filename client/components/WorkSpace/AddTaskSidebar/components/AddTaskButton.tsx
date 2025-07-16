@@ -40,6 +40,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
        setReload(prev => !prev);
        setUpdateStats(prev => !prev);
        onClose();
+       
     }
 
     const convertTime = (time: string) => {

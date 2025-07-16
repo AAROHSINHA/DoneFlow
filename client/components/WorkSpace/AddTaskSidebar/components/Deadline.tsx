@@ -16,8 +16,7 @@ const Deadline: React.FC<DeadlineInterface> = ({ deadline, setDeadline, reload }
   const ref1 = useRef<HTMLInputElement>(null);
   const ref2 = useRef<HTMLInputElement>(null);
     useEffect(() => {
-      if(ref1.current) ref1.current.value = "";
-      if(ref2.current) ref2.current.value = "";
+      setDay("");
     }, [reload])
 
   useEffect(() => {
@@ -27,6 +26,7 @@ const Deadline: React.FC<DeadlineInterface> = ({ deadline, setDeadline, reload }
       setDeadline(`${year}-${month}-${day.padStart(2, "0")}`);
     }
   }, [day, month, year]);
+
 
   return (
     <div className="space-y-3">
