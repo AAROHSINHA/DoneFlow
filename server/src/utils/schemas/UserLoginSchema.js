@@ -1,16 +1,16 @@
 export const createUserLoginSchema = {
     email: {
-    isEmail: { errorMessage: "Invalid email format" },
-    notEmpty: { errorMessage: "Email is required" },
+    isEmail: { errorMessage: "email" },
+    notEmpty: { errorMessage: "email" },
     normalizeEmail: true,
     trim: true
   },
   password: {
-    isString: { errorMessage: "Password must be a string" },
-    notEmpty: { errorMessage: "Password is required" },
+    isString: { errorMessage: "password" },
+    notEmpty: { errorMessage: "password" },
     isLength: {
       options: { min: 5 },
-      errorMessage: "Password must be at least 6 characters"
+      errorMessage: "password"
     },
     trim: true
   }

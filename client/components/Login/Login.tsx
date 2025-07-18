@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ReturnHome from '../ProfilePage/components/ReturnHome.tsx';
 import { useNavigate } from 'react-router-dom';
+import { localLoginError } from '../error_handler.ts';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +17,7 @@ const Login = () => {
     email: '',
     password: ''
   })
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -30,27 +32,31 @@ const Login = () => {
     }))
   }
 
-  const checkSession = async () => {
-  const res = await axios.get("http://localhost:5000/users/me", {
-    withCredentials: true
-  });
-  console.log(res.data);
-}
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try{
-      const res = await axios.post("http://localhost:5000/users/local-login", 
-        formData,
-      { withCredentials: true } 
-    );
-      console.log(res.data);
-      navigate("/");
-      checkSession();
-    }catch(error){
-      alert("Some error occured");
-      console.log(error);
+    try {
+  const res = await axios.post("http://localhost:5000/users/local-login", 
+    formData,
+    { withCredentials: true }
+  );
+  console.log(res.data);
+  navigate("/");
+} catch(error: any) {
+  try {
+    const error_response_data = error.response.data;
+    const type = error_response_data.type;
+    if (type === "validation") {
+      setMessage(localLoginError[type][error_response_data.error[0].msg]);
+    } else if (localLoginError[type]) {
+      setMessage(localLoginError[type]);
+    } else {
+      setMessage("Something unexpected happened.");
     }
+  } catch (e) {
+    setMessage("Unexpected error. Please try again.");
+  }
+}
+
   };
 
   return (
@@ -108,7 +114,7 @@ const Login = () => {
           </button>
         </form>
 
-        
+        <p className="font-['Inter'] text-center text-red-600 font-thin text-xl uppercase tracking-wide animate-pulse">{message}</p>
         <Divider />
         <OAuth2Buttons />
       </div>
@@ -117,3 +123,14 @@ const Login = () => {
 };
 
 export default Login;
+
+/*
+//   const checkSession = async () => {
+//   const res = await axios.get("http://localhost:5000/users/me", {
+//     withCredentials: true
+//   });
+//   console.log(res.data);
+// }
+
+If things go wrong add this below navigate in handleSubmit
+*/

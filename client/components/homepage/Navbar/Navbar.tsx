@@ -20,6 +20,7 @@ const Navbar = () => {
         const res = await axios.get("http://localhost:5000/users/check-login", {
           withCredentials: true,
         });
+        console.log(res.data);
         if(res.data.loggedIn){
           setLoggedIn(res.data.loggedIn);
         setName(res.data.user.name);

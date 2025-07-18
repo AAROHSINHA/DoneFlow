@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { LoginContext } from "../Context.ts";
 import { useContext } from "react";
 
-interface Prop {
-  scrollTo: React.RefObject<HTMLDivElement | null>;
-}
-
-function NavLinks({scrollTo}: Prop) {
+function NavLinks() {
   const navigate = useNavigate();
   const loginContext = useContext(LoginContext);
   const about = () => {

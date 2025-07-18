@@ -19,10 +19,25 @@ const UserSchema = new mongoose.Schema({
     unique: true,
   },
   password: {
+  type: String,
+  minlength: 5,
+  maxlength: 128,
+  required: function () {
+    return this.createdVia === 'local';
+  },
+},
+  googleId: {
     type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 128,
+    required: false,
+  },
+  createdVia: {
+    type: String,
+    enum: ['local', 'google'],
+    default: 'local',
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

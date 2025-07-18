@@ -1,34 +1,34 @@
 export const createUserValidationSchema = {
   firstName: {
-    isString: { errorMessage: "Username must be a string" },
-    notEmpty: { errorMessage: "Username is required" },
+    isString: { errorMessage: "firstname" },
+    notEmpty: { errorMessage: "firstname" },
     isLength: {
       options: { min: 1, max: 32 },
-      errorMessage: "Username must be 5–32 characters"
+      errorMessage: "firstname"
     },
     trim: true
   },
   lastName: {
-    isString: { errorMessage: "Username must be a string" },
-    notEmpty: { errorMessage: "Username is required" },
+    isString: { errorMessage: "lastname" },
+    notEmpty: { errorMessage: "lastname" },
     isLength: {
       options: { min: 1, max: 32 },
-      errorMessage: "Username must be 5–32 characters"
+      errorMessage: "lastname"
     },
     trim: true
   },
   email: {
-    isEmail: { errorMessage: "Invalid email format" },
-    notEmpty: { errorMessage: "Email is required" },
+    isEmail: { errorMessage: "email" },
+    notEmpty: { errorMessage: "email" },
     normalizeEmail: true,
     trim: true
   },
   password: {
-    isString: { errorMessage: "Password must be a string" },
-    notEmpty: { errorMessage: "Password is required" },
+    isString: { errorMessage: "password" },
+    notEmpty: { errorMessage: "password" },
     isLength: {
-      options: { min: 6 },
-      errorMessage: "Password must be at least 6 characters"
+      options: { min: 6, max:32 },
+      errorMessage: "password"
     },
     trim: true
   }

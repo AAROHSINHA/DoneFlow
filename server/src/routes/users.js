@@ -58,7 +58,10 @@ router.post("/users/create-local-account",
     express_validator.checkSchema(createUserValidationSchema),
     async (request, response) => {
         const validation_errors = express_validator.validationResult(request);
-        if(!validation_errors.isEmpty()) return response.status(400).send(validation_errors.array());
+        if(!validation_errors.isEmpty()) return response.status(400).json({
+          type: "validation",
+          error:validation_errors.array()
+        });
         const data = express_validator.matchedData(request);
         const saltRounds = 10;
         const hashedData = await bcrypt.hash(data.password, saltRounds);
@@ -97,62 +100,54 @@ router.post("/users/create-local-account",
               stats: savedStats
             });
         }catch(error){
-            console.log(error);
-            return response.status(400).json({message:"error", error: error});
+            return response.status(400).json({message:"server", error: error});
         }
 })
 
 // 2. local login
 router.post("/users/local-login",
     express_validator.checkSchema(createUserLoginSchema),
-    async (request, response) => {
-        const validation_errors = express_validator.validationResult(request);
-        if (!validation_errors.isEmpty()) {
-            return response.status(400).send(validation_errors.array());
+    async (req, res) => {
+        const errors = express_validator.validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                type: "validation",
+                error: errors.array()
+            });
         }
 
-        const data = express_validator.matchedData(request);
+        try {
+            const data = express_validator.matchedData(req);
+            const user = await User.findOne({ email: data.email });
 
-        // 1. find the user in the User db
-        const foundUser = await User.findOne({ email: data.email });
-        if (!foundUser) {
-            return response.status(404).send({ error: "User Not Found" });
+            if (!user || !(await bcrypt.compare(data.password, user.password))) {
+                return res.status(404).json({ type: "credentials" });
+            }
+
+            if (req.session.user) {
+                console.log("Logging out previous user:", req.session.user.email);
+                req.session.user = null;
+            }
+
+            req.session.user = {
+                id: user._id,
+                email: user.email,
+                name: user.firstName,
+            };
+            req.session.save();
+
+            return res.status(200).json({
+                message: "Login successful",
+                user: req.session.user,
+            });
+
+        } catch (err) {
+            console.error("Login error:", err);
+            return res.status(500).json({ type: "server" });
         }
-
-        // 2. check password
-        const match = await bcrypt.compare(data.password, foundUser.password);
-        if (!match) {
-            return response.status(404).send({ error: "Invalid Password" });
-        }
-
-        // Log out previous session if needed
-        if (request.session.user) {
-            console.log("Logging out previous user:", request.session.user.email);
-            request.session.user = null;
-        }
-
-        // 3. Save user info into session
-        request.session.user = {
-            id: foundUser._id,
-            email: foundUser.email,
-            name: foundUser.firstName,
-        };
-        request.session.save();
-        console.log(request.session);
-        console.log("LOGIN session ID:", request.sessionID);
-
-
-        // 4. Send success response
-        return response.status(200).json({
-            message: "Login successful",
-            user: {
-                id: foundUser._id,
-                email: foundUser.email,
-                name: foundUser.firstName,
-            },
-        });
     }
 );
+
 
 // 3. Check is logged in
 router.get("/users/check-login", (req, res) => {
@@ -192,33 +187,32 @@ router.post("/users/logout", (req, res) => {
 router.post("/users/send-email", async (request, response) => {
   const email_id = request.body.email;
 
-  const userFound = await User.findOne({ email: email_id });
-  if (!userFound) {
-    return response
-      .status(401)
-      .json({ error: "Session/User not found/logged in!" });
+  // ✅ 1. Basic Input Validation
+  if (!email_id || typeof email_id !== "string") {
+    return response.status(400).json({ type: "credentials", error: "Invalid email format" });
   }
-  await ResetToken.deleteOne({ email: email_id });
-  const { rawToken, tokenHashed } = await createToken();
 
-  // 1. Store the token in DB
-  const newObj = {
-    email: email_id,
-    token: tokenHashed,
-  };
-
-  const newToken = new ResetToken(newObj);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email_id)) {
+    return response.status(400).json({ type: "credentials", error: "Invalid email format" });
+  }
 
   try {
+    // ✅ 2. Check user existence
+    const userFound = await User.findOne({ email: email_id });
+    if (!userFound) {
+      return response.status(401).json({ type: "credentials" });
+    }
+
+    // ✅ 3. Delete existing reset token
+    await ResetToken.deleteOne({ email: email_id });
+
+    const { rawToken, tokenHashed } = await createToken();
+    const newToken = new ResetToken({ email: email_id, token: tokenHashed });
+
     await newToken.save();
-  } catch (error) {
-    console.error(error);
-    return response
-      .status(400)
-      .json({ error: "Some Error Occurred while saving token." });
-  }
-  // 2. Send the email
-  try {
+
+    // ✅ 4. Send email
     const request_name = "DoneFlow User";
     const mailOptions = {
       from: "doneflow94@gmail.com",
@@ -233,30 +227,32 @@ router.post("/users/send-email", async (request, response) => {
     return response.status(200).json({
       status: "success",
       message: "Email sent successfully",
-      rawToken: rawToken
+      rawToken,
     });
+
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("Error in send-email route:", error);
     return response.status(500).json({
-      status: "error",
-      message: "Error sending email, please try again.",
+      status: "server",
+      message: "Something went wrong. Please try again.",
     });
   }
 });
 
+
 // 6. Change password
 router.patch("/users/change-password", async (request, response) =>{
    const {body} = request;
-   if(!body.new_password || !body.email) return response.status(400).json({error:"No email/password entered"}); 
+   if(!body.new_password || !body.email) return response.status(400).json({type: "credentials"}); 
   const email_id = body.email;
   const userFound = await User.findOne({ email: email_id });
   if (!userFound) {
     return response
       .status(401)
-      .json({ error: "No Such Email Exists" });
+      .json({ type: "credentials" });
   }
   const data = body;
-  if(!data.new_password) return response.status(401).json({ error: "No Password Entered" });
+  if(!data.new_password) return response.status(401).json({ type: "credentials" });
 
   try{
     const saltRounds = 10;
@@ -271,7 +267,7 @@ router.patch("/users/change-password", async (request, response) =>{
     if (!updatedUser) {
       return response
         .status(500)
-        .json({ error: "Error updating password" });
+        .json({ type: "server" });
     }
 
     return response.json({
@@ -280,7 +276,7 @@ router.patch("/users/change-password", async (request, response) =>{
   }catch(error){
     console.error("Error updating password:", error);
     return response.status(500).json({
-      status: "error",
+      type: "server",
       message: "Error updating password, please try again.",
     });
   }

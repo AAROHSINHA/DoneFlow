@@ -22,13 +22,13 @@ export default function GetStartedCta() {
         <p className="text-white text-lg md:text-xl lg:text-2xl mb-8">
           Join Doneflow and turn your tasks into progress.
         </p>
-        <a
-          href="/signup"
-          className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-full shadow-sm text-pink-500 bg-white hover:bg-pink-100 hover:text-pink-600 transition-colors duration-300"
+        <p
+
+          className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-full shadow-sm text-pink-500 bg-white hover:bg-pink-100 hover:text-pink-600 transition-colors duration-300 hover:cursor-pointer"
           onClick={handleClick}
         >
           {loginContext?.loggedIn ? "View Your Dashboard" : "Create Account For Free!"}
-        </a>
+        </p>
       </div>
     </section>
   )

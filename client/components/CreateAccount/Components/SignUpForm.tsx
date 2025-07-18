@@ -5,6 +5,7 @@ import SignUpPageText from "./SignupPageText.tsx";
 import Divider from "./Divider.tsx";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { localSignInError } from '../../error_handler.ts';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -26,15 +27,38 @@ const SignUpForm = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try{
-      const res = await axios.post("http://localhost:5000/users/create-local-account", formData);
-      navigate("/login");
-    }catch(error){
-      setMessage("SOME ERROR OCCURRED!")
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/users/create-local-account",
+      formData
+    );
+    navigate("/login");
+  } catch (error: any) {
+    try {
+      const error_response_data = error.response.data;
+      const type = error_response_data.type;
+
+      if (type === "validation") {
+        const msgKey = error_response_data.error[0]?.msg;
+        if (localSignInError[type][msgKey]) {
+          setMessage(localSignInError[type][msgKey]);
+        } else {
+          setMessage("Invalid input. Please check your details.");
+        }
+      } else if (localSignInError[type]) {
+        setMessage(localSignInError[type]);
+      } else {
+        setMessage("Something unexpected happened.");
+      }
+    } catch (e) {
+      console.error("Error handling signup error:", e);
+      setMessage("Unexpected error. Please try again.");
     }
-  };
+  }
+};
+
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -122,7 +146,7 @@ const SignUpForm = () => {
           Create account
         </button>
 
-        <p className="text-center text-red-600 font-sans font-light text-lg">{message}</p>
+        <p className="font-['Inter'] text-center text-red-600 font-thin text-xl uppercase tracking-wide animate-pulse">{message}</p>
 
 
         <Divider />

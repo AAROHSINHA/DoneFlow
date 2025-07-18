@@ -5,6 +5,9 @@ const routes = require("../src/routes/routes.js");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+require("../src/passport/googleauth.js");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20");
 dotenv.config();
 
 // connecting to the mongoose server
@@ -40,7 +43,30 @@ app.use(session({
     })
 }))
 app.use(express.json());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(routes);
+
+// 🔐 Routes
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get("/auth/google/callback", 
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // ✅ Manually store user in session
+    console.log(req.user);
+    req.session.user = {
+      id: req.user._id,
+      name: req.user.firstName,
+      email: req.user.email
+    };
+
+    // Optionally redirect back to frontend
+    res.redirect("http://localhost:5173/"); 
+  }
+);
 
 // simple get api to check if server runs or not
 app.get("/", (request, response) => {

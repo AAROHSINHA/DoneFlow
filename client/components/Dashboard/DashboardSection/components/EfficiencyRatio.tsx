@@ -13,7 +13,7 @@ const EfficiencyRatio = ({ ratio }: EfficiencyRatioProps) => {
       
       <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
         <div className="text-2xl font-bold text-pink-600 mb-2">
-          {ratio}
+          {ratio.toFixed(1)}
         </div>
         
         {/* Progress bar

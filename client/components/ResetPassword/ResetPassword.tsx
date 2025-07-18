@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ReturnHome from '../ProfilePage/components/ReturnHome';
+import { useNavigate } from 'react-router-dom';
+import { changePasswordError } from '../error_handler';
 
 const ResetPassword = () => {
   const [token, setToken] = useState('');
@@ -10,6 +12,9 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
   const [gotToken, setGotToken] = useState(false);
+  const [message, setMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleGenerateResend = async () => {
     try{
@@ -18,32 +23,52 @@ const ResetPassword = () => {
             {withCredentials: true}
         )
         setRawToken(res.data.rawToken);
-        alert("GENERATE TOKEN! CHECK EMAIL")
-    }catch(error){
-        console.log(error);
-        alert("SOME ERROR OCCURRRED");
+        setMessage('');
+        setSuccessMessage(`Raw Token sent at email - ${email}. (EXPIRES IN 10 MINUTES!)`);
+    }catch(error: any){
+        setMessage("Error Generating Token! Try again in some time...");
     }
     setGotToken(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(token === rawToken){
-        if(newPassword === confirmPassword && (newPassword.length >= 5 && newPassword.length <= 128)){
-            // put the change password route here
-            try{
-                const res = await axios.patch("http://localhost:5000/users/change-password",
-                    {new_password: newPassword, email: email},
-                    {withCredentials: true}
-                )
-                console.log(res);
-                alert("SUCCESFULLY CHANGED PASSWORD");
-            }catch(error){
-                alert("SOME ERROR OCCURRED IN CHANGING PASSWORD");
-                console.log(error);
-            }
-        }
+    if (token !== rawToken){
+      setMessage("Invalid Token Entered!");
+      return;
     };
+    if (newPassword !== confirmPassword) {
+      setMessage("Confirmed Password does not match the password entered");
+      return;
+    }
+    if (!(newPassword.length >= 5 && newPassword.length <= 32)) {
+      setMessage("Invalid Password Length! Must be between 5-32");
+      return;
+    }
+
+    try {
+      const res = await axios.patch(
+        "http://localhost:5000/users/change-password",
+        { new_password: newPassword, email },
+        { withCredentials: true }
+      );
+      setMessage('');
+      setSuccessMessage("Password Changed Succesfully");
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+
+    } catch (error: any) {
+      try{
+        const error_response_data = error.response.data;
+        const type = error_response_data.type;
+        if(changePasswordError[type]) setMessage(changePasswordError[type]);
+        else setMessage("Unexpected error. Please try again later...");
+      }catch(e){
+        setMessage("Unexpected error. Please try again later...");
+      }
+    }
+
   };
 
   return (
@@ -74,6 +99,17 @@ const ResetPassword = () => {
             />
             </div>
 
+            {/* Resend Button */}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={handleGenerateResend}
+              className="text-pink-400 hover:cursor-pointer hover:text-pink-500 text-sm font-medium underline"
+            >
+              {gotToken ? <p>Resend Token</p> : <p>Generate Token</p>}  
+            </button>
+          </div>
+
           {/* Token Input */}
           <div>
             <input
@@ -85,16 +121,7 @@ const ResetPassword = () => {
             />
           </div>
 
-          {/* Resend Button */}
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={handleGenerateResend}
-              className="text-pink-400 hover:cursor-pointer hover:text-pink-500 text-sm font-medium underline"
-            >
-              {gotToken ? <p>Resend Token</p> : <p>Generate Token</p>}  
-            </button>
-          </div>
+          
 
           {/* New Password Input */}
           <div>
@@ -117,7 +144,8 @@ const ResetPassword = () => {
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent"
             />
           </div>
-
+             <p className="font-['Inter'] text-center text-red-600 font-thin text-xl uppercase tracking-wide animate-pulse">{message}</p>
+             <p className="font-['Inter'] text-center text-green-600 font-thin text-xl uppercase tracking-wide animate-pulse">{successMessage}</p>
           {/* Submit Button */}
           <button
             type="submit"
