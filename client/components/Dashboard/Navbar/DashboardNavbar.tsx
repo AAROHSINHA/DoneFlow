@@ -1,43 +1,16 @@
-import ReturnHome from "../../ProfilePage/components/ReturnHome.tsx";
+import { useContext } from "react";
+import { DashboardContext } from "../DashboardContext.ts";
 import Options from "./Options.tsx";
 import AvatarDropDown from "../../homepage/Navbar/AvatarDropDown.tsx";
-import { useEffect, useState } from "react";
-import axios from "axios";
+
 
 interface Prop {
   onClose: () => void
 }
 
 function DashboardNavbar({onClose} : Prop) {
-    const [loggedIn, setLoggedIn] = useState(false);
-  const [initials, setInitials] = useState("U");
-  const [name, setName] = useState("User");
-  const [email, setEmail] = useState("example@gmail.com");
+  const dashboardContext = useContext(DashboardContext);
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/users/check-login", {
-          withCredentials: true,
-        });
-        if(res.data.loggedIn){
-          setLoggedIn(res.data.loggedIn);
-        setName(res.data.user.name);
-        setEmail(res.data.user.email);
-        setInitials(res.data.user.name[0]);
-        }
-      } catch (error) {
-        console.error("Error checking login:", error);
-        setLoggedIn(false);
-      }
-    };
-
-    checkLogin();
-
-    const interval = setInterval(checkLogin, 60 * 1000); // every 60 seconds
-
-    return () => clearInterval(interval);
-  }, []);
   return (
     <header className="w-full bg-white font-sans">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +23,7 @@ function DashboardNavbar({onClose} : Prop) {
               DASHBOARD
             </h1>
       </div>
-        <AvatarDropDown initials={initials} name={name} email={email} />
+        <AvatarDropDown initials={dashboardContext?.name[0]} name={dashboardContext?.name} email={dashboardContext?.email} />
         </div>
       </div>
     </header>

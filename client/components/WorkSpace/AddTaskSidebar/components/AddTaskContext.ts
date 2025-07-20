@@ -9,7 +9,9 @@ export interface AddTaskInterface {
     timerTime: string,
     setTimerTime: React.Dispatch<React.SetStateAction<string>>,
     deadline: string, 
-    setDeadline: React.Dispatch<React.SetStateAction<string>>
+    setDeadline: React.Dispatch<React.SetStateAction<string>>,
+    email: string,
+    loggedIn: boolean
 }
 
 export const AddTaskContext = createContext<AddTaskInterface | null>(null);

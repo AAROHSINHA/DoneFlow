@@ -6,9 +6,10 @@ import ProgressBar from "./ProgressBar.tsx";
 import Time from "./Time.tsx";
 import Deadline from "./Deadline.tsx";
 import TaskActions from "./TaskActions.tsx";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { SidebarContext } from "../SidebarContext.ts";
 
 interface TaskBoxInterface {
   color: string;
@@ -72,24 +73,15 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
   setUpdateStats,
   setTaskSpendTime
 }) => {
-  const navigate = useNavigate();
   const gradient = colorClasses[color] || "from-gray-400 to-gray-600";
   const textColor = textColorClasses[color] || "text-gray-700";
   const [hidden, setHidden] = useState(true);
+  const taskBoxRef = useRef<HTMLDivElement | null>(null); 
 
-  const getEmail = async () => {
-    try{
-           const res = await axios.get("http://localhost:5000/users/check-login", {
-            withCredentials: true,
-          });
-          if(!res.data.loggedIn){
-              navigate("/");
-          }
-          return res.data.user.email;
-         }catch(error){
-              console.log(error);
-         }
-         return null;
+  const sidebarContext = useContext(SidebarContext);
+
+  const getEmail = () => {
+    if(sidebarContext?.loggedIn) return sidebarContext.email;
   }
 
   const handleTaskClick = () => {
@@ -108,7 +100,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
     setTaskEstimateTimer(estimateTime*60);
     setTaskSpendTime(spendTime);
     try{
-      const email = await getEmail();
+      const email = getEmail();
       await axios.post("http://localhost:5000/stats/start-progress", 
         {email: email, title: title},
         {withCredentials: true}
@@ -119,10 +111,27 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
     }
   }
 
+  useEffect(() => {
+    const handleClickOutside = ((event: MouseEvent | TouchEvent) => {
+      if(taskBoxRef && taskBoxRef.current && !taskBoxRef.current.contains(event?.target as Node)){
+          setHidden(true);
+          setShowOverlay(false);
+        }
+      });
+
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("touchstart", handleClickOutside);
+      }
+    }, [])
+
   const completed = (spendTime*100)/(estimateTime*60) >= 100 ? 'shadow-[0_0_25px_rgba(34,197,94,0.8)]' : '';
   return (
-    <div className="relative inline-block hover:cursor-pointer hover:scale-[1.1] hover:z-50 transition transform duration-300 " onClick={handleTaskClick} onMouseLeave={handleMouseLeave}>
-    <div className={`w-105 h-105 bg-gradient-to-br ${gradient} rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden mb-[3em] ${completed}`}>
+    <div className="relative inline-block hover:cursor-pointer hover:z-50 transition transform duration-300 " onClick={handleTaskClick} ref={taskBoxRef}>
+    <div className={`w-105 h-105 bg-gradient-to-br ${gradient} rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden mb-[3em] ${completed} ${!hidden ? "scale-110 z-50" : ""} transition-transform duration-200`}>
       {/* Status Indicator Dot */}
       <div className="absolute top-4 right-4 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"></div>
 
@@ -153,7 +162,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
       </button>
     </div>
         {!hidden && <TaskActions taskIndex={taskIndex} hidden={hidden} title={title} tags={tags} setTaskReload={setTaskReload} handleMouseLeave={handleMouseLeave} setUpdateTags={setUpdateTags}
-        setUpdateStats={setUpdateStats} deadlineDate={deadlineDate} deadlineMonth={deadlineMonth}
+        setUpdateStats={setUpdateStats} deadlineDate={deadlineDate} deadlineMonth={deadlineMonth} isLoggedIn={sidebarContext?.loggedIn} email={sidebarContext?.email}
         />}
         
     </div>

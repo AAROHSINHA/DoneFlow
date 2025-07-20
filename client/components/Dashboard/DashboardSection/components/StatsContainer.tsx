@@ -29,8 +29,8 @@ const StatsContainer = ({ title, stats, which, efficiency, taskStatstics, userFo
         let displayValue: string | number = value;
 
         if (
-          key === "Most Productive Period (start hour)" ||
-          key === "Least Productive Time (start hour)"
+          key === "Most Productive Period" ||
+          key === "Least Productive Time"
         ) {
           displayValue = TIME_RANGES[value as number] ?? "N/A";
         }

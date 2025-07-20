@@ -17,6 +17,17 @@ interface BarchartProps {
 const Barchart = ({hourlyData, weeklyData}: BarchartProps) => {
     const [toggle, setToggle] = useState(true);
     const [Weeklylabels, setWeeklyLabels] = useState<string[]>([]);
+
+    const calcFocus = (hourlyData: number[]) => {
+      const totalFocus =  hourlyData.reduce((curr, acc) => {
+        return curr + acc
+      }, 0);
+      const hours = Math.floor(totalFocus / 60);
+      const minutes = totalFocus - (hours*60);
+      return `${hours}h ${minutes}m`
+    }
+
+
     useEffect(() => {
       const getLast7Days = () => {
     const days: string[] = [];
@@ -44,11 +55,12 @@ const Barchart = ({hourlyData, weeklyData}: BarchartProps) => {
    }, [])
     return (
           <div className="lg:col-span-3 bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-2xl font-semibold text-gray-900">Progress Analytics</h3>
                 <p className="text-gray-500 mt-1">Track your productivity over time</p>
               </div>
+
 
               {/* Toggle Button for Hourly/Weekly */}
               <div className="flex bg-gray-100 rounded-lg p-1 ">
@@ -72,8 +84,12 @@ const Barchart = ({hourlyData, weeklyData}: BarchartProps) => {
 
             </div>
 
+            <p className="text-gray-400 text-sm font-semibold px-4 py-2 rounded-xl  inline-block">
+                {toggle ? `Today\'s Focus : ${calcFocus(hourlyData)}` : `Weekly Focus : ${calcFocus(weeklyData)}`}
+            </p>
+
             {/* Large Bar Chart Placeholder */}
-           <div className="h-120 bg-white rounded-lg p-4 shadow">
+           <div className="h-120 bg-white rounded-lg p-4 shadow mt-4">
               {toggle ? <HourlyChart data={hourlyData} labels={Hourlylabels} label="Today" /> :
               <HourlyChart data={weeklyData} labels={Weeklylabels} label="Last 7 Days" />}
 

@@ -1,8 +1,14 @@
 import Snowfall from "react-snowfall";
-export default function Landscape2() {
+
+interface Prop {
+  show?: boolean
+}
+
+export default function Landscape2({show}: Prop) {
+  const snow = (show) ? true : false
   return (
     <div className="relative w-full bg-white" style={{ paddingBottom: "30%" }}>
-      <Snowfall 
+      {snow && <Snowfall 
             snowflakeCount={10}
             color="#F472B6" 
             style={{
@@ -12,7 +18,7 @@ export default function Landscape2() {
               pointerEvents: 'none',
               zIndex: 10
             }}
-          />
+          />}
       <svg
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 1000 300"

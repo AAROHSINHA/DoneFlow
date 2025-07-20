@@ -1,19 +1,24 @@
 import Snowfall from "react-snowfall";
 
-const Landscape3 = () => {
+interface Prop {
+  show?: boolean
+}
+
+const Landscape3 = ({show}: Prop) => {
+  const snow = (show) ? true : false
   return (
     <div className="w-full h-40 relative overflow-hidden bg-gradient-to-b from-pink-100 to-pink-200 rounded-lg">
-      <Snowfall 
-                  snowflakeCount={10}
-                  color="#F472B6" 
-                  style={{
-                    position: 'absolute',
-                    width: '100%',
-                    height: '100%',
-                    pointerEvents: 'none',
-                    zIndex: 10
-                  }}
-                />
+      {snow && <Snowfall 
+            snowflakeCount={10}
+            color="#F472B6" 
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              zIndex: 10
+            }}
+          />}
       {/* Sun */}
       <div className="absolute top-4 right-8 w-12 h-12 bg-pink-300 rounded-full opacity-80"></div>
       

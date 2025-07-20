@@ -1,7 +1,8 @@
 import {Plus} from "lucide-react";
 import { AddTaskContext } from "./AddTaskContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { addTaskError } from "../../../error_handler";
 import { useNavigate } from "react-router-dom";
 
 /*
@@ -9,6 +10,8 @@ WORKFLOW -
 1. Check if login (Ofc the user will be logged in else how will workspace open but for safety)
 2. Add tasks with the email and these contents
 */
+
+
 
 interface AddTaskButtonInterface {
     setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
@@ -20,26 +23,24 @@ interface AddTaskButtonInterface {
 const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReload, onClose, setUpdateStats}) => {
     const navigate = useNavigate();
     const addTaskContext = useContext(AddTaskContext);
+    const [message, setMessage] = useState("");
     const handleAddTask = async () => {
        // check login
-
-       try{
-         const res = await axios.get("http://localhost:5000/users/check-login", {
-          withCredentials: true,
-        });
-        if(res.data.loggedIn){
-            AddTaskToDB(res.data.user.email);
-            IncrementTaskInStats(res.data.user.email);
+        if(addTaskContext?.loggedIn){
+            const addtasktodb = await AddTaskToDB(addTaskContext.email);
+            if(addtasktodb){
+                await IncrementTaskInStats(addTaskContext.email);
+                onClose();
+                setReload(prev => !prev);
+                setMessage("");
+            }
+            
         }else{
             navigate("/");
         }
-       }catch(error){
-            console.log(error);
-       }
        setTaskReload(prev => !prev);
-       setReload(prev => !prev);
        setUpdateStats(prev => !prev);
-       onClose();
+       
        
     }
 
@@ -70,17 +71,26 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
 
     const AddTaskToDB = async (email_id: string) => {
         const task = createTask(email_id);
-        console.log(task);
         try{
-            const res = await axios.post("http://localhost:5000/tasks/add-task", 
+            await axios.post("http://localhost:5000/tasks/add-task", 
                 task,
                 {withCredentials: true}
             )
-            console.log(res)
-        }catch(error){
-            alert("Error Adding Task");
-            console.log("Error adding task");
-            console.log(error);
+            return true;
+        }catch(error: any){
+            if(typeof error == "object"){
+                const error_body = error.response.data;
+            const error_type: 'validation' | 'server' | 'other' = error_body.type;
+            if(error_type == "validation"){
+                const validation_error_type: 'email' | 'title' | 'tag' | 'priority' | 'progress' | 'time' | 'date' | 'month' = error_body.error[0].msg
+                    setMessage(addTaskError[error_type][validation_error_type])
+                }else if(addTaskError[error_type]){
+                    setMessage(addTaskError[error_type]);
+                }
+            }else{
+                setMessage(addTaskError["other"]);
+            }
+            
         }
     }
 
@@ -91,14 +101,25 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                 {email: email_id},
                 {withCredentials: true}
             )
-        }catch(error){
-            alert("ERROR ENCOUNTERED IN STATS UPDATION");
-            console.log(error);
+        }catch(error: any){
+            if(typeof error == "object"){
+                const error_body = error.response.data;
+            const error_type: 'validation' | 'server' | 'other' = error_body.type;
+            if(error_type == "validation"){
+                const validation_error_type: 'email' | 'title' | 'tag' | 'priority' | 'progress' | 'time' | 'date' | 'month' = error_body.error[0].msg
+                    setMessage(addTaskError[error_type][validation_error_type])
+                }else if(addTaskError[error_type]){
+                    setMessage(addTaskError[error_type]);
+                }
+            }else{
+                setMessage(addTaskError["other"]);
+            }
         }
     }
 
     return (
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-gray-100 hover:cursor-pointer">
+            <p className="font-['Inter'] text-center text-red-600 font-thin text-xl uppercase tracking-wide animate-pulse">{message}</p>
           <button
             onClick={handleAddTask}
             disabled={!addTaskContext?.title.trim()}
@@ -111,3 +132,4 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     )
 }
 export default AddTaskButton;
+

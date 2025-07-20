@@ -104,7 +104,7 @@ const RandomLandscapeComponent = landscapes[randomIndex];
         {/* Close button -> Header -> TimeDisplay -> Control Btns -> StatusText */}
         <CloseBtn onClose={onClose} setIsRunning={setIsRunning} setIsPaused={setIsPaused} time={time} setTime={setTime} setTaskReload={setTaskReload} title={taskTitle}/>
         <Header taskTitle={taskTitle}/>
-        <RandomLandscapeComponent />
+        <RandomLandscapeComponent show={true} />
         <div className='w-[100%] h-[1em]'></div>
         <TimeDisplay time={time} estimateTime={estimateTime} spendTime={spendTime} />
         <ControlButtons time={time} title={taskTitle} isRunning={isRunning} isPaused={isPaused} setIsRunning={setIsRunning} setIsPaused={setIsPaused} setTime={setTime} setTaskReload={setTaskReload} onClose={onClose} setStartTimestamp={setStartTimestamp} />

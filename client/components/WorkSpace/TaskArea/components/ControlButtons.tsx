@@ -1,6 +1,7 @@
 import { Play, Pause, Square } from 'lucide-react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 interface Props {
     time: number
@@ -66,10 +67,9 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
         }
       )
       
-      // if(res.data.exceeds){
-      //   // add task completion logic
-      //   alert("TASK DONE");
-      // }
+      toast('Good Job!', {
+  icon: '👏',
+});
     }catch(error){
       alert("Error in saving time");
       console.log(error);

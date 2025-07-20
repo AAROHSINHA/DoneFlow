@@ -17,18 +17,7 @@ function NavigationSection({updateTags}: prop) {
     setExpandedItems((prev) => (prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]))
   }
 
-  const tags = [
-    "#coding",
-    "#university",
-    "#work",
-    "#personal",
-    "#study",
-    "#projects",
-    "#meetings",
-    "#research",
-    "#design",
-    "#development",
-  ]
+
 
   return (
     <div className="flex-1 py-4">

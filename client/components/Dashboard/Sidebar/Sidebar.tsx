@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Home, LogOut, Plus, X } from 'lucide-react';
-import {useState, useEffect} from "react";
+import { Home, LogOut, X } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { DashboardContext } from '../DashboardContext';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -11,10 +12,10 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
-     const [initials, setInitials] = useState("U");
-    const [username, setUsername] = useState("user");
-    const [email, setEmail] = useState("user@example.com");
+
      const navigate = useNavigate();
+    const dashboardContext = useContext(DashboardContext);
+
   const handleLogout = async () => {
     try{
         await axios.post(
@@ -28,23 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
         alert("ERROR LOGGING OUT");
     }
   };
-    useEffect(() => {
-      const getUser = async () => {
-        try{
-           const res = await axios.get("http://localhost:5000/users/check-login", {
-            withCredentials: true,
-          });
-          if(res.data.loggedIn){
-              setInitials(res.data.user.name[0]);
-              setUsername(res.data.user.name);
-              setEmail(res.data.user.email);
-          }
-         }catch(error){
-              console.log(error);
-         }
-      }
-      getUser();
-    }, [])
   return (
     <>
     {isOpen && (
@@ -59,11 +43,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
       <div className="flex items-center justify-between p-6 border-b border-gray-100">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-pink-400 rounded-lg flex items-center justify-center">
-            <span className="text-white font-semibold text-lg">{initials}</span>
+            <span className="text-white font-semibold text-lg">{dashboardContext?.name[0]}</span>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">{username}</h3>
-            <p className="text-sm text-gray-500">{email}</p>
+            <h3 className="font-semibold text-gray-900">{dashboardContext?.name}</h3>
+            <p className="text-sm text-gray-500">{dashboardContext?.email}</p>
           </div>
         </div>
         {onClose && (
@@ -76,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
       {/* Middle section with workspace button */}
       <div className="flex-1 p-6 hover:cursor-pointer">
               <Link to={"/workspace"}>
-        <button className="w-full  hover:bg-gray-100 rounded-lg p-4 text-left transition-colors duration-200">
+        <button className="w-full  hover:bg-gray-100 rounded-lg p-4 text-left transition-colors duration-200 hover:cursor-pointer">
           <div className="flex items-center justify-between">
             
             <span className="font-medium text-gray-700">Workspace</span>

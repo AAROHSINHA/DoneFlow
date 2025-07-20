@@ -1,14 +1,46 @@
 import DashboardNavbar from "./Navbar/DashboardNavbar.tsx";
 import DashboardSection from "./DashboardSection/DashboardSection.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { DashboardContext } from "./DashboardContext.ts";
+import axios from "axios";
+
 function Dashboard() {
-   const [isOpen, onClose] = useState(false);
+  const navigate = useNavigate();
+  const [isOpen, onClose] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [name, setName] = useState<string>("");
+
+  useEffect(() => {
+     const setup = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/users/check-login", {
+          withCredentials: true,
+        });
+        if (res.data.loggedIn) {
+          setLoggedIn(true);
+          setEmail(res.data.user.email || "");
+          setName(res.data.user.name || "");
+        } else {
+          navigate("/500");
+        }
+      } catch (error) {
+        alert("Some Error Occurred");
+      }
+     }
+
+     setup();
+  }, [])
+
   return (
     <div>
-      <DashboardNavbar onClose={() => onClose(true)} />
-      <DashboardSection isOpen={isOpen} onClose={() => onClose(false)} />
+      <DashboardContext.Provider value={{email: email, name: name}}>
+        <DashboardNavbar onClose={() => onClose(true)} />
+        <DashboardSection isOpen={isOpen} onClose={() => onClose(false)} />
+      </DashboardContext.Provider>
     </div>
   )
 }
 
-export default Dashboard
+export default Dashboard    

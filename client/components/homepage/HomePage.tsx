@@ -3,7 +3,6 @@ import HomepageTop from "./HomepageTop/HomepageTop.tsx";
 import HomePageMid from "./HomepageMid/HomepageMid.tsx";
 import Footer from "./Footer/Footer.tsx";
 import FeedbackForm from "./FEEDBACK/FeedbackForm.tsx";
-import HomepageMockup from "./HomepageMockup/HomepageMockup.tsx";
 import FeatureCards from "./FeatureCards/FeatureCards.tsx";
 import GetStartedCta from "./JoinToday/GetStartedCta.tsx";
 import { useState, useEffect, useRef } from "react";
@@ -28,11 +27,22 @@ function HomePage() {
           setLogin(false);
         }
       }catch(error){
-        alert("Some Error Occured");
+        console.log("");
+      }
+    }
+
+    const SetToday = async () => {
+      try{
+        await axios.post("http://localhost:5000/stats/update-daily", {
+          email: email
+      }, {withCredentials: true});
+      }catch{
+        console.log("Catch");
       }
     }
 
     checkLogin();
+    if(login) SetToday();
   }, []);
   return (
     <div className="overflow-x-hidden">

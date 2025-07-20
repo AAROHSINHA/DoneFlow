@@ -6,11 +6,26 @@ import Profile from "../components/ProfilePage/Profile.tsx";
 import ResetPassword from "../components/ResetPassword/ResetPassword.tsx";
 import WorkSpace from '../components/WorkSpace/WorkSpace.jsx';
 import Dashboard from '../components/Dashboard/Dashboard.jsx';
+import Error404 from "../components/Error/Error404.jsx";
+import ServerError from "../components/Error/ServerError.tsx";
+import {Toaster} from "react-hot-toast";
 
 const App = () => {
   return (
     <BrowserRouter>
     {/* ROUTES*/}
+    <Toaster
+  position="top-right" // or 'top-left', 'bottom-center', etc.
+  toastOptions={{
+    style: {
+      margin: "2em",
+      padding: "1em",
+      borderRadius: '12px',
+      fontSize: '14px',
+    },
+  }}
+/>
+
     <Routes >
       <Route path="/" element={<HomePage />}/>
       <Route path="tasks"/>   
@@ -20,6 +35,8 @@ const App = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path='/workspace' element={<WorkSpace />} />
       <Route path='/dashboard' element={<Dashboard />} />
+      <Route path="/404" element={<Error404 />} />
+      <Route path='/500' element={<ServerError />} />
     </Routes>
     </BrowserRouter>
   )

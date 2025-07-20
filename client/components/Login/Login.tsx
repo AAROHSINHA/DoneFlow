@@ -11,8 +11,8 @@ import { localLoginError } from '../error_handler.ts';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -42,22 +42,25 @@ const Login = () => {
   console.log(res.data);
   navigate("/");
 } catch(error: any) {
-  try {
-    const error_response_data = error.response.data;
-    const type = error_response_data.type;
-    if (type === "validation") {
-      setMessage(localLoginError[type][error_response_data.error[0].msg]);
-    } else if (localLoginError[type]) {
-      setMessage(localLoginError[type]);
-    } else {
-      setMessage("Something unexpected happened.");
-    }
-  } catch (e) {
-    setMessage("Unexpected error. Please try again.");
-  }
-}
-
+   if(typeof error == "object"){
+        const error_body = error.response?.data;
+        const error_type: string = (error_body) ? error_body.type : "other";
+        if(typeof localLoginError == "object"){
+            if(error_type === "validation"){
+              const validation_error_type: 'email' | 'password' = (error_body) ? error_body.error[0].msg : "other";
+              const validation_errors = localLoginError[error_type];
+              setMessage(validation_errors[validation_error_type]);
+            }else if(error_type == "server"){
+              setMessage(localLoginError.server);
+            }else{
+              setMessage(localLoginError.other);
+            }
+        }
+      }else{
+        setMessage(localLoginError.other);
+      }
   };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
@@ -122,15 +125,5 @@ const Login = () => {
   );
 };
 
+
 export default Login;
-
-/*
-//   const checkSession = async () => {
-//   const res = await axios.get("http://localhost:5000/users/me", {
-//     withCredentials: true
-//   });
-//   console.log(res.data);
-// }
-
-If things go wrong add this below navigate in handleSubmit
-*/

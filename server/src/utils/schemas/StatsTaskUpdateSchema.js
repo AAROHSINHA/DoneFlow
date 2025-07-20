@@ -56,3 +56,13 @@ export const createProgressTaskUpdateSchema = {
     trim: true
   }
 }
+
+export const createUpdateDailyStatsSchema = {
+  email: {
+    isEmail: { errorMessage: "Invalid email format" },
+    notEmpty: { errorMessage: "Email is required" },
+    normalizeEmail: true,
+    trim: true
+  }
+}
+

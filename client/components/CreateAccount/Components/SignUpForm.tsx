@@ -30,31 +30,28 @@ const SignUpForm = () => {
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
-    const res = await axios.post(
+     await axios.post(
       "http://localhost:5000/users/create-local-account",
       formData
     );
     navigate("/login");
   } catch (error: any) {
-    try {
-      const error_response_data = error.response.data;
-      const type = error_response_data.type;
-
-      if (type === "validation") {
-        const msgKey = error_response_data.error[0]?.msg;
-        if (localSignInError[type][msgKey]) {
-          setMessage(localSignInError[type][msgKey]);
-        } else {
-          setMessage("Invalid input. Please check your details.");
-        }
-      } else if (localSignInError[type]) {
-        setMessage(localSignInError[type]);
-      } else {
-        setMessage("Something unexpected happened.");
+    if(typeof error == "object"){
+      const error_body = error.response?.data;
+      const error_type: string = (error_body) ? error_body.type : "other";
+      if(typeof localSignInError == "object"){
+          if(error_type === "validation"){
+            const validation_error_type: 'firstname' | 'lastname' | 'password' | 'email' | 'other' = (error_body) ? error_body.error[0].msg : "other";
+            const validation_errors = localSignInError[error_type];
+            setMessage(validation_errors[validation_error_type]);
+          }else if(error_type == "server"){
+            setMessage(localSignInError.server);
+          }else{
+            setMessage(localSignInError.other);
+          }
       }
-    } catch (e) {
-      console.error("Error handling signup error:", e);
-      setMessage("Unexpected error. Please try again.");
+    }else{
+      setMessage(localSignInError.other);
     }
   }
 };

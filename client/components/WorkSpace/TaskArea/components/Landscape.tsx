@@ -1,11 +1,16 @@
 import React from "react";
 import Snowfall from "react-snowfall";
 
-export default function Landscape() {
+interface Prop {
+  show?: boolean
+}
+
+export default function Landscape({show}: Prop) {
+  const snow = (show) ? true : false
   return (
     <div className="relative w-full bg-white" style={{ paddingBottom: "35%" }}>
       {/* Snowfall sits above the background */}
-     <Snowfall 
+     {snow && <Snowfall 
       snowflakeCount={10}
       color="#F472B6" 
       style={{
@@ -15,7 +20,7 @@ export default function Landscape() {
         pointerEvents: 'none',
         zIndex: 10
       }}
-    />
+    />}
 
 
       {/* Landscape SVG */}

@@ -1,8 +1,8 @@
 import Barchart from "./components/Barchart.tsx";
 import Profile from "./components/Profile.tsx";
 import StatsContainer from "./components/StatsContainer.tsx";
-import TodayQuickStats from "./components/TodayQuickStats.tsx";
-import Percent from "./components/Percent.tsx";
+// import TodayQuickStats from "./components/TodayQuickStats.tsx";
+// import Percent from "./components/Percent.tsx";
 import MetricsModal from "./components/MetricsModal.tsx";
 import MainStats from "./components/MainStats.tsx";
 import { useState, useEffect } from "react";
@@ -33,8 +33,8 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
   const [focusMetrics, setFocusMetrics] = useState({
     "Average Focus Time (min)": 0,
     "Longest Focus Session (min)": 0, // 2h 35m = 155 min
-    "Most Productive Period (start hour)": 0, // 3 PM
-    "Least Productive Time (start hour)": 0,   // 2 AM
+    "Most Productive Period": 0, // 3 PM
+    "Least Productive Time": 0,   // 2 AM
     "Total Hours Focused (h)": 0
   });
   const [hourlyData, setHourlyData] = useState<number[]>(Array(HOURS_IN_DAY).fill(0));
@@ -71,8 +71,8 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
       setFocusMetrics({
         "Average Focus Time (min)": averageFocusTime(data.timeSpend, data.focusSession),
         "Longest Focus Session (min)": data.longestFocusSession ?? 1,
-        "Most Productive Period (start hour)": productiveHoursVals.maxIndex,
-        "Least Productive Time (start hour)": productiveHoursVals.minIndex,
+        "Most Productive Period": productiveHoursVals.maxIndex,
+        "Least Productive Time": productiveHoursVals.minIndex,
         "Total Hours Focused (h)": Number(((data.timeSpend ?? 0) / 60).toFixed(2)) 
       })
       setHourlyData(data.focusPerHour);

@@ -47,7 +47,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const res = await axios.patch(
+      await axios.patch(
         "http://localhost:5000/users/change-password",
         { new_password: newPassword, email },
         { withCredentials: true }
@@ -61,7 +61,7 @@ const ResetPassword = () => {
     } catch (error: any) {
       try{
         const error_response_data = error.response.data;
-        const type = error_response_data.type;
+        const type: 'server' | 'credentials' | 'other' = error_response_data.type;
         if(changePasswordError[type]) setMessage(changePasswordError[type]);
         else setMessage("Unexpected error. Please try again later...");
       }catch(e){

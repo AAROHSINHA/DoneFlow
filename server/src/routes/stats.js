@@ -2,6 +2,7 @@ const express = require("express");
 const {createStatsTaskUpdateSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
 const {createCompleteTaskUpdateSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
 const {createProgressTaskUpdateSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
+const {createUpdateDailyStatsSchema} = require("../utils/schemas/StatsTaskUpdateSchema.js");
 const session = require('express-session');
 const express_validator = require("express-validator");
 const Stats = require("../utils/models/StatsModel.js");
@@ -62,7 +63,7 @@ router.patch("/stats/add-task",
   async (request, response) => {
     const validation_errors = express_validator.validationResult(request);
     if (!validation_errors.isEmpty()) {
-      return response.status(400).json({ title: "Validation Error", error: validation_errors.array() });
+      return response.status(400).json({ type:"validation", error: validation_errors.array() });
     }
 
     const { email } = express_validator.matchedData(request);
@@ -75,12 +76,12 @@ router.patch("/stats/add-task",
       );
 
       if (!updatedStats) {
-        return response.status(404).json({ message: "Stats not found for user" });
+        return response.status(404).json({ type:"server" });
       }
 
       return response.status(200).json({ message: "Task count incremented", data: updatedStats });
     } catch (error) {
-      return response.status(500).json({ error: error.message });
+      return response.status(500).json({ type:"server", error: error.message });
     }
   }
 );
@@ -92,7 +93,7 @@ router.patch("/stats/complete-task",
   async (request, response) => {
     const validation_errors = express_validator.validationResult(request);
     if (!validation_errors.isEmpty()) {
-      return response.status(400).json({ title: "Validation Error", error: validation_errors.array() });
+      return response.status(400).json({ type: "validation", error: validation_errors.array() });
     }
 
     const { email, title, deadlineDate, deadlineMonth } = express_validator.matchedData(request);
@@ -125,13 +126,13 @@ router.patch("/stats/complete-task",
       ).exec(); // <-- this ensures the query is executed
 
       if (!updatedStats) {
-        return response.status(404).json({ message: "Stats not found for user" });
+        return response.status(404).json({ type:"server", message: "Stats not found for user" });
       }
 
-      return response.status(200).json({ message: "Task marked as completed", data: updatedStats });
+      return response.status(200).json({ type:"success", message: "Task marked as completed", data: updatedStats });
     } catch (error) {
       console.error(error);
-      return response.status(500).json({ error: error.message });
+      return response.status(500).json({ type: "server", error: error.message });
     }
   }
 );
@@ -217,11 +218,15 @@ router.get("/stats/navigation-analytics", async (request, response) => {
     }
     const todayHours = stats.focusPerHour || [];
     const tasksCompleted = stats.tasksCompleted || 0;
+    const totalTasksNet = stats.netTotalTasks || 0;
+    const totalTime = stats.timeSpend || 1;
     const hours = todayHours.reduce((sum, hour) => sum + hour, 0);
     return response.status(200).json({
       success: true,
       hours: hours,
-      tasks: tasksCompleted
+      tasks: tasksCompleted,
+      totalTasks: totalTasksNet,
+      spendTime: totalTime
     });
 
   } catch (error) {
@@ -231,6 +236,64 @@ router.get("/stats/navigation-analytics", async (request, response) => {
     });
   }
 });
+
+
+// update stats
+router.post("/stats/update-daily",
+  express_validator.checkSchema(createUpdateDailyStatsSchema),
+  async (request, response) => {
+
+    const validation_errors = express_validator.validationResult(request);
+    if (!validation_errors.isEmpty()) {
+      return response.status(400).json({ type: "validation", error: validation_errors.array() });
+    }
+
+    const data = express_validator.matchedData(request);
+    const now = new Date();
+
+    const todaysDate = now.getDate();
+    const todaysMonth = now.getMonth();
+    const todaysYear = now.getFullYear();
+
+    try {
+      const userStats = await Stats.findOne({ email: data.email });
+      if (!userStats) {
+        return response.status(404).json({ type: "not-found", error: "User stats not found" });
+      }
+
+      const { currentDate: lastDate, currentMonth: lastMonth, currentYear: lastYear } = userStats;
+
+      const sameDay = lastDate === todaysDate && lastMonth === todaysMonth && lastYear === todaysYear;
+
+      if (!sameDay) {
+        const yesterdayFocus = userStats.focusPerHour.reduce((acc, val) => acc + val, 0);
+
+        const lastWeekFocus = userStats.focusLastWeek || []; // fallback if undefined
+        const updatedWeeklyFocus = [...lastWeekFocus.slice(1), yesterdayFocus];
+
+        await Stats.findOneAndUpdate(
+          { email: data.email },
+          {
+            $set: {
+              focusLastWeek: updatedWeeklyFocus,
+              focusPerHour: Array(7).fill(0),
+              currentDate: todaysDate,
+              currentMonth: todaysMonth,
+              currentYear: todaysYear
+            }
+          }
+        );
+      }
+
+      return response.status(200).json({ type: "success" });
+
+    } catch (error) {
+      console.error(error); // helpful for debugging
+      return response.status(500).json({ type: "server", error: "Something went wrong" });
+    }
+
+  }
+);
 
 
 

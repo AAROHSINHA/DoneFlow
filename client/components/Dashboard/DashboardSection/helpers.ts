@@ -21,7 +21,7 @@ export const calculateOnTimeTaskCompletion = (onTimeCompletedTasks: number, task
         tasksCompleted > 0
           ? Math.min(Math.round((onTimeCompletedTasks / tasksCompleted) * 100), 100)
           : 0;
-  return onTimeCompletedTasks;
+  return onTimeCompletion;
         }
 export const hourlyFocus = (focusPerHour: number[]) => {
         const hourly = focusPerHour;
@@ -93,8 +93,8 @@ export interface ProductivityStats {
 export function calculateProductivityStats(data: {[key: string]: number}): ProductivityStats {
   const effortScore = Math.min(data.timeSpend / data.totalTime, 1) * 100;
   const outputScore = (data.tasksCompleted / data.totalTasks) * 100;
-  const efficiencyRatio = data.timeSpend > 0 
-    ? (data.onTimeCompletedTasks / data.timeSpend) 
+  const efficiencyRatio = data.tasksCompleted > 0 
+    ? (data.onTimeCompletedTasks / data.tasksCompleted) 
     : 0;
   const efficiencyBonus = Math.min(efficiencyRatio * 100, 100);
 

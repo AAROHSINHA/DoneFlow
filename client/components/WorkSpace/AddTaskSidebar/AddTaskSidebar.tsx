@@ -15,9 +15,11 @@ interface AddTaskSidebarProps {
   setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
   updateTags: boolean
   setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
+  loggedIn: boolean
+  email: string
 }
 
-export default function AddTaskSidebar({ isOpen, onClose, setTaskReload, updateTags, setUpdateStats }: AddTaskSidebarProps) {
+export default function AddTaskSidebar({ isOpen, onClose, setTaskReload, updateTags, setUpdateStats, loggedIn, email }: AddTaskSidebarProps) {
   const [title, setTitle] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium")
@@ -37,7 +39,8 @@ export default function AddTaskSidebar({ isOpen, onClose, setTaskReload, updateT
         selectedTags, setSelectedTags,
         priority, setPriority,
         timerTime, setTimerTime,
-        deadline, setDeadline
+        deadline, setDeadline,
+        loggedIn, email
       }}
       >
       <div

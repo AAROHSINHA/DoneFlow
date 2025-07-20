@@ -7,7 +7,6 @@ import SearchBarArea from "./SearchBarArea/SearchBarArea.tsx"
 import AddTaskSidebar from "./AddTaskSidebar/AddTaskSidebar.tsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import TaskActions from "./TaskBox/TaskActions.tsx";
 
 
 
@@ -15,6 +14,8 @@ import TaskActions from "./TaskBox/TaskActions.tsx";
 const WorkSpace = () => {
     const navigate = useNavigate();
     const [taskReload, setTaskReload] = useState(false); // to update workspace useeffect to show tasks on adding
+    const [email, setEmail] = useState<string>("");
+    const [loggedIn, setLoggedIn] = useState(false);
     useEffect(() => {
         const checkLogin = async () => {
         try{
@@ -22,11 +23,16 @@ const WorkSpace = () => {
             withCredentials: true,
           });
           if(!res.data.loggedIn){
-              navigate("/");
+            setEmail(res.data.user.email);
+            setLoggedIn(false);
+            navigate("/");
+          }else{
+            setEmail(res.data.user.email);
+            setLoggedIn(true);
           }
          }catch(error){
-              alert("Error Adding Task");
-              console.log(error);
+            console.log("FROM WORKSPACE");
+            navigate("/500");
          }
       }
       checkLogin();
@@ -48,11 +54,13 @@ const WorkSpace = () => {
             onClose: setSidebarOpen, 
             taskIsOpen: addTaskSidebarOpen,
             taskOnClose: setAddTaskSidebarOpen,
-            taskReload: taskReload
+            taskReload: taskReload,
+            email: email,
+            loggedIn: loggedIn
             }}>
             <WorkspaceNavbar />
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} updateTags={updateTags} taskReload={taskReload} />
-            <AddTaskSidebar isOpen={addTaskSidebarOpen} onClose={() => setAddTaskSidebarOpen(false)}  setTaskReload={ setTaskReload} updateTags={updateTags} setUpdateStats={setUpdateStats} />
+            <AddTaskSidebar isOpen={addTaskSidebarOpen} onClose={() => setAddTaskSidebarOpen(false)}  setTaskReload={ setTaskReload} updateTags={updateTags} setUpdateStats={setUpdateStats} loggedIn={loggedIn} email={email}  />
             <SearchBarArea updateStats={updateStats} /> 
             <TaskArea taskReload={taskReload} setTaskReload={setTaskReload} setShowOverlay={setShowOverlay} setUpdateTags={setUpdateTags} setUpdateStats={setUpdateStats}/>
         </SidebarContext.Provider>

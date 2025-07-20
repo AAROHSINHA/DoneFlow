@@ -1,25 +1,25 @@
 export const createTaskDeletionSchema = {
     email: {
-    isEmail: { errorMessage: "Invalid email format" },
-    notEmpty: { errorMessage: "Email is required" },
+    isEmail: { errorMessage: "email" },
+    notEmpty: { errorMessage: "email" },
     normalizeEmail: true,
     trim: true
   },
     title: {
-    isString: { errorMessage: "Title must be a string" },
-    notEmpty: { errorMessage: "Title is required" },
+    isString: { errorMessage: "title" },
+    notEmpty: { errorMessage: "title" },
     isLength: {
       options: { min: 1, max: 32 },
-      errorMessage: "Title must be between 1 and 32 characters"
+      errorMessage: "title"
     },
     trim: true
   },
   tags: {
-    isArray: { errorMessage: "Tags must be an array" },
-    notEmpty: { errorMessage: "Tags are required" },
+    isArray: { errorMessage: "tags" },
+    notEmpty: { errorMessage: "tags" },
     custom: {
       options: (value) => Array.isArray(value) && value.length <= 4,
-      errorMessage: "You can assign a maximum of 4 tags"
+      errorMessage: "tags"
     }
   },
 }
