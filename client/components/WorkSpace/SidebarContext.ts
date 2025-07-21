@@ -6,6 +6,7 @@ export interface SidebarContextInterface {
     taskOnClose: React.Dispatch<React.SetStateAction<boolean>>
     taskReload: boolean,
     email: string,
-    loggedIn: boolean
+    loggedIn: boolean,
+    name: string
 }
 export const SidebarContext = createContext<SidebarContextInterface | null>(null);

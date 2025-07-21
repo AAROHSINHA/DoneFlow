@@ -5,12 +5,15 @@ import type React from "react"
 import { useState } from "react"
 import { useContext } from "react"
 import { LoginContext } from "../Context"
+import toast from "react-hot-toast"
 
 export default function FeedbackForm() {
   const [selectedRating, setSelectedRating] = useState<number | null>(null)
   const [feedbackText, setFeedbackText] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const loginContext = useContext(LoginContext);
+  const [titleMessage, setTitleMessage] = useState("");
+  const [descMessage, setDescMessage] = useState("");
 
   const handleRatingClick = (rating: number) => {
     setSelectedRating(rating)
@@ -18,24 +21,26 @@ export default function FeedbackForm() {
 
   const sendFeedback = async (feedback: string, rating: number | null)  => {
     try{
-      const res = await axios.post("http://localhost:5000/send-feedback", {
-        email: loginContext?.email,
+      await axios.post("http://localhost:5000/send-feedback", {
+        email: loginContext?.email || "",
         feedback: feedback,
         rating: rating
       }, {
         withCredentials: true
       })
+      setTitleMessage("Thank You for Your Feedback!");
+      setDescMessage("Your input helps us improve our service.");
+      toast.success("Feedback sent succesfully");
     }catch(error){
-      alert("Error Occurred");
-      console.log(error);
+      setTitleMessage("Well, that didn’t work...");
+      setDescMessage("We failed to send your feedback. We're as disappointed as you are.");
+      toast.error("Unable to send feedback! Try again later...")
     }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically send the feedback to your backend
-    console.log("Rating:", selectedRating)
-    console.log("Feedback:", feedbackText)
     sendFeedback(feedbackText, selectedRating);
     setIsSubmitted(true)
     // Reset form after a short delay or navigate
@@ -51,8 +56,8 @@ export default function FeedbackForm() {
       <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg max-w-4xl w-full">
         {isSubmitted ? (
           <div className="text-center py-12">
-            <h2 className="text-2xl font-bold text-pink-600 mb-4">Thank You for Your Feedback!</h2>
-            <p className="text-gray-700">Your input helps us improve our service.</p>
+            <h2 className="text-2xl font-bold text-pink-600 mb-4">{titleMessage}</h2>
+            <p className="text-gray-700">{descMessage}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">

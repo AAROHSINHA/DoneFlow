@@ -1,9 +1,13 @@
 function OAuth2Buttons() {
+  const handleGoogleClick = () => {
+    window.open('http://localhost:5000/auth/google', '_self'); 
+  }
   return (
     <div className="grid grid-cols-1 gap-3">
           <button
             type="button"
             className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 hover:cursor-pointer"
+            onClick={handleGoogleClick}
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path

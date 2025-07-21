@@ -4,6 +4,7 @@ import axios from 'axios';
 import ReturnHome from '../ProfilePage/components/ReturnHome';
 import { useNavigate } from 'react-router-dom';
 import { changePasswordError } from '../error_handler';
+import * as Sentry from "@sentry/react";
 
 const ResetPassword = () => {
   const [token, setToken] = useState('');
@@ -26,6 +27,7 @@ const ResetPassword = () => {
         setMessage('');
         setSuccessMessage(`Raw Token sent at email - ${email}. (EXPIRES IN 10 MINUTES!)`);
     }catch(error: any){
+        Sentry.captureException(error);
         setMessage("Error Generating Token! Try again in some time...");
     }
     setGotToken(true);

@@ -1,9 +1,9 @@
 export const createFeedbackSchema = {
   email: {
     optional: true,
-    isEmail: {
-      errorMessage: "Invalid email format",
-    },
+    // isEmail: {
+    //   errorMessage: "Invalid email format",
+    // },
     normalizeEmail: true,
     trim: true,
   },

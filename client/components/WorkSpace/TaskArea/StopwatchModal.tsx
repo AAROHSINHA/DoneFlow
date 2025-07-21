@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import Header from './components/Header';
 import CloseBtn from './components/CloseBtn';
 import TimeDisplay from './components/TimeDisplay';
@@ -44,25 +44,6 @@ const StopwatchModal: React.FC<StopwatchModalProps> = ({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [startTimestamp, setStartTimestamp] = useState<number | null>(null);
 
-
-//   useEffect(() => {
-//   if (isRunning && !isPaused) {
-//     // ⏱ Simulate 1 second = 1 minute (60 seconds)
-//     intervalRef.current = setInterval(() => {
-//       setTime(prevTime => prevTime + 1); // 60 seconds per tick
-//     }, 1000); // run every 1 second
-//   } else {
-//     if (intervalRef.current) {
-//       clearInterval(intervalRef.current);
-//     }
-//   }
-
-//   return () => {
-//     if (intervalRef.current) {
-//       clearInterval(intervalRef.current);
-//     }
-//   };
-// }, [isRunning, isPaused]);
 useEffect(() => {
   if (isRunning && !isPaused) {
     // Save the current time if timer just started

@@ -28,7 +28,7 @@ const MainStats = ({ data }: MainStatsProps) => {
           <ProductivityCircle percentage={focusPercentage} />
         </div>
         <p className="text-gray-700 text-sm mt-2 font-medium">
-          {focusPercentage}% Focused
+          {focusPercentage ? focusPercentage : 0}% Focused
         </p>
       </div>
 

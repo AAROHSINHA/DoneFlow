@@ -63,7 +63,7 @@ export default function AddTaskSidebar({ isOpen, onClose, setTaskReload, updateT
         </div>
 
         {/* Add Button */}
-        <AddTaskButton setTaskReload={setTaskReload} setReload={setReload} onClose={onClose} setUpdateStats={setUpdateStats} />
+        <AddTaskButton setTaskReload={setTaskReload} setReload={setReload} onClose={onClose} setUpdateStats={setUpdateStats} isOpen={isOpen} />
       </div>
         </AddTaskContext.Provider>
     </>

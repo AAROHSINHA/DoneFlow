@@ -1,9 +1,10 @@
 import {Plus} from "lucide-react";
 import { AddTaskContext } from "./AddTaskContext";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { addTaskError } from "../../../error_handler";
 import { useNavigate } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
 /*
 WORKFLOW - 
@@ -17,10 +18,11 @@ interface AddTaskButtonInterface {
     setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
     setReload: React.Dispatch<React.SetStateAction<boolean>>
     onClose: () => void,
-    setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
+    setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>,
+    isOpen: boolean
 }
 
-const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReload, onClose, setUpdateStats}) => {
+const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReload, onClose, setUpdateStats, isOpen}) => {
     const navigate = useNavigate();
     const addTaskContext = useContext(AddTaskContext);
     const [message, setMessage] = useState("");
@@ -86,9 +88,11 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                     setMessage(addTaskError[error_type][validation_error_type])
                 }else if(addTaskError[error_type]){
                     setMessage(addTaskError[error_type]);
+                    Sentry.captureException(error);
                 }
             }else{
                 setMessage(addTaskError["other"]);
+                Sentry.captureException(error);
             }
             
         }
@@ -110,12 +114,18 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                     setMessage(addTaskError[error_type][validation_error_type])
                 }else if(addTaskError[error_type]){
                     setMessage(addTaskError[error_type]);
+                    Sentry.captureException(error);
                 }
             }else{
                 setMessage(addTaskError["other"]);
+                Sentry.captureException(error);
             }
         }
     }
+
+    useEffect(() => {
+        setMessage("");
+    }, [isOpen]);
 
     return (
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-gray-100 hover:cursor-pointer">

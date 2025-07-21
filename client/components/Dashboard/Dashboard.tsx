@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardContext } from "./DashboardContext.ts";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -23,10 +24,11 @@ function Dashboard() {
           setEmail(res.data.user.email || "");
           setName(res.data.user.name || "");
         } else {
-          navigate("/500");
+          navigate("/error");
         }
       } catch (error) {
-        alert("Some Error Occurred");
+        toast.error("Some error occurred!")
+        navigate("/")
       }
      }
 

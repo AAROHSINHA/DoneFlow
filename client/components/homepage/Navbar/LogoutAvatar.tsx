@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useContext } from 'react';
 import { LoginContext } from './LoggedInContext';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import * as Sentry from "@sentry/react";
 
 interface LogoutButtonProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,9 +22,10 @@ const LogoutAvatar: React.FC<LogoutButtonProps> = ({ setIsOpen }) => {
             );
         setLoggedIn(false);
         navigate("/");
+        toast.success("Logged Out Successfully");
     }catch(error){
-        console.log(error);
-        alert("ERROR LOGGING OUT");
+         Sentry.captureException(error);
+        toast.error("Error Logging Out!");
     }
   };
 

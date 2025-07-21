@@ -11,13 +11,12 @@ function DropDownLinks(props: {title: string, path: string}) {
   return (
     <div className="w-[100%] h-14">
      
-      <a
-              href="#about"
+      <p
               className="text-gray-700 hover:text-gray-900 px-2 py-2 text-base transition-colors font-light flex justify-center hover:cursor-pointer border-l border-gray-300  w-[100%] h-[100%] items-center"
               onClick={handleClick}
             >
               {props.title}
-            </a>
+            </p>
     </div>
   )
 }

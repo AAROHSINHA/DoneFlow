@@ -2,25 +2,26 @@ import DropDownButton from "./DropDownButton.tsx";
 import { Link  } from "react-router-dom";
 import LoginSigninButtons from "./LoginSigninButtons.tsx";
 import NavLinks from "./NavLinks.tsx";
-import Avatar from "./Avatar.tsx";
+// import Avatar from "./Avatar.tsx";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import AvatarDropDown from "./AvatarDropDown.tsx";
 import { LoginContext } from "./LoggedInContext.ts";
+
+
 
 const Navbar = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [initials, setInitials] = useState("U");
   const [name, setName] = useState("User");
   const [email, setEmail] = useState("example@gmail.com");
-
-  useEffect(() => {
+    useEffect(() => {
     const checkLogin = async () => {
       try {
         const res = await axios.get("http://localhost:5000/users/check-login", {
           withCredentials: true,
         });
-        console.log(res.data);
+        // console.log(res.data);
         if(res.data.loggedIn){
           setLoggedIn(res.data.loggedIn);
         setName(res.data.user.name);
@@ -28,7 +29,7 @@ const Navbar = () => {
         setInitials(res.data.user.name[0]);
         }
       } catch (error) {
-        console.error("Error checking login:", error);
+        // console.error("Error checking login:", error);
         setLoggedIn(false);
       }
     };
@@ -72,5 +73,34 @@ const Navbar = () => {
     </header>
   );
 };
+
+/*
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/users/check-login", {
+          withCredentials: true,
+        });
+        console.log(res.data);
+        if(res.data.loggedIn){
+          setLoggedIn(res.data.loggedIn);
+        setName(res.data.user.name);
+        setEmail(res.data.user.email);
+        setInitials(res.data.user.name[0]);
+        }
+      } catch (error) {
+        console.error("Error checking login:", error);
+        setLoggedIn(false);
+      }
+    };
+
+    checkLogin();
+
+    const interval = setInterval(checkLogin, 60 * 1000); // every 60 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+*/
 
 export default Navbar;

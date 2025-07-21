@@ -2,31 +2,44 @@ import snippet1 from "./images/msnippet1.webp";
 import snippet2 from "./images/msnippet4.webp";
 import snippet3 from "./images/msnippet3.webp";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../Context";
 
 
 
 const HomePageMid = () => {
   const loginContext = useContext(LoginContext);
+  const navigate = useNavigate();
+  const handleClick = (route: string) => {
+    if(loginContext?.loggedIn) navigate(route);
+    else navigate("/login");
+  }
   const services = [
     {
-      id: 1,
-      title: "Smart Task Manager",
-      description: "Master your day with powerful task boxes packed with titles, tags, priorities, progress bars, deadlines, and time tracking — everything you need to plan and conquer your to-dos.",
-      image: snippet1
-    },
-    {
-      id: 2,
-      title: "Deep Focus Timer",
-      description: "Stay in the zone and beat distractions. The Focus Timer helps you track estimates, monitor time spent, and build deep focus sessions that shape your most productive workdays.",
-      image: snippet2
-    },
-    {
-      id: 3,
-      title: "Productivity Dashboard",
-      description: "Turn insights into action. Visualize your productivity with detailed charts, track progress over time, and discover powerful stats that help you work smarter every single day.",
-      image: snippet3
-    }
+  id: 1,
+  title: "Smart Task Manager",
+  description: "Master your day with powerful task boxes packed with titles, tags, priorities, progress bars, deadlines, and time tracking — everything you need to plan and conquer your to-dos.",
+  image: snippet1,
+  linkText: "Explore Task Manager",
+  route: "/workspace"
+},
+{
+  id: 2,
+  title: "Deep Focus Timer",
+  description: "Stay in the zone and beat distractions. The Focus Timer helps you track estimates, monitor time spent, and build deep focus sessions that shape your most productive workdays.",
+  image: snippet2,
+  linkText: "Try the Focus Timer",
+  route: "/workspace"
+},
+{
+  id: 3,
+  title: "Productivity Dashboard",
+  description: "Turn insights into action. Visualize your productivity with detailed charts, track progress over time, and discover powerful stats that help you work smarter every single day.",
+  image: snippet3,
+  linkText: "See the Dashboard",
+  route: "/dashboard"
+}
+
   ];
 
   return (
@@ -43,7 +56,7 @@ const HomePageMid = () => {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
           {services.map((service) => (
-            <div key={service.id} className="group">
+            <div key={service.id} className="group hover:cursor-pointer">
               {/* Image Container */}
               <div className="relative overflow-hidden mb-8 bg-gray-100 aspect-[4/3] rounded-lg">
                 <img
@@ -63,7 +76,7 @@ const HomePageMid = () => {
                   {service.description}
                 </p>
                 <div className="font-['Inter'] font-bold tracking-[2px] flex justify-start">
-                    <a href="" className="text-pink-400 hover:tracking-[3px] transition-all">Learn More</a>
+                    <p className="text-pink-400 hover:tracking-[3px] transition-all hover:cursor-pointer" onClick={() => handleClick(service.route)}>{service.linkText}</p>
                 </div>
               </div>
             </div>

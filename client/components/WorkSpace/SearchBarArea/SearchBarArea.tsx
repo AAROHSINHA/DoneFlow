@@ -2,9 +2,12 @@ import SearchBar from "./components/SearchBar.tsx";
 import Completed from "./components/Completed.tsx";
 import Progress from "./components/Progress.tsx";
 import NotStarted from "./components/NotStarted.tsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { SidebarContext } from "../SidebarContext.ts";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 interface taskStatsInterface {
   tasksCompleted: number;
@@ -23,25 +26,18 @@ export default function SearchBarArea({updateStats}: Props) {
     totalTasks: 0,
     tasksProgress: 0
   });
-  const getEmail = async () => {
-    try{
-           const res = await axios.get("http://localhost:5000/users/check-login", {
-            withCredentials: true,
-          });
-          if(!res.data.loggedIn){
-              navigate("/");
-          }
-          return res.data.user.email;
-         }catch(error){
-              console.log(error);
-         }
-         return null;
-  }
-
+  const sidebarContext = useContext(SidebarContext);
   useEffect(() => {
+    if (!sidebarContext?.email) return;
     const updateTaskStatsfn = async () => {
       try{
-        const email_id = await getEmail();
+  
+        const email_id = sidebarContext?.email;
+        if (!email_id) {
+          toast.error("User email not found. Please login again.");
+          navigate("/");
+          return;
+        }
         const res = await axios.get("http://localhost:5000/stats/summary",{
             params: { email: email_id },
             withCredentials: true,
@@ -52,13 +48,18 @@ export default function SearchBarArea({updateStats}: Props) {
           tasksProgress: res.data.tasksProgress
         })
       }catch(error){
-        alert("error getting stats for searchbar area");
-        console.log(error);
+        Sentry.captureException(error);
+        toast.error("Unable to load quick analytics...");
+        setTaskStats({
+          tasksCompleted: 0,
+          totalTasks: 1,
+          tasksProgress: 0
+        })
       }
     }
 
     updateTaskStatsfn();
-  }, [updateStats])
+  }, [updateStats, sidebarContext?.email])
 
   return (
     <div className="px-6 md:px-12 lg:px-16 pb-7">

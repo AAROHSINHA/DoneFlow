@@ -2,6 +2,7 @@ import { ChevronDownIcon, ChevronRightIcon } from "../icons.tsx";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { SidebarContext } from "../../SidebarContext.ts";
+import toast from "react-hot-toast";
 
 interface TagProp {
   updateTags: boolean
@@ -25,7 +26,7 @@ const NavigationTags = ({updateTags}: TagProp) => {
 
           }
         }catch(error){
-          console.log(`Error loading tags ${error}`);
+          toast.error("Unable to get tags...");
         }
       }
 

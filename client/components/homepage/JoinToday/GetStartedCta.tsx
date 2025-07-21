@@ -9,7 +9,7 @@ export default function GetStartedCta() {
     if(loginContext?.loggedIn){
       navigate("/dashboard");
     }else{
-      navigate("/login");
+      navigate("/create-account");
     }
   }
   return (

@@ -2,6 +2,15 @@ interface EfficiencyRatioProps {
   ratio: number
 }
 
+const efficiencyMessage = (ratio: number) => {
+  if (ratio === 0) return "Yet to Start";
+  else if (ratio <= 0.4) return "Poor Efficiency";
+  else if (ratio <= 0.7) return "Moderate Efficiency";
+  else if (ratio < 0.95) return "Good Efficiency";
+  else return "Excellent Efficiency";
+};
+
+
 const EfficiencyRatio = ({ ratio }: EfficiencyRatioProps) => {
 
   return (
@@ -16,16 +25,10 @@ const EfficiencyRatio = ({ ratio }: EfficiencyRatioProps) => {
           {ratio}
         </div>
         
-        {/* Progress bar
-        <div className="w-full bg-pink-200 rounded-full h-3 mb-2">
-          <div 
-            className="bg-pink-400 h-3 rounded-full transition-all duration-1000 ease-out"
-            style={{ width: `${efficiency}%` }}
-          ></div>
-        </div> */}
+      
         
         <div className="text-sm text-gray-600">
-          More Efficiency Expected
+          {efficiencyMessage(ratio)}
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import ReturnHome from '../ProfilePage/components/ReturnHome.tsx';
 import { useNavigate } from 'react-router-dom';
 import { localLoginError } from '../error_handler.ts';
+import * as Sentry from "@sentry/react";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,12 +52,15 @@ const Login = () => {
               const validation_errors = localLoginError[error_type];
               setMessage(validation_errors[validation_error_type]);
             }else if(error_type == "server"){
+              Sentry.captureException(error);
               setMessage(localLoginError.server);
             }else{
+              Sentry.captureException(error);
               setMessage(localLoginError.other);
             }
         }
       }else{
+        Sentry.captureException(error);
         setMessage(localLoginError.other);
       }
   };

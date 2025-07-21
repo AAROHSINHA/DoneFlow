@@ -2,6 +2,7 @@ import { Check, Trash2 } from 'lucide-react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import * as Sentry from "@sentry/react";
 
 interface ActionOptionsProps {
   taskIndex: number
@@ -41,6 +42,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       )
       if(res.data.type == "success" && email_id) decrementTaskInStats(email_id);
     }catch(error) {
+      Sentry.captureException(error);
       toast.error("Some Error Occurred!");
     }
     setUpdateTags(prev => !prev);
@@ -56,6 +58,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
         {withCredentials: true}
       )
     }catch(error){
+      Sentry.captureException(error);
       toast.error("Some Error Occurred!");
     }
   }

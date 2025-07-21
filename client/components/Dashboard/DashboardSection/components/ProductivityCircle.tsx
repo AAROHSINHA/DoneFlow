@@ -9,7 +9,7 @@ const ProductivityCircle = ({ percentage }: ProductivityCircleProps) => {
   
   useEffect(() => {
     const timer = setTimeout(() => {
-      setAnimatedPercentage(percentage);
+      setAnimatedPercentage(percentage ? percentage : 0 );
     }, 200);
     
     return () => clearTimeout(timer);

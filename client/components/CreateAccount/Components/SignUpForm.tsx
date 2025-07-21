@@ -6,6 +6,7 @@ import Divider from "./Divider.tsx";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { localSignInError } from '../../error_handler.ts';
+import * as Sentry from "@sentry/react";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -46,11 +47,14 @@ const SignUpForm = () => {
             setMessage(validation_errors[validation_error_type]);
           }else if(error_type == "server"){
             setMessage(localSignInError.server);
+            Sentry.captureException(error);
           }else{
+            Sentry.captureException(error);
             setMessage(localSignInError.other);
           }
       }
     }else{
+      Sentry.captureException(error);
       setMessage(localSignInError.other);
     }
   }

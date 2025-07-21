@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ChevronDownIcon, ChevronRightIcon } from "../icons.tsx";
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 function NavigationAnalytics() {
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -29,8 +30,7 @@ function NavigationAnalytics() {
         setHoursFocused(res.data.hours);
         setTasksCompleted(res.data.tasks);
       }catch(error){
-        alert("ERROR LOADING NAVIGATION ANALYTICS");
-        console.log(error);
+        toast.error("Unable to getch Sidebar Stats");
       }
     }
     getNavigationAnalytics();

@@ -3,6 +3,7 @@ import TaskBox from "../TaskBox/TaskBox";
 import AddTask from "./AddTask.tsx";
 import axios from "axios";
 import StopwatchModal from "./StopWatchModal.tsx";
+import toast from "react-hot-toast";
 
 interface TaskInterface {
   title: string;
@@ -60,8 +61,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
       }));
       setTasks(formattedTasks);
       }catch(error){
-        console.log("errorrrrr");
-        console.log(error);
+        toast.error("Error Loading Tasks");
       }
     }
 

@@ -2,6 +2,7 @@ import { Play, Pause, Square } from 'lucide-react';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import * as Sentry from "@sentry/react";
 
 interface Props {
     time: number
@@ -59,7 +60,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     const email = await getEmail();
     console.log(timeInMinutes);
     try{
-      const res = await axios.post("http://localhost:5000/tasks/add-time",
+      await axios.post("http://localhost:5000/tasks/add-time",
         {
           email: email,
           title: title,
@@ -71,8 +72,8 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
   icon: '👏',
 });
     }catch(error){
-      alert("Error in saving time");
-      console.log(error);
+      Sentry.captureException(error);
+      toast.error("Error in saving time! Sorry...");
     }
     setTaskReload(prev => !prev);
     setTime(0);

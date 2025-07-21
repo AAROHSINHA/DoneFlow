@@ -1,6 +1,7 @@
 import {X} from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { SidebarContext } from "../../SidebarContext";
 
 interface HeaderInterface {
     onClose: () => void
@@ -11,23 +12,15 @@ const Header:React.FC<HeaderInterface> = ({onClose}) => {
   const [username, setUsername] = useState("user");
   const [email, setEmail] = useState("user@example.com");
 
+  const sidebarContext = useContext(SidebarContext);
+
   useEffect(() => {
-    const getUser = async () => {
-      try{
-         const res = await axios.get("http://localhost:5000/users/check-login", {
-          withCredentials: true,
-        });
-        if(res.data.loggedIn){
-            setInitials(res.data.user.name[0]);
-            setUsername(res.data.user.name);
-            setEmail(res.data.user.email);
-        }
-       }catch(error){
-            console.log(error);
-       }
+    if(sidebarContext?.loggedIn){
+      setEmail(sidebarContext.email);
+      setUsername(sidebarContext.name);
+      setInitials(sidebarContext.name[0]);
     }
-    getUser();
-  }, [])
+  }, [sidebarContext?.loggedIn]);
 
     return (
  <div className="border-b border-gray-100 p-4 md:p-6">

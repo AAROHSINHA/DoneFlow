@@ -1,5 +1,8 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import * as Sentry from "@sentry/react";
+import toast from "react-hot-toast";
+
 interface Prop {
     onClose: () => void
     setIsRunning: React.Dispatch<React.SetStateAction<boolean>>
@@ -41,14 +44,9 @@ const getEmail = async () => {
           spendTime: timeInMinutes
         }
       )
-
-      // if(res.data.exceeds){
-      //   // add task completion logic
-      //   alert("TASK DONE");
-      // }
     }catch(error){
-      alert("Error in saving time");
-      console.log(error);
+      Sentry.captureException(error);
+      toast.error("Error in saving time. Sorry...")
     }
     setTaskReload(prev => !prev);
     setTime(0);

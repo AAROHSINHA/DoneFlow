@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 function LogoutButton() {
       const navigate = useNavigate();
@@ -12,8 +14,8 @@ function LogoutButton() {
             );
         navigate("/");
     }catch(error){
-        console.log(error);
-        alert("ERROR LOGGING OUT");
+        Sentry.captureException(error);
+        toast.error("Error logging out! Try again in some time...")
     }
   };
 

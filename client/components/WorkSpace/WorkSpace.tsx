@@ -7,32 +7,33 @@ import SearchBarArea from "./SearchBarArea/SearchBarArea.tsx"
 import AddTaskSidebar from "./AddTaskSidebar/AddTaskSidebar.tsx";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-
-
+import toast from "react-hot-toast";
 
 const WorkSpace = () => {
     const navigate = useNavigate();
     const [taskReload, setTaskReload] = useState(false); // to update workspace useeffect to show tasks on adding
     const [email, setEmail] = useState<string>("");
     const [loggedIn, setLoggedIn] = useState(false);
+    const [name, setName] = useState("");
     useEffect(() => {
         const checkLogin = async () => {
         try{
            const res = await axios.get("http://localhost:5000/users/check-login", {
             withCredentials: true,
           });
-          if(!res.data.loggedIn){
-            setEmail(res.data.user.email);
-            setLoggedIn(false);
-            navigate("/");
-          }else{
+          // console.log(res.data);
+          if(res.data.loggedIn){
             setEmail(res.data.user.email);
             setLoggedIn(true);
+            setName(res.data.user.name);
+          }else{
+            setLoggedIn(false);
+            toast.error("🔐 Please login first");
+            navigate("/");
           }
          }catch(error){
-            console.log("FROM WORKSPACE");
-            navigate("/500");
+            toast.error("Error Showing Workspace!");
+            navigate("/");
          }
       }
       checkLogin();
@@ -56,7 +57,8 @@ const WorkSpace = () => {
             taskOnClose: setAddTaskSidebarOpen,
             taskReload: taskReload,
             email: email,
-            loggedIn: loggedIn
+            loggedIn: loggedIn,
+            name: name
             }}>
             <WorkspaceNavbar />
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} updateTags={updateTags} taskReload={taskReload} />

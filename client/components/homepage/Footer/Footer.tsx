@@ -1,4 +1,5 @@
-
+import SiteLinks from "./components/SiteLinks.tsx";
+import SocialLinks from "./components/SocialLinks.tsx";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -17,48 +18,10 @@ export default function Footer() {
           {/* Navigation and Social Links */}
           <div className="grid grid-cols-2 gap-8 md:gap-12 text-sm">
             {/* Site Links */}
-            <div>
-              <h4 className="font-semibold text-lg mb-4">Site Links</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="/about" className="hover:underline" >
-                    ABOUT
-                  </a>
-                </li>
-                <li>
-                  <a href="/tasks" className="hover:underline" >
-                    TASKS
-                  </a>
-                </li>
-                <li>
-                  <a href="/dashboard" className="hover:underline" >
-                    DASHBOARD
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <SiteLinks />
 
             {/* Social as */}
-            <div>
-              <h4 className="font-semibold text-lg mb-4">Social</h4>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="hover:underline" >
-                    LinkedIn
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline" >
-                    Instagram
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline" >
-                    Twitter
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <SocialLinks />
           </div>
         </div>
 
@@ -66,9 +29,9 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-pink-400 text-center text-sm hover:cursor-pointer">
           <p className="mb-2 italic">
             Email:{" "}
-            <a href="mailto:doneflow94@gmail.com" className="hover:underline italic">
+            <span className="hover:underline italic inline">
               doneflow94@gmail.com
-            </a>
+            </span>
           </p>
           <p className="italic">&copy; {currentYear} Doneflow. All rights reserved.</p>
         </div>

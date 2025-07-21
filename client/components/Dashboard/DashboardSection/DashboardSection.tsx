@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Sidebar from "../Sidebar/Sidebar.tsx";
 import { calculateCompletion, calculateEfficiency, calculateOnTimeTaskCompletion, hourlyFocus, dailyFocusPercent, HOURS_IN_DAY, DAYS_IN_WEEK, averageFocusTime, productivePeriods } from "./helpers.ts";
+import toast from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 interface Prop {
   isOpen: boolean,
@@ -85,8 +87,8 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
         "onTimeCompletedTasks": data.onTimeCompletedTasks ?? 0       
       })
     }catch(error){
-        alert("ERROR IN LOADING STATS");
-        console.log(error);
+        toast.error("Error Generating Stats! Sorry...");
+        Sentry.captureException(error);
       }
     }
 

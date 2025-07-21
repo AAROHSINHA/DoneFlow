@@ -108,9 +108,10 @@ export function calculateProductivityStats(data: {[key: string]: number}): Produ
 
   const tierScore = efficiencyRatio * productivityPercentage * 100;
 
-  let focusTier = "Good Focus";
-  if (tierScore < 1500) focusTier = "Bad Focus";
+  let focusTier = "Not Ranked";
+  if (tierScore > 0 && tierScore < 1500) focusTier = "Bad Focus";
   else if (tierScore > 4500) focusTier = "Excellent Focus";
+  else if(tierScore > 1500 && tierScore < 4500) focusTier = "Good Focus";
 
   return {
     focusPercentage: roundedProductivity,

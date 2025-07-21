@@ -46,9 +46,9 @@ const Barchart = ({hourlyData, weeklyData}: BarchartProps) => {
       days.push(formatted);
       
     }
-    console.log(weeklyData);
-    console.log(days);
-    console.log(weeklyData.length == days.length);
+    // console.log(weeklyData);
+    // console.log(days);
+    // console.log(weeklyData.length == days.length);
     return days;
   };
   setWeeklyLabels(getLast7Days());

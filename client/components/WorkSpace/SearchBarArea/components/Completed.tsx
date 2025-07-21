@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface Props {
   tasksCompleted: number;
   totalTasks: number;

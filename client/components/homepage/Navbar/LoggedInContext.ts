@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 interface LoggedInContextInterface {
-  loggedIn : boolean,
+  loggedIn : boolean | undefined,
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
 }
 

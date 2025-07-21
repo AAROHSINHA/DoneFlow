@@ -1,4 +1,3 @@
-import {Link} from "react-router-dom";
 import ReturnHome from "../../ProfilePage/components/ReturnHome.tsx";
 
 function SignUpContent() {

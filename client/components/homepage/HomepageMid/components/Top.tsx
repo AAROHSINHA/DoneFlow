@@ -1,4 +1,4 @@
-import snippet1 from "../images/fsnippet2.webp";
+// import snippet1 from "../images/fsnippet2.webp";
 
 interface Prop {
     title: string,
@@ -16,7 +16,7 @@ function Top({title, desc, listitems, img}: Prop) {
   </p>
   <div className="relative w-[100%] h-[60%] rounded-xl overflow-hidden bshadow-sm">
   <img
-    src={snippet1}
+    src={""}
     alt="Project Overview"
     className="w-full h-auto object-cover"
   />

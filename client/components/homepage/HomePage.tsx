@@ -8,49 +8,56 @@ import GetStartedCta from "./JoinToday/GetStartedCta.tsx";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {LoginContext} from "./Context.ts";
-
+import * as Sentry from "@sentry/react";
 
 function HomePage() {
   const [login, setLogin] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const scrollComponent = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    const checkLogin = async () => {
-      try{
-        const res = await axios.get("http://localhost:5000/users/check-login", {
-            withCredentials: true,
-          });
-        if(res.data.loggedIn){
-          setLogin(true);
-          setEmail(res.data.user.email);
-        }else{
-          setLogin(false);
-        }
-      }catch(error){
-        console.log("");
-      }
-    }
+  const checkLogin = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/users/check-login", {
+        withCredentials: true,
+      });
 
-    const SetToday = async () => {
-      try{
-        await axios.post("http://localhost:5000/stats/update-daily", {
-          email: email
-      }, {withCredentials: true});
-      }catch{
-        console.log("Catch");
+      if (res.data.loggedIn) {
+        const userEmail = res.data.user.email;
+        setLogin(true);
+        setEmail(userEmail);
+        setName(res.data.user.name);
+        await setToday(userEmail); // 👈 call only on success
+      } else {
+        setLogin(false);
       }
+    } catch (error) {
+      Sentry.captureException(error);
+      setLogin(false);
     }
+  };
 
-    checkLogin();
-    if(login) SetToday();
-  }, []);
+  const setToday = async (email: string) => {
+    try {
+      await axios.post(
+        "http://localhost:5000/stats/update-daily",
+        { email },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      Sentry.captureException(error);
+    }
+  };
+
+  checkLogin();
+}, []);
+
   return (
     <div className="overflow-x-hidden">
-      <LoginContext.Provider value={{loggedIn: login, email: email, scrollTo: scrollComponent}}>
+      <LoginContext.Provider value={{loggedIn: login, email: email, scrollTo: scrollComponent, name: name}}>
       <NavbarMain  />
       <HomepageTop />
       <HomePageMid  />
-       {/* <HomepageMockup />  */}
        <FeatureCards />
        <GetStartedCta />
       <FeedbackForm />
