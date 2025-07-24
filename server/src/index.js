@@ -22,10 +22,22 @@ const PORT = process.env.PORT || 5000;
 
 // MIDDLEWARES
 // using cors to setup connection to the react app
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://doneflow.onrender.com"
+];
+
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
 }));
+
 app.set("trust proxy", 1); 
 app.use(session({
     secret: "session123123123321321321",
