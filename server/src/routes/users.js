@@ -153,7 +153,6 @@ router.post("/users/local-login",
 router.get("/users/check-login", (req, res) => {
   console.log("Session on check-login:", req.sessionID, req.session.user);
   if (req.session && req.session.user) {
-    console.log(res.session);
     return res.status(200).json({
       loggedIn: true,
       user: req.session.user,
