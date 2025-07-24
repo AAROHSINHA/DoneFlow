@@ -36,7 +36,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
     const email_id = getEmail();
     if(!email_id) navigate("/");
     try{
-      const res = await axios.post("http://localhost:5000/tasks/delete-task", 
+      const res = await axios.post("https://doneflow.onrender.com/tasks/delete-task", 
         {email: email_id, title: title, tags: tags},
         {withCredentials: true}
       )
@@ -53,7 +53,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
 
   const decrementTaskInStats = async (email_id: string) => {
     try{
-      await axios.patch("http://localhost:5000/stats/delete-task", 
+      await axios.patch("https://doneflow.onrender.com/stats/delete-task", 
         {email: email_id},
         {withCredentials: true}
       )
@@ -67,12 +67,12 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
     const email_id = getEmail();
     if(!email_id) navigate("/");
     try{
-      const res = await axios.patch("http://localhost:5000/stats/complete-task", 
+      const res = await axios.patch("https://doneflow.onrender.com/stats/complete-task", 
         {email: email_id, title: title, deadlineDate: deadlineDate, deadlineMonth: deadlineMonth},
         {withCredentials: true}
       )
       if(res.data.type == "success"){
-      await axios.post("http://localhost:5000/tasks/delete-task", 
+      await axios.post("https://doneflow.onrender.com/tasks/delete-task", 
         {email: email_id, title: title, tags: tags},
         {withCredentials: true}
       )

@@ -16,7 +16,7 @@ const LogoutAvatar: React.FC<LogoutButtonProps> = ({ setIsOpen }) => {
   const handleLogout = async () => {
     try{
         await axios.post(
-            "http://localhost:5000/users/logout",
+            "https://doneflow.onrender.com/users/logout",
             null, // no body
             { withCredentials: true }
             );

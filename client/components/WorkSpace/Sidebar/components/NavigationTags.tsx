@@ -16,7 +16,7 @@ const NavigationTags = ({updateTags}: TagProp) => {
        useEffect(() => {
       const loadTags = async () => {
         try{
-          const res = await axios.get("http://localhost:5000/tasks/get-tags",{
+          const res = await axios.get("https://doneflow.onrender.com/tasks/get-tags",{
             withCredentials: true
           });
           if(res.data.tags){

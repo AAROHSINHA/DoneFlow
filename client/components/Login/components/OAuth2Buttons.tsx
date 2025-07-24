@@ -1,6 +1,6 @@
 function OAuth2Buttons() {
   const handleGoogleClick = () => {
-    window.open('http://localhost:5000/auth/google', '_self'); 
+    window.open('https://doneflow.onrender.com/auth/google', '_self'); 
   }
   return (
     <div className="grid grid-cols-1 gap-3">

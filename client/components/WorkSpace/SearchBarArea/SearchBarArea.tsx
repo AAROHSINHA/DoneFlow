@@ -38,7 +38,7 @@ export default function SearchBarArea({updateStats}: Props) {
           navigate("/");
           return;
         }
-        const res = await axios.get("http://localhost:5000/stats/summary",{
+        const res = await axios.get("https://doneflow.onrender.com/stats/summary",{
             params: { email: email_id },
             withCredentials: true,
           });

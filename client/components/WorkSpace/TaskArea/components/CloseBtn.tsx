@@ -17,7 +17,7 @@ function CloseBtn({onClose, setIsRunning, setIsPaused, time, setTaskReload, setT
   const navigate = useNavigate();
 const getEmail = async () => {
     try{
-           const res = await axios.get("http://localhost:5000/users/check-login", {
+           const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
             withCredentials: true,
           });
           if(!res.data.loggedIn){
@@ -37,7 +37,7 @@ const getEmail = async () => {
     const email = await getEmail();
 
     try{
-      const res = await axios.post("http://localhost:5000/tasks/add-time",
+      const res = await axios.post("https://doneflow.onrender.com/tasks/add-time",
         {
           email: email,
           title: title,

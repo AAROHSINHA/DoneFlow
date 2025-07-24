@@ -18,18 +18,20 @@ const Navbar = () => {
     useEffect(() => {
     const checkLogin = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/users/check-login", {
+        const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
           withCredentials: true,
         });
-        // console.log(res.data);
+        console.log("From Navbar - ", res.data);
         if(res.data.loggedIn){
-          setLoggedIn(res.data.loggedIn);
+          setLoggedIn(true);
         setName(res.data.user.name);
         setEmail(res.data.user.email);
         setInitials(res.data.user.name[0]);
+        alert(loggedIn);
         }
       } catch (error) {
         // console.error("Error checking login:", error);
+        alert('e');
         setLoggedIn(false);
       }
     };
@@ -37,8 +39,8 @@ const Navbar = () => {
     checkLogin();
 
     const interval = setInterval(checkLogin, 60 * 1000); // every 60 seconds
-
     return () => clearInterval(interval);
+    
   }, []);
 
 
@@ -57,6 +59,7 @@ const Navbar = () => {
           {/* Auth Button */}
           <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
             <div className="flex items-center">
+              {loggedIn ? "true" : "false"}
             {loggedIn ? (
               <AvatarDropDown initials={initials} name={name} email={email} />
             ) : (

@@ -45,7 +45,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
   useEffect(() => {
     const getTasks = async () => {
       try{
-        const res = await axios.get("http://localhost:5000/tasks/get-tasks",
+        const res = await axios.get("https://doneflow.onrender.com/tasks/get-tasks",
           {withCredentials: true}
         )
         const importedTasks = res.data.tasks;

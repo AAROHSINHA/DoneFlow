@@ -19,7 +19,7 @@ const ResetPassword = () => {
 
   const handleGenerateResend = async () => {
     try{
-        const res = await axios.post("http://localhost:5000/users/send-email",
+        const res = await axios.post("https://doneflow.onrender.com/users/send-email",
             {email: email},
             {withCredentials: true}
         )
@@ -50,7 +50,7 @@ const ResetPassword = () => {
 
     try {
       await axios.patch(
-        "http://localhost:5000/users/change-password",
+        "https://doneflow.onrender.com/users/change-password",
         { new_password: newPassword, email },
         { withCredentials: true }
       );

@@ -21,7 +21,7 @@ export default function FeedbackForm() {
 
   const sendFeedback = async (feedback: string, rating: number | null)  => {
     try{
-      await axios.post("http://localhost:5000/send-feedback", {
+      await axios.post("https://doneflow.onrender.com/send-feedback", {
         email: loginContext?.email || "",
         feedback: feedback,
         rating: rating

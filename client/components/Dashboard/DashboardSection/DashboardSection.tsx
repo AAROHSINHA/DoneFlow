@@ -53,7 +53,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
   useEffect(() => {
     const getStats = async () => {
       try{
-      const res = await axios.get("http://localhost:5000/stats/get-stats", {withCredentials: true});
+      const res = await axios.get("https://doneflow.onrender.com/stats/get-stats", {withCredentials: true});
       const data = res.data.body;
       setTaskStats({
         "Total Tasks": data.netTotalTasks ?? 0,

@@ -18,11 +18,12 @@ function HomePage() {
   useEffect(() => {
   const checkLogin = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/users/check-login", {
+      const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
         withCredentials: true,
       });
-
+      console.log("From Homepage - ", res.data);
       if (res.data.loggedIn) {
+        console.log(res.data, '+++');
         const userEmail = res.data.user.email;
         setLogin(true);
         setEmail(userEmail);
@@ -40,7 +41,7 @@ function HomePage() {
   const setToday = async (email: string) => {
     try {
       await axios.post(
-        "http://localhost:5000/stats/update-daily",
+        "https://doneflow.onrender.com/stats/update-daily",
         { email },
         { withCredentials: true }
       );

@@ -7,7 +7,7 @@ function UserInfo() {
   useEffect(() => {
     const checkInfo = async () => {
       try {
-      const res = await axios.get("http://localhost:5000/users/check-login", {
+      const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
         withCredentials: true,
       });
 

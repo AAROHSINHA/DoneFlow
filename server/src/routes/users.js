@@ -134,8 +134,8 @@ router.post("/users/local-login",
                 email: user.email,
                 name: user.firstName,
             };
-            req.session.save();
-
+            await req.session.save();
+            console.log("Session after login:", req.sessionID, req.session.user);
             return res.status(200).json({
                 message: "Login successful",
                 user: req.session.user,
@@ -151,15 +151,19 @@ router.post("/users/local-login",
 
 // 3. Check is logged in
 router.get("/users/check-login", (req, res) => {
+  console.log("Session on check-login:", req.sessionID, req.session.user);
   if (req.session && req.session.user) {
+    console.log(res.session);
     return res.status(200).json({
       loggedIn: true,
-      user: req.session.user
+      user: req.session.user,
+      sess: "sessionm1"
     });
   } else {
     return res.status(200).json({
       loggedIn: false,
-      user: null
+      user: null,
+      sess: "sas"
     });
   }
 });

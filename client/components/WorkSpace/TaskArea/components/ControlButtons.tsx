@@ -60,7 +60,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     const email = await getEmail();
     console.log(timeInMinutes);
     try{
-      await axios.post("http://localhost:5000/tasks/add-time",
+      await axios.post("https://doneflow.onrender.com/tasks/add-time",
         {
           email: email,
           title: title,

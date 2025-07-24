@@ -19,6 +19,7 @@ const SignUpForm = () => {
     password: '',
     agreeToTerms: false
   });
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -32,7 +33,8 @@ const SignUpForm = () => {
   e.preventDefault();
   try {
      await axios.post(
-      "http://localhost:5000/users/create-local-account",
+      
+      "https://doneflow.onrender.com/users/create-local-account",
       formData
     );
     navigate("/login");

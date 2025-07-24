@@ -36,11 +36,11 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-  const res = await axios.post("http://localhost:5000/users/local-login", 
+  const res = await axios.post("https://doneflow.onrender.com/users/local-login", 
     formData,
     { withCredentials: true }
   );
-  console.log(res.data);
+  console.log("From Login - ", res.data);
   navigate("/");
 } catch(error: any) {
    if(typeof error == "object"){

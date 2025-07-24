@@ -24,7 +24,7 @@ function NavigationAnalytics() {
   useEffect(() => {
     const getNavigationAnalytics = async () => {
       try{
-        const res = await axios.get("http://localhost:5000/stats/navigation-analytics", {
+        const res = await axios.get("https://doneflow.onrender.com/stats/navigation-analytics", {
           withCredentials: true
         });
         setHoursFocused(res.data.hours);

@@ -74,7 +74,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     const AddTaskToDB = async (email_id: string) => {
         const task = createTask(email_id);
         try{
-            await axios.post("http://localhost:5000/tasks/add-task", 
+            await axios.post("https://doneflow.onrender.com/tasks/add-task", 
                 task,
                 {withCredentials: true}
             )
@@ -101,7 +101,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     // To increase totalTaskCount in stats db
     const IncrementTaskInStats = async (email_id: string) => {
         try{
-            await axios.patch("http://localhost:5000/stats/add-task", 
+            await axios.patch("https://doneflow.onrender.com/stats/add-task", 
                 {email: email_id},
                 {withCredentials: true}
             )
