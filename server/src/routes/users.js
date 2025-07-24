@@ -162,7 +162,7 @@ router.get("/users/check-login", (req, res) => {
     return res.status(200).json({
       loggedIn: false,
       user: null,
-      sess: req? req : "req not there"
+      sess: req? req.session : "req not there"
     });
   }
 });
