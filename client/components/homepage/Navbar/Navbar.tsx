@@ -31,7 +31,7 @@ const Navbar = () => {
         }
       } catch (error) {
         // console.error("Error checking login:", error);
-        alert('e');
+        console.log(error);
         setLoggedIn(false);
       }
     };
