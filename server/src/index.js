@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 5000;
 // MIDDLEWARES
 // using cors to setup connection to the react app
 const allowedOrigins = [
-  "https://doneflow.vercel.app/",
+  "https://doneflow.vercel.app",
   "https://doneflow.onrender.com"
 ];
 
