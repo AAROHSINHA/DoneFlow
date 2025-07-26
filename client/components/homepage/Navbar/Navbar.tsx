@@ -27,7 +27,7 @@ const Navbar = ({setNavbarLoaded}: Prop) => {
         });
         
         if(res.data.loggedIn){
-          (true);
+          setLoggedIn(true);
         setName(res.data.user.name);
         setEmail(res.data.user.email);
         setInitials(res.data.user.name[0]);
