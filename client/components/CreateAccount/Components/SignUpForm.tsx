@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/react";
 const SignUpForm = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
   const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     firstName: '',
@@ -31,6 +32,7 @@ const SignUpForm = () => {
 
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+  setShowCreate(true);
   try {
      await axios.post(
       
@@ -39,6 +41,7 @@ const SignUpForm = () => {
     );
     navigate("/login");
   } catch (error: any) {
+    setShowCreate(false);
     if(typeof error == "object"){
       const error_body = error.response?.data;
       const error_type: string = (error_body) ? error_body.type : "other";
@@ -140,6 +143,9 @@ const SignUpForm = () => {
             </a>
           </label>
         </div>
+        {showCreate && <div className="flex justify-center items-center">
+  <p className="text-[1em] font-semibold animate-pulse text-pink-400 tracking-[3px]">Almost there... Creating your account.</p>
+</div>}
 
         <button
           type="submit"

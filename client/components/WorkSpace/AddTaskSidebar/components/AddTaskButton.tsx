@@ -80,6 +80,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
             )
             return true;
         }catch(error: any){
+            console.log(error.response);
             if(typeof error == "object"){
                 const error_body = error.response.data;
             const error_type: 'validation' | 'server' | 'other' = error_body.type;
@@ -117,6 +118,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                     Sentry.captureException(error);
                 }
             }else{
+                // console.log(error);
                 setMessage(addTaskError["other"]);
                 Sentry.captureException(error);
             }

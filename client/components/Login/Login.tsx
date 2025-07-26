@@ -12,6 +12,7 @@ import * as Sentry from "@sentry/react";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
   const [formData, setFormData] = useState({
@@ -35,14 +36,15 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowCreate(true);
     try {
   const res = await axios.post("https://doneflow.onrender.com/users/local-login", 
     formData,
     { withCredentials: true }
   );
-  console.log("From Login - ", res.data);
   navigate("/");
 } catch(error: any) {
+  setShowCreate(false);
    if(typeof error == "object"){
         const error_body = error.response?.data;
         const error_type: string = (error_body) ? error_body.type : "other";
@@ -100,11 +102,14 @@ const Login = () => {
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 hover:cursor-pointer"
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+          {showCreate && <div className="flex justify-center items-center">
+  <p className="text-[1em] font-semibold animate-pulse text-pink-400 tracking-[3px]">Logging In...Just a moment!!</p>
+</div>}
 
           <div className="text-right">
             <Link to={"/reset-password"}>

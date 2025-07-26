@@ -3,18 +3,21 @@ import { Link  } from "react-router-dom";
 import LoginSigninButtons from "./LoginSigninButtons.tsx";
 import NavLinks from "./NavLinks.tsx";
 // import Avatar from "./Avatar.tsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AvatarDropDown from "./AvatarDropDown.tsx";
 import { LoginContext } from "./LoggedInContext.ts";
 
+interface Prop {
+  setNavbarLoaded: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-
-const Navbar = () => {
+const Navbar = ({setNavbarLoaded}: Prop) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [initials, setInitials] = useState("U");
   const [name, setName] = useState("User");
   const [email, setEmail] = useState("example@gmail.com");
+  const loginContext = useContext(LoginContext);
     useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -27,12 +30,14 @@ const Navbar = () => {
         setName(res.data.user.name);
         setEmail(res.data.user.email);
         setInitials(res.data.user.name[0]);
-        alert(loggedIn);
+        // alert(loggedIn);
         }
       } catch (error) {
         // console.error("Error checking login:", error);
         console.log(error);
         setLoggedIn(false);
+      }finally{
+        setNavbarLoaded(false);
       }
     };
 
@@ -59,7 +64,6 @@ const Navbar = () => {
           {/* Auth Button */}
           <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
             <div className="flex items-center">
-              {loggedIn ? "true" : "false"}
             {loggedIn ? (
               <AvatarDropDown initials={initials} name={name} email={email} />
             ) : (

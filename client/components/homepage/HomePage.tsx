@@ -15,26 +15,29 @@ function HomePage() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const scrollComponent = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
+  const [loading, setLoading] = useState(true); // <-- Step 1: Add this
+  const [navbarLoaded, setNavbarLoaded] = useState(true);
+
+useEffect(() => {
   const checkLogin = async () => {
     try {
       const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
         withCredentials: true,
       });
-      console.log("From Homepage - ", res.data);
       if (res.data.loggedIn) {
-        console.log(res.data, '+++');
         const userEmail = res.data.user.email;
         setLogin(true);
         setEmail(userEmail);
         setName(res.data.user.name);
-        await setToday(userEmail); // 👈 call only on success
+        await setToday(userEmail);
       } else {
         setLogin(false);
       }
     } catch (error) {
       Sentry.captureException(error);
       setLogin(false);
+    } finally {
+      setLoading(false); // <-- Step 2: Always end loading
     }
   };
 
@@ -53,20 +56,22 @@ function HomePage() {
   checkLogin();
 }, []);
 
-  return (
-    <div className="overflow-x-hidden">
-      <LoginContext.Provider value={{loggedIn: login, email: email, scrollTo: scrollComponent, name: name}}>
-      <NavbarMain  />
-      <HomepageTop />
-      <HomePageMid  />
-       <FeatureCards />
-       <GetStartedCta />
-      <FeedbackForm />
-      <Footer />
 
+  return  (
+    <div className="overflow-x-hidden">
+      <LoginContext.Provider value={{ loggedIn: login, email: email, scrollTo: scrollComponent, name: name }}>
+        <NavbarMain setNavbarLoaded={setNavbarLoaded} />
+        <HomepageTop />
+        <HomePageMid />
+        <FeatureCards />
+        <GetStartedCta />
+        <FeedbackForm />
+        <Footer />
       </LoginContext.Provider>
     </div>
-  )
+    
+);
+
 }
 
 export default HomePage

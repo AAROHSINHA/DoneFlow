@@ -4,7 +4,7 @@ interface loginInterface {
     loggedIn: boolean,
     email: string
     scrollTo: React.RefObject<HTMLDivElement | null>,
-    name: string
+    name: string,
 }
 
 

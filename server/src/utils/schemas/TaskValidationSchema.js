@@ -1,11 +1,13 @@
 export const createTaskValidationSchema = {
   email: {
+    in: ['body'],
     isEmail: { errorMessage: "email" },
     notEmpty: { errorMessage: "email" },
     normalizeEmail: true,
     trim: true
   },
   title: {
+    in: ['body'],
     isString: { errorMessage: "title" },
     notEmpty: { errorMessage: "title" },
     isLength: {
@@ -15,7 +17,8 @@ export const createTaskValidationSchema = {
     trim: true
   },
   tags: {
-  optional: true,  // ✅ allow it to be skipped
+  in: ['body'],
+  optional: { options: { nullable: true } },
   isArray: { errorMessage: "tag" },
   custom: {
     options: (value) => Array.isArray(value) && value.length <= 4,
@@ -28,15 +31,17 @@ export const createTaskValidationSchema = {
     trim: true
   },
   priority: {
-    optional: true,
-    isString: { errorMessage: "priority" },
-    isIn: {
-      options: [["low", "medium", "high"]],
-      errorMessage: "priority"
-    },
-    trim: true
+  in: ['body'],
+  optional: { options: { nullable: true } },
+  isString: { errorMessage: "priority" },
+  isIn: {
+    options: [["low", "medium", "high"]],
+    errorMessage: "priority"
   },
+  trim: true
+},
   progress: {
+    in: ['body'],
     optional: true,
     isNumeric: { errorMessage: "progress" },
     custom: {
@@ -45,16 +50,19 @@ export const createTaskValidationSchema = {
     }
   },
   estimateTime: {
+    in: ['body'],
     optional: true,
     isInt: {
       options: {min: 0},
       errorMessage: "time" }
   },
   spendTime: {
+    in: ['body'],
     optional: true,
     isNumeric: { errorMessage: "time" }
   },
   deadlineDate: {
+    in: ['body'],
     optional: true,
     isInt: {
       options: { min: 0, max: 31 },
@@ -62,6 +70,7 @@ export const createTaskValidationSchema = {
     }
   },
   deadlineMonth: {
+    in: ['body'],
     optional: true,
     isInt: {
       options: { min: 0, max: 12 },
