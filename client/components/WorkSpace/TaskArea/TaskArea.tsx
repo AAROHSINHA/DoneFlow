@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import TaskBox from "../TaskBox/TaskBox";
 import AddTask from "./AddTask.tsx";
 import axios from "axios";
@@ -22,12 +22,13 @@ interface TaskAreaProp {
   setTaskReload: React.Dispatch<React.SetStateAction<boolean>>
   setUpdateTags: React.Dispatch<React.SetStateAction<boolean>>
   setUpdateStats: React.Dispatch<React.SetStateAction<boolean>>
+  setTaskLoaded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 let colorKeys = ["teal", "red", "blue", "indigo", "emerald", "pink", "orange"]
 
 
-const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskReload, setUpdateTags, setUpdateStats}) => {
+const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskReload, setUpdateTags, setUpdateStats, setTaskLoaded}) => {
   const [stopwatchModal, setStopwatchModal] = useState(false);
   const [taskEstimateTime, setTaskEstimateTime] = useState<number>(0);
   const [taskTitle, setTaskTitle] = useState("");
@@ -60,6 +61,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
         deadlineMonth: task.deadlineMonth ?? 0
       }));
       setTasks(formattedTasks);
+      setTaskLoaded(false);
       }catch(error){
         toast.error("Error Loading Tasks");
       }

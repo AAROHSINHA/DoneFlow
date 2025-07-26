@@ -6,7 +6,8 @@ interface Props {
 function NotStarted({ tasksCompleted, totalTasks }: Props) {
   const isZero = totalTasks === 0;
   const notStarted = isZero ? 0 : totalTasks - tasksCompleted;
-  const percent = isZero ? 0 : (notStarted / totalTasks) * 100;
+  let percent = isZero ? 0 : (notStarted / totalTasks) * 100;
+  percent = Math.max(Math.min(percent, 100), 0);
   const displayPercent = isZero ? '--' : `${percent.toFixed(1)}%`;
 
   return (

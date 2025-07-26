@@ -5,8 +5,11 @@ interface Props {
 
 function Completed({ tasksCompleted, totalTasks }: Props) {
   const isZero = totalTasks === 0;
-  const percent = isZero ? 100 : (tasksCompleted / totalTasks) * 100;
+  let percent = isZero ? 100 : (tasksCompleted / totalTasks) * 100;
+  percent = Math.min(percent, 100); // cap at 100%
+
   const displayPercent = isZero ? "--" : `${percent.toFixed(1)}%`;
+
 
   return (
     <div className="flex flex-col justify-center flex-1 text-center w-full">

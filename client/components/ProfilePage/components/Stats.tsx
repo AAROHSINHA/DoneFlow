@@ -48,7 +48,7 @@ function Stats() {
       <div className="bg-gray-50 rounded-2xl p-5 hover:bg-gray-100 transition-colors duration-200 shadow-sm hover:cursor-pointer" onClick={handleClick}>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600 font-semibold tracking-wide">Time Focused</span>
-          <span className="text-lg font-bold text-pink-500">{Math.round(spendTime/60)}h {spendTime%60}m</span>
+          <span className="text-lg font-bold text-pink-500">{Math.round(spendTime/60)}h {Math.round(spendTime%60)}m</span>
         </div>
         <div className="mt-2 text-xs text-gray-500">Today's focus time</div>
       </div>

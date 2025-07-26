@@ -36,17 +36,20 @@ const TaskSchema = new mongoose.Schema({
     required: true,
     unique: false,
     min: 0,
-    max: 100
+    max: 100,
+    default: 0
   },
   estimateTime: {
     type: Number,
     required: false,
-    unique: false
+    unique: false,
+    default: 0
   },
   spendTime: {
     type: Number,
     required: false,
-    unique: false
+    unique: false,
+    default: 0
   },
   deadlineDate: {
     type: Number,

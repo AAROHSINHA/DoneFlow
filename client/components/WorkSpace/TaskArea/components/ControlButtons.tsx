@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import * as Sentry from "@sentry/react";
+import { useContext } from 'react';
+import { SidebarContext } from '../../SidebarContext';
 
 interface Props {
     time: number
@@ -19,13 +21,15 @@ interface Props {
 
 function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload, onClose, setStartTimestamp}: Props) {
   const navigate = useNavigate();
+  const sidebarContext = useContext(SidebarContext);
     const getEmail = async () => {
     try{
            const res = await axios.get("http://localhost:5000/users/check-login", {
             withCredentials: true,
           });
           if(!res.data.loggedIn){
-              navigate("/");
+              toast.error("You're not logged in!");
+              return null;
           }
           return res.data.user.email;
          }catch(error){
@@ -57,21 +61,24 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     setIsRunning(false);
     setIsPaused(false);
     const timeInMinutes = (time / 60).toFixed(1);
-    const email = await getEmail();
-    console.log(timeInMinutes);
+    let email_to_send = sidebarContext?.email;
+    if(!sidebarContext?.email){
+      email_to_send = await getEmail();
+    }
     try{
       await axios.post("https://doneflow.onrender.com/tasks/add-time",
         {
-          email: email,
+          email: email_to_send,
           title: title,
           spendTime: timeInMinutes
         }
       )
       
       toast('Good Job!', {
-  icon: '👏',
-});
+        icon: '👏',
+      });
     }catch(error){
+      console.log("Add time", error.response);
       Sentry.captureException(error);
       toast.error("Error in saving time! Sorry...");
     }

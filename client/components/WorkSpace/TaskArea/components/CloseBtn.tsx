@@ -2,6 +2,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Sentry from "@sentry/react";
 import toast from "react-hot-toast";
+import { useContext } from 'react';
+import { SidebarContext } from '../../SidebarContext';
 
 interface Prop {
     onClose: () => void
@@ -15,6 +17,7 @@ interface Prop {
 
 function CloseBtn({onClose, setIsRunning, setIsPaused, time, setTaskReload, setTime, title}: Prop) {
   const navigate = useNavigate();
+  const sidebarContext = useContext(SidebarContext);
 const getEmail = async () => {
     try{
            const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
@@ -34,17 +37,22 @@ const getEmail = async () => {
     setIsRunning(false);
     setIsPaused(false);
     const timeInMinutes = (time / 60).toFixed(1);
-    const email = await getEmail();
+    let email_to_be = sidebarContext?.email;
+    if(!email_to_be) email_to_be = await getEmail();
 
     try{
       const res = await axios.post("https://doneflow.onrender.com/tasks/add-time",
         {
-          email: email,
+          email: email_to_be,
           title: title,
           spendTime: timeInMinutes
         }
       )
+      toast('Good Job!', {
+        icon: '👏',
+      });
     }catch(error){
+      console.log("close button", error.response);
       Sentry.captureException(error);
       toast.error("Error in saving time. Sorry...")
     }

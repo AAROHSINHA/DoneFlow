@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {LoginContext} from "./Context.ts";
 import * as Sentry from "@sentry/react";
+import LoadingOverlay from "../Loading/LoadingOverlay.tsx";
 
 function HomePage() {
   const [login, setLogin] = useState<boolean>(false);
@@ -17,6 +18,7 @@ function HomePage() {
   const scrollComponent = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true); // <-- Step 1: Add this
   const [navbarLoaded, setNavbarLoaded] = useState(true);
+  const [loadingOverlay, setLoadingOverlay] = useState(true);
 
 useEffect(() => {
   const checkLogin = async () => {
@@ -59,6 +61,7 @@ useEffect(() => {
 
   return  (
     <div className="overflow-x-hidden">
+      <LoadingOverlay isVisible={navbarLoaded} />
       <LoginContext.Provider value={{ loggedIn: login, email: email, scrollTo: scrollComponent, name: name }}>
         <NavbarMain setNavbarLoaded={setNavbarLoaded} />
         <HomepageTop />

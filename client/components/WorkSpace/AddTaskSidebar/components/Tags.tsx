@@ -35,13 +35,13 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags
        setSelectedTags([]);
      }, [reload])
 
-     const getEmail = async () => {
-      try{
-        const res = await axios.get("http://localhost:5000/users/me", {withCredentials: true});
-      }catch(error){
-        
-      }
-     }
+    //  const getEmail = async () => {
+    //   try{
+    //     const res = await axios.get("http://localhost:5000/users/me", {withCredentials: true});
+    //   }catch(error){
+
+    //   }
+    //  }
 
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags
         }
       }
 
-      loadTags();
+      // loadTags();
     }, [updateTags])
 
 

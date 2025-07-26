@@ -162,7 +162,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
       </button>
     </div>
         {!hidden && <TaskActions taskIndex={taskIndex} hidden={hidden} title={title} tags={tags} setTaskReload={setTaskReload} handleMouseLeave={handleMouseLeave} setUpdateTags={setUpdateTags}
-        setUpdateStats={setUpdateStats} deadlineDate={deadlineDate} deadlineMonth={deadlineMonth} isLoggedIn={sidebarContext?.loggedIn} email={sidebarContext?.email}
+        setUpdateStats={setUpdateStats} deadlineDate={deadlineDate} deadlineMonth={deadlineMonth} isLoggedIn={sidebarContext?.loggedIn} email={sidebarContext?.email} setShowOverlay={setShowOverlay}
         />}
         
     </div>

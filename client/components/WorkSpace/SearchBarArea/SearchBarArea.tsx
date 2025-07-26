@@ -16,10 +16,11 @@ interface taskStatsInterface {
 }
 
 interface Props {
-  updateStats: boolean
+  updateStats: boolean,
+  setSearchBarLoaded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function SearchBarArea({updateStats}: Props) {
+export default function SearchBarArea({updateStats, setSearchBarLoaded}: Props) {
   const navigate = useNavigate();
   const [taskStats, setTaskStats] = useState<taskStatsInterface>({
     tasksCompleted: 0,
@@ -48,6 +49,7 @@ export default function SearchBarArea({updateStats}: Props) {
           tasksProgress: res.data.tasksProgress
         })
       }catch(error){
+        console.log("searchbar", error.response);
         Sentry.captureException(error);
         toast.error("Unable to load quick analytics...");
         setTaskStats({
