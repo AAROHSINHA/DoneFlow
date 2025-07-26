@@ -1,4 +1,4 @@
-import Snowfall from "react-snowfall";
+// import Snowfall from "react-snowfall";
 
 interface Prop {
   show?: boolean
@@ -8,7 +8,7 @@ const Landscape3 = ({show}: Prop) => {
   const snow = (show) ? true : false
   return (
     <div className="w-full h-40 relative overflow-hidden bg-gradient-to-b from-pink-100 to-pink-200 rounded-lg">
-      {snow && <Snowfall 
+      {/* {snow && <Snowfall 
             snowflakeCount={10}
             color="#F472B6" 
             style={{
@@ -18,7 +18,7 @@ const Landscape3 = ({show}: Prop) => {
               pointerEvents: 'none',
               zIndex: 10
             }}
-          />}
+          />} */}
       {/* Sun */}
       <div className="absolute top-4 right-8 w-12 h-12 bg-pink-300 rounded-full opacity-80"></div>
       

@@ -1,5 +1,5 @@
 import React from "react";
-import Snowfall from "react-snowfall";
+// import Snowfall from "react-snowfall";
 
 interface Prop {
   show?: boolean
@@ -10,7 +10,7 @@ export default function Landscape({show}: Prop) {
   return (
     <div className="relative w-full bg-white" style={{ paddingBottom: "35%" }}>
       {/* Snowfall sits above the background */}
-     {snow && <Snowfall 
+     {/* {snow && <Snowfall 
       snowflakeCount={10}
       color="#F472B6" 
       style={{
@@ -20,7 +20,7 @@ export default function Landscape({show}: Prop) {
         pointerEvents: 'none',
         zIndex: 10
       }}
-    />}
+    />} */}
 
 
       {/* Landscape SVG */}

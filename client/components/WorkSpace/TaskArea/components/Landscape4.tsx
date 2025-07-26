@@ -1,4 +1,4 @@
-import Snowfall from "react-snowfall";
+// import Snowfall from "react-snowfall";
 
 interface Prop {
   show?: boolean
@@ -8,7 +8,7 @@ const Landscape4 = ({show}: Prop) => {
   const snow = (show) ? true : false
   return (
     <div className="w-full h-40 relative overflow-hidden bg-gradient-to-br from-pink-50 via-pink-100 to-pink-150 rounded-lg">
-      {snow && <Snowfall 
+      {/* {snow && <Snowfall 
             snowflakeCount={10}
             color="#F472B6" 
             style={{
@@ -18,7 +18,7 @@ const Landscape4 = ({show}: Prop) => {
               pointerEvents: 'none',
               zIndex: 10
             }}
-          />}
+          />} */}
       {/* Floating geometric shapes */}
       <div className="absolute top-6 left-12 w-6 h-6 bg-pink-200 transform rotate-45 opacity-70"></div>
       <div className="absolute top-4 right-16 w-4 h-8 bg-pink-300 transform skew-y-12 opacity-60"></div>
