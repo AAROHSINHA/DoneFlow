@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 5000;
 // MIDDLEWARES
 // using cors to setup connection to the react app
 const allowedOrigins = [
-  process.env.FRONTEND_URL,
+  "http://localhost:5173",
   "https://doneflow.onrender.com"
 ];
 
@@ -77,7 +77,7 @@ app.get("/auth/google/callback",
     };
 
     // Optionally redirect back to frontend
-    res.redirect(`${process.env.FRONTEND_URL}/`); 
+    res.redirect("http://localhost:5173/"); 
   }
 );
 
