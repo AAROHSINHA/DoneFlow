@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { DashboardContext } from '../DashboardContext';
+import {toast} from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -25,8 +27,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
             );
         navigate("/");
     }catch(error){
-        console.log(error);
-        alert("ERROR LOGGING OUT");
+        Sentry.captureException(error);
+        toast.error("Error Logging Out!");
     }
   };
   return (

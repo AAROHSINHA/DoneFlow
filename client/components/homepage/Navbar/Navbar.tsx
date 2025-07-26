@@ -7,6 +7,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import AvatarDropDown from "./AvatarDropDown.tsx";
 import { LoginContext } from "./LoggedInContext.ts";
+import * as Sentry from "@sentry/react";
 
 interface Prop {
   setNavbarLoaded: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,9 +25,9 @@ const Navbar = ({setNavbarLoaded}: Prop) => {
         const res = await axios.get("https://doneflow.onrender.com/users/check-login", {
           withCredentials: true,
         });
-        console.log("From Navbar - ", res.data);
+        
         if(res.data.loggedIn){
-          setLoggedIn(true);
+          (true);
         setName(res.data.user.name);
         setEmail(res.data.user.email);
         setInitials(res.data.user.name[0]);
@@ -34,8 +35,9 @@ const Navbar = ({setNavbarLoaded}: Prop) => {
         }
       } catch (error) {
         // console.error("Error checking login:", error);
-        console.log(error);
+        // console.log(error);
         setLoggedIn(false);
+        Sentry.captureException(error);
       }finally{
         setNavbarLoaded(false);
       }

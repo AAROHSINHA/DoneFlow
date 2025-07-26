@@ -20,6 +20,9 @@ export default function FeedbackForm() {
   }
 
   const sendFeedback = async (feedback: string, rating: number | null)  => {
+    setTitleMessage("Sending your feedback...");
+    setTitleMessage("Just a moment, we’re submitting your feedback.");
+
     try{
       await axios.post("https://doneflow.onrender.com/send-feedback", {
         email: loginContext?.email || "",

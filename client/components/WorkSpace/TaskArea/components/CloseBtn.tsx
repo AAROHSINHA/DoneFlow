@@ -52,7 +52,6 @@ const getEmail = async () => {
         icon: '👏',
       });
     }catch(error){
-      console.log("close button", error.response);
       Sentry.captureException(error);
       toast.error("Error in saving time. Sorry...")
     }

@@ -11,6 +11,7 @@ import Sidebar from "../Sidebar/Sidebar.tsx";
 import { calculateCompletion, calculateEfficiency, calculateOnTimeTaskCompletion, hourlyFocus, dailyFocusPercent, HOURS_IN_DAY, DAYS_IN_WEEK, averageFocusTime, productivePeriods } from "./helpers.ts";
 import toast from "react-hot-toast";
 import * as Sentry from "@sentry/react";
+import TaskActionLoadingOverlay from "../../Loading/TaskActionLoadingOverlay.tsx";
 
 interface Prop {
   isOpen: boolean,
@@ -41,6 +42,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
   });
   const [hourlyData, setHourlyData] = useState<number[]>(Array(HOURS_IN_DAY).fill(0));
   const [weeklyData, setWeeklyData] = useState<number[]>(Array(DAYS_IN_WEEK).fill(0));
+  const [loaded, setLoaded] = useState(true);
 
   const [mainStatsData, setMainStatsData] = useState({
     "timeSpend": 0,
@@ -59,7 +61,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
         "Total Tasks": data.netTotalTasks ?? 0,
         "Tasks Completed": data.tasksCompleted ?? 0,
         "Tasks In Progress": data.startedTasks?.length ?? 0,
-        "Tasks Remaining": (data.totalTasks ?? 0) - (data.tasksCompleted ?? 0) - ((data.netTotalTasks ?? 0) - (data.totalTasks ?? 0)),
+        "Tasks Remaining": (data.totalTasks ?? 0) - (data.tasksCompleted ?? 0),
         "Total Deleted": (data.netTotalTasks ?? 0) - (data.totalTasks ?? 0)
       });
       setPerformanceStats({
@@ -86,6 +88,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
         "totalTasks": data.netTotalTasks ?? 1,
         "onTimeCompletedTasks": data.onTimeCompletedTasks ?? 0       
       })
+      setLoaded(false)
     }catch(error){
         toast.error("Error Generating Stats! Sorry...");
         Sentry.captureException(error);
@@ -99,6 +102,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
 
   return (
     <div className="min-h-screen bg-white p-6">
+      <TaskActionLoadingOverlay isVisible={loaded} title="Loading...this might take a while" />
       <div className="max-w-7xl mx-auto space-y-8">
         <Sidebar 
         isOpen={isOpen} 
@@ -113,7 +117,7 @@ export default function DashboardSection({isOpen, onClose}: Prop) {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatsContainer title="Task Statistics" stats={taskStats} which="task" taskStatstics={
-            [taskStats["Total Tasks"], taskStats["Tasks In Progress"], taskStats["Tasks Remaining"]]}/>
+            [taskStats["Tasks Completed"], taskStats["Tasks In Progress"], taskStats["Tasks Remaining"]]}/>
           <StatsContainer title="Performance Parameters" stats={performanceStats} which="performance" efficiency={performanceStats["Efficiency %"]} />
           <StatsContainer title="Focus Metrics" stats={focusMetrics} which="focus"
           userFocus={[focusMetrics["Average Focus Time (min)"], focusMetrics["Longest Focus Session (min)"] , 

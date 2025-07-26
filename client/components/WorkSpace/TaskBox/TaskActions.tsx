@@ -76,7 +76,6 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
   const completeTask = async () => {
     setCompleteLoad(true);
     const email_id = getEmail();
-    handleMouseLeave();
     if(!email_id) navigate("/");
     try{
       const res = await axios.patch("https://doneflow.onrender.com/stats/complete-task", 
@@ -98,6 +97,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       setTaskReload(prev => !prev);
       setUpdateStats(prev => !prev);
       setShowOverlay(false);
+      handleMouseLeave();
     }
   }
 

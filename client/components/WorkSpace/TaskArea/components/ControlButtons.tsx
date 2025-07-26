@@ -78,7 +78,6 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
         icon: '👏',
       });
     }catch(error){
-      console.log("Add time", error.response);
       Sentry.captureException(error);
       toast.error("Error in saving time! Sorry...");
     }

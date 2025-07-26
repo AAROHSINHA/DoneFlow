@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import TaskBox from "../TaskBox/TaskBox";
 import AddTask from "./AddTask.tsx";
 import axios from "axios";
-import StopwatchModal from "./StopWatchModal.tsx";
+import StopwatchModal from "../TaskArea/StopwatchModal.tsx";
 import toast from "react-hot-toast";
 
 interface TaskInterface {

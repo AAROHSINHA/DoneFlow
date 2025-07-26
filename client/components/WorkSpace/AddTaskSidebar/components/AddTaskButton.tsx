@@ -99,7 +99,10 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                 Sentry.captureException(error);
             }
             
-        }
+        }finally{
+                setShowCreate(false);
+                // setMessage("");
+            }
     }
 
     // To increase totalTaskCount in stats db
@@ -130,6 +133,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
 
     useEffect(() => {
         setMessage("");
+        setShowCreate(false);
     }, [isOpen]);
 
     return (

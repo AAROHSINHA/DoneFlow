@@ -23,7 +23,7 @@ function SiteLinks() {
               <h4 className="font-semibold text-lg mb-4">Site Links</h4>
               <ul className="space-y-2">
                 <li>
-                 <p onClick={() => handleClick("")}>
+                 <p className="hover:cursor-pointer hover:underline" onClick={() => handleClick("")}>
                   ABOUT
                  </p>
                     
@@ -31,7 +31,7 @@ function SiteLinks() {
                 </li>
                 <li>
                   
-                 <p onClick={() => handleClick("/workspace")}>
+                 <p className="hover:cursor-pointer hover:underline" onClick={() => handleClick("/workspace")}>
                   WORKSPACE
                  </p>
                   
@@ -40,7 +40,7 @@ function SiteLinks() {
                 </li>
                 <li>
                   
-                   <p onClick={() => handleClick("/dashboard")}>
+                   <p className="hover:cursor-pointer hover:underline" onClick={() => handleClick("/dashboard")}>
                   DASHBOARD
                  </p>
                   
