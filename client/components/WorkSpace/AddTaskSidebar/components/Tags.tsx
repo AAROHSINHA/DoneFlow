@@ -1,6 +1,8 @@
 import {Tag} from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from 'react-hot-toast';
+import * as Sentry from "@sentry/react";
 
 interface TagsInterface {
     selectedTags: string[],
@@ -33,6 +35,14 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags
        setSelectedTags([]);
      }, [reload])
 
+     const getEmail = async () => {
+      try{
+        const res = await axios.get("http://localhost:5000/users/me", {withCredentials: true});
+      }catch(error){
+        
+      }
+     }
+
 
     useEffect(() => {
       const loadTags = async () => {
@@ -47,7 +57,10 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags
 
           }
         }catch(error){
-          console.log(`Error loading tags ${error}`);
+          // toast.error("Could not fetch user tags...");
+          // console.log(`Error loading tags ${error}`);
+          // console.log(error.response);
+          Sentry.captureException(error);
         }
       }
 

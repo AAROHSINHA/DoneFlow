@@ -50,17 +50,23 @@ router.post("/tasks/add-task",
 
 // 2. GET THE TASKS
 router.get("/tasks/get-tasks", async (req, res) => {
-  if (!req.session || !req.session.user || !req.session.user.email) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
   try {
-    const resTasks = await Task.find({ email: req.session.user.email });
+    const userEmail = req?.session?.user?.email;
+
+    if (!userEmail) {
+      return res.status(401).json({ error: "Unauthorized - Email not in session" });
+    }
+
+    const resTasks = await Task.find({ email: userEmail });
+
     return res.status(200).json({ tasks: resTasks });
+
   } catch (error) {
-    return res.status(400).json({ error });
+    console.error("Error in get-tasks route:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // 3. DELETE TASKS
 router.post("/tasks/delete-task",

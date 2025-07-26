@@ -26,6 +26,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     const navigate = useNavigate();
     const addTaskContext = useContext(AddTaskContext);
     const [message, setMessage] = useState("");
+    const [showCreate, setShowCreate] = useState(false);
     const handleAddTask = async () => {
        // check login
         if(addTaskContext?.loggedIn){
@@ -72,6 +73,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     }
 
     const AddTaskToDB = async (email_id: string) => {
+        setShowCreate(true);
         const task = createTask(email_id);
         try{
             await axios.post("https://doneflow.onrender.com/tasks/add-task", 
@@ -80,7 +82,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
             )
             return true;
         }catch(error: any){
-            console.log(error.response);
+            setShowCreate(false);
             if(typeof error == "object"){
                 const error_body = error.response.data;
             const error_type: 'validation' | 'server' | 'other' = error_body.type;
@@ -132,6 +134,9 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     return (
         <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-gray-100 hover:cursor-pointer">
             <p className="font-['Inter'] text-center text-red-600 font-thin text-xl uppercase tracking-wide animate-pulse">{message}</p>
+            {showCreate && <div className="flex justify-center items-center">
+  <p className="text-[1em] font-semibold animate-pulse text-gray-400 tracking-[3px] mb-[12px]">Adding Task...Just a moment!</p>
+</div>}
           <button
             onClick={handleAddTask}
             disabled={!addTaskContext?.title.trim()}
