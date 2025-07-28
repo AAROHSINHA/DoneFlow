@@ -33,7 +33,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
           }
           return res.data.user.email;
          }catch(error){
-              console.log(error);
+              Sentry.captureException(error);
          }
          return null;
   }

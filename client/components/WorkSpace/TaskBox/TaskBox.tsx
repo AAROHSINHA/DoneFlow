@@ -10,6 +10,8 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { SidebarContext } from "../SidebarContext.ts";
+import {toast} from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 interface TaskBoxInterface {
   color: string;
@@ -106,8 +108,8 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
         {withCredentials: true}
       )
     }catch(error){
-      alert("ERROR IN PROGRESS START");
-      console.log(error);
+      toast.error("Error Starting Task!");
+      Sentry.captureException(error);
     }
   }
 

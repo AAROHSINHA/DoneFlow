@@ -35,8 +35,9 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                 await IncrementTaskInStats(addTaskContext.email);
                 onClose();
                 setReload(prev => !prev);
-                setMessage("");
+                
             }
+            setMessage("");
             
         }else{
             navigate("/");
@@ -82,7 +83,6 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
             )
             return true;
         }catch(error: any){
-            console.log("From add task ", error.response);
             setShowCreate(false);
             if(typeof error == "object"){
                 const error_body = error.response.data;

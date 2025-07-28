@@ -63,10 +63,10 @@ export default function SearchBarArea({updateStats, setSearchBarLoaded}: Props) 
   }, [updateStats, sidebarContext?.email])
 
   return (
-    <div className="px-6 md:px-12 lg:px-16 pb-7">
+    <div className="px-6 md:px-12 lg:px-16 pb-7 bg-[#fdfdfd]">
       <div className="flex flex-col md:flex-row items-center gap-4 h-auto md:h-[10vh]  rounded-lg">
         <SearchBar />
-        <div className="w-full md:flex-1 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+        <div className="w-full md:flex-1 bg-[#fdfdfd] border border-gray-200 rounded-lg p-4 shadow-sm">
           <div className="flex flex-col md:flex-row items-center justify-between h-full gap-6">
             <Completed tasksCompleted={taskStats?.tasksCompleted} totalTasks={taskStats?.totalTasks} />
             <Progress tasksProgress={taskStats?.tasksProgress} totalTasks={taskStats?.totalTasks}/>
