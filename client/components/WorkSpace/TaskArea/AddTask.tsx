@@ -15,7 +15,7 @@ export default function AddTask() {
   return (
     <button
       onClick={handleAddTask}
-      className="w-full max-w-[26rem] h-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-2xl shadow-lg hover:shadow-md transition-all duration-200 flex items-center justify-center group hover:cursor-pointer"
+      className="w-105 h-105 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-2xl shadow-lg hover:shadow-md transition-all duration-200 flex items-center justify-center group hover:cursor-pointer"
     >
       <Plus className="w-12 h-12 text-gray-400 group-hover:text-gray-600 group-hover:scale-110 transition-all duration-200" />
     </button>
