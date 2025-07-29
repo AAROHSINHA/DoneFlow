@@ -175,13 +175,7 @@ router.post("/tasks/add-time",
         {$set: {longestFocusSession: updatedSession}},
         {new: true}
       )
-      if (!stats.focusPerHour || stats.focusPerHour.length !== 24) {
-      await Stats.findOneAndUpdate(
-        { email },
-        { $set: { focusPerHour: Array(24).fill(0) } }
-      );
-    }
-
+      
 
       const isSameDay =
         stats.currentDate === nowDate &&
