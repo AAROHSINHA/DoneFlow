@@ -23,7 +23,7 @@ const Barchart = ({hourlyData, weeklyData}: BarchartProps) => {
         return curr + acc
       }, 0);
       const hours = Math.floor(totalFocus / 60);
-      const minutes = totalFocus - (hours*60);
+      const minutes = Number((totalFocus - (hours*60)).toFixed(0));
       return `${hours}h ${minutes}m`
     }
 
