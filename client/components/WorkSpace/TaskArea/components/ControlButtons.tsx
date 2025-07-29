@@ -3,8 +3,9 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import * as Sentry from "@sentry/react";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { SidebarContext } from '../../SidebarContext';
+import TaskActionLoadingOverlay from "../../../Loading/TaskActionLoadingOverlay.tsx";
 
 interface Props {
     time: number
@@ -20,7 +21,7 @@ interface Props {
 }
 
 function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime, time, title, setTaskReload, onClose, setStartTimestamp}: Props) {
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const sidebarContext = useContext(SidebarContext);
     const getEmail = async () => {
     try{
@@ -65,6 +66,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     if(!sidebarContext?.email){
       email_to_send = await getEmail();
     }
+    setLoading(true);
     try{
       await axios.post("https://doneflow.onrender.com/tasks/add-time",
         {
@@ -80,6 +82,8 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
     }catch(error){
       Sentry.captureException(error);
       toast.error("Error in saving time! Sorry...");
+    }finally{
+      setLoading(false);
     }
     setTaskReload(prev => !prev);
     setTime(0);
@@ -87,6 +91,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
   };
   return (
     <div className="flex justify-center space-x-4">
+          <TaskActionLoadingOverlay isVisible={loading} title='Saving Time!' />
           {!isRunning || isPaused ? (
             <button
               onClick={handleStart}

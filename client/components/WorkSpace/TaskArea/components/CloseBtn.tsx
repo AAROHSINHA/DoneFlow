@@ -2,8 +2,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as Sentry from "@sentry/react";
 import toast from "react-hot-toast";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { SidebarContext } from '../../SidebarContext';
+import TaskActionLoadingOverlay from "../../../Loading/TaskActionLoadingOverlay.tsx";
 
 interface Prop {
     onClose: () => void
@@ -17,6 +18,7 @@ interface Prop {
 
 function CloseBtn({onClose, setIsRunning, setIsPaused, time, setTaskReload, setTime, title}: Prop) {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const sidebarContext = useContext(SidebarContext);
 const getEmail = async () => {
     try{
@@ -39,7 +41,7 @@ const getEmail = async () => {
     const timeInMinutes = (time / 60).toFixed(1);
     let email_to_be = sidebarContext?.email;
     if(!email_to_be) email_to_be = await getEmail();
-
+    setLoading(true);
     try{
       const res = await axios.post("https://doneflow.onrender.com/tasks/add-time",
         {
@@ -54,18 +56,24 @@ const getEmail = async () => {
     }catch(error){
       Sentry.captureException(error);
       toast.error("Error in saving time. Sorry...")
+    }finally{
+      setLoading(false);
     }
     setTaskReload(prev => !prev);
     setTime(0);
   }
 
   return (
+    
+    <>
+    <TaskActionLoadingOverlay isVisible={loading} title='Saving Time!' />
     <button
           onClick={handleClick}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-light cursor-pointer transition-colors duration-200"
         >
           ×
         </button>
+    </>
   )
 }
 
