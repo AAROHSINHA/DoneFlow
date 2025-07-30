@@ -103,7 +103,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
 
   return (
     <div
-      className={`absolute ${isLastColumn ? 'sm:bottom-full md:right-full top-100' : 'sm:bottom-full md:left-full bottom-100 ml-[1.4em]'} z-100 flex flex-col gap-2 w-54 bg-white border border-pink-200 rounded-lg shadow-lg p-2`}
+      className={`absolute ${isLastColumn ? 'sm:bottom-full md:right-full top-100' : 'sm:bottom-full md:left-full bottom-100 ml-[1.4em]'} z-50 flex flex-col gap-2 w-54 bg-white border border-pink-200 rounded-lg shadow-lg p-2`}
     >
       <TaskActionLoadingOverlay isVisible={completeLoad} title='Finishing up your task...' />
       <TaskActionLoadingOverlay isVisible={deleteLoad} title='Removing task safely...' />
