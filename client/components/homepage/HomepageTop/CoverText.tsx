@@ -5,7 +5,7 @@ function CoverText() {
      <div className="font-['Inter'] relative px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl text-center">
           {/* Decorative avatars */}
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <div className="absolute left-4 top-70 sm:left-8 lg:left-100">
             <div className="h-22 w-22 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
                 <img src="https://cdn.prod.website-files.com/66a76e2a019784d7d9a1624d/66b46ae18dda7c04e57d3583_4-%20User%20Image-p-1080.webp" alt="" />
@@ -23,7 +23,30 @@ function CoverText() {
                 <img src="https://cdn.prod.website-files.com/66a76e2a019784d7d9a1624d/66b46ae1ec7834b604f37f4c_2-%20User%20Image-p-1080.webp" alt="" />
             </div>
           </div>
-          </div>
+          </div> */}
+          <div className="hidden lg:block">
+  {/* Avatar 1 */}
+  <div className="absolute top-[55%] left-[5%] xl:left-[10%]">
+    <div className="h-20 w-20 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
+      <img src="URL1" alt="Avatar 1" />
+    </div>
+  </div>
+
+  {/* Avatar 2 */}
+  <div className="absolute top-[20%] right-[8%] xl:right-[12%]">
+    <div className="h-16 w-16 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
+      <img src="URL2" alt="Avatar 2" />
+    </div>
+  </div>
+
+  {/* Avatar 3 */}
+  <div className="absolute bottom-[8%] right-[15%] xl:right-[20%]">
+    <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
+      <img src="URL3" alt="Avatar 3" />
+    </div>
+  </div>
+</div>
+
 
           {/* Main content */}
           <div className="relative z-10 space-y-8 pt-8 leading-tight">
