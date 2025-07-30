@@ -3,11 +3,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import * as Sentry from "@sentry/react";
+import LoadingOverlay from "../../Loading/LoadingOverlay.tsx";
+
 function Stats() {
   const [tasks, setTasks] = useState<number>(0);
   const [totalTasks, setTotalTasks] = useState<number>(0);
   const [productivity, setProductivity] = useState<number>(0);
   const [spendTime, setSpendTime] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("/dashboard");
@@ -27,6 +30,8 @@ function Stats() {
       }catch(error){
         Sentry.captureException(error);
         toast.error("Unable to load user-stats...");
+      }finally{
+        setLoading(false);
       }
     }
     getNavigationAnalytics();
@@ -34,6 +39,7 @@ function Stats() {
   return (
     <div className="space-y-5 mb-10">
       {/* Tasks Completed */}
+      <LoadingOverlay isVisible={loading} />
       <div className="bg-gray-50 rounded-2xl p-5 hover:bg-gray-100 transition-colors duration-200 shadow-sm hover:cursor-pointer" onClick={handleClick}>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600 font-semibold tracking-wide">Tasks Completed</span>
