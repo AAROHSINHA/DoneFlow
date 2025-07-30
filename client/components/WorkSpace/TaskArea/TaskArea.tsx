@@ -102,6 +102,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
         <div className="relative inline-block hover:cursor-pointer hover:z-50 transition transform duration-300 bg-purple-100 ">
     <div className={`w-full max-w-[26rem] h-full
  bg-gradient-to-br rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden mb-[3em] transition-transform duration-200`}>A</div>
+ </div>
       </div>
       <StopwatchModal taskTitle={taskTitle} isOpen={stopwatchModal} onClose={() => setStopwatchModal(false)} estimateTime={taskEstimateTime} setTaskReload={setTaskReload} spendTime={taskSpendTime} randomIndex = {Math.floor(Math.random()*5)} />
     </div>
