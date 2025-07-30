@@ -28,21 +28,21 @@ function CoverText() {
   {/* Avatar 1 */}
   <div className="absolute top-[55%] left-[5%] xl:left-[10%]">
     <div className="h-20 w-20 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
-      <img src="URL1" alt="Avatar 1" />
+      <img src="https://cdn.prod.website-files.com/66a76e2a019784d7d9a1624d/66b46ae18dda7c04e57d3583_4-%20User%20Image-p-1080.webp" alt="Avatar 1" />
     </div>
   </div>
 
   {/* Avatar 2 */}
   <div className="absolute top-[20%] right-[8%] xl:right-[12%]">
     <div className="h-16 w-16 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
-      <img src="URL2" alt="Avatar 2" />
+      <img src="https://cdn.prod.website-files.com/66a76e2a019784d7d9a1624d/66b04b0e51291b6ece827800_Image%20Collab%202-p-1080.webp" alt="Avatar 2" />
     </div>
   </div>
 
   {/* Avatar 3 */}
   <div className="absolute bottom-[8%] right-[15%] xl:right-[20%]">
     <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-white shadow-lg bg-gray-200">
-      <img src="URL3" alt="Avatar 3" />
+      <img src="https://cdn.prod.website-files.com/66a76e2a019784d7d9a1624d/66b46ae1ec7834b604f37f4c_2-%20User%20Image-p-1080.webp" alt="Avatar 3" />
     </div>
   </div>
 </div>
