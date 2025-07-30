@@ -122,6 +122,8 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                 }else if(addTaskError[error_type]){
                     setMessage(addTaskError[error_type]);
                     Sentry.captureException(error);
+                }else{
+                    setMessage("Some Error Occurred!")
                 }
             }else{
                 // console.log(error);
