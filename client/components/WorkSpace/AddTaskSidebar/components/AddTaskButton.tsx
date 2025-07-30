@@ -137,7 +137,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
     }, [isOpen]);
 
     return (
-        <div className="sticky bottom-0 left-0 right-0 px-4 md:p-6 bg-red-100 border-t border-gray-100 hover:cursor-pointer">
+        <div className="sticky bottom-0 left-0 right-0 px-4 md:px-6 md:pb-2 bg-red-100 border-t border-gray-100 hover:cursor-pointer">
             <p className="font-['Inter'] text-center text-red-600 font-thin text-xl uppercase tracking-wide animate-pulse">{message}</p>
             {showCreate && <div className="flex justify-center items-center">
   <p className="text-[1em] font-semibold animate-pulse text-gray-400 tracking-[3px] mb-[12px]">Adding Task...Just a moment!</p>
