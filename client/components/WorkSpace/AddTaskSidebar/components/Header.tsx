@@ -23,7 +23,7 @@ const Header:React.FC<HeaderInterface> = ({onClose}) => {
   }, [sidebarContext?.loggedIn]);
 
     return (
- <div className="border-b border-gray-100 p-4 md:p-6">
+ <div className="border-b border-gray-100 px-4 py-2 md:px-6 md:py-4">
           <div className="flex items-center justify-between mb-4 md:mb-6">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-900">Add New Task</h2>
             <button
@@ -36,7 +36,7 @@ const Header:React.FC<HeaderInterface> = ({onClose}) => {
 
           {/* Minimal Profile */}
           <div className="flex items-center space-x-3 px-3 py-1 bg-gray-50 rounded-lg">
-            <div className="w-10 h-10 bg-pink-400 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-pink-400 rounded-full flex items-center justify-center">
               <span className="text-white font-medium text-sm">{initials}</span>
             </div>
             <div>

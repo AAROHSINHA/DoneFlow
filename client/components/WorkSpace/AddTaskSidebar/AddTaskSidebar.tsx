@@ -51,7 +51,7 @@ export default function AddTaskSidebar({ isOpen, onClose, setTaskReload, updateT
         {/* Header */}
         <Header onClose={onClose}/>
         {/* Form Content */}
-        <div className="p-4 md:p-6 space-y-6 md:space-y-8 overflow-y-auto h-full pb-40">
+        <div className="p-4 md:p-6 space-y-4 md:space-y-8 overflow-y-auto h-full pb-auto">
           {/* Title Field -> Tags -> Priority -> Timer&Deadline */}
           <TitleField title={title} setTitle={setTitle} reload={reload} />
           <Tags selectedTags={selectedTags} setSelectedTags={setSelectedTags} updateTags={updateTags} reload={reload}/>
