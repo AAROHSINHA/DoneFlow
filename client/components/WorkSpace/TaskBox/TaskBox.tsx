@@ -132,9 +132,8 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
 
   const completed = (spendTime*100)/(estimateTime*60) >= 100 ? 'shadow-[0_0_25px_rgba(34,197,94,0.8)]' : '';
   return (
-    <div className="relative inline-block hover:cursor-pointer hover:z-50 transition transform duration-300 " onClick={handleTaskClick} ref={taskBoxRef}>
+    <div className="relative inline-block hover:cursor-pointer hover:z-50 transition transform duration-300 bg-purple-100 " onClick={handleTaskClick} ref={taskBoxRef}>
     <div className={`w-full max-w-[26rem] h-full
-    
  bg-gradient-to-br ${gradient} rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden mb-[3em] ${completed} ${!hidden ? "scale-110 z-50" : ""} transition-transform duration-200`}>
       {/* Status Indicator Dot */}
       <div className="absolute top-4 right-4 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"></div>
