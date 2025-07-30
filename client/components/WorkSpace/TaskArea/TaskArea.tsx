@@ -97,7 +97,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
               setTaskSpendTime={setTaskSpendTime}
   />
         ))}
-        {/* <AddTask /> */}
+        <AddTask /> 
 
        
       </div>
