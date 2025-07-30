@@ -97,7 +97,7 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
               setTaskSpendTime={setTaskSpendTime}
   />
         ))}
-        <AddTask />
+        {/* <AddTask /> */}
 
         <div className="relative inline-block hover:cursor-pointer hover:z-50 transition transform duration-300 bg-purple-100 ">
     <div className={`w-full max-w-[26rem] h-full
