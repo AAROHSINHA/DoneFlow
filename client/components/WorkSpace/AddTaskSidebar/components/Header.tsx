@@ -35,7 +35,7 @@ const Header:React.FC<HeaderInterface> = ({onClose}) => {
           </div>
 
           {/* Minimal Profile */}
-          <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center space-x-3 px-3 py-1 bg-gray-50 rounded-lg">
             <div className="w-10 h-10 bg-pink-400 rounded-full flex items-center justify-center">
               <span className="text-white font-medium text-sm">{initials}</span>
             </div>
