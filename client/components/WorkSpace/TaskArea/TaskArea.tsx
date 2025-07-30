@@ -71,8 +71,9 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
   }, [taskReload])
 
   return (
+    
     <div className="w-full flex justify-center px-6 md:px-12 lg:px-16 bg-[#fdfdfd]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[2.2em]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 auto-rows-fr">
         {tasks.map((task, index) => (
           
           <TaskBox
