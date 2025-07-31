@@ -17,7 +17,11 @@
 
 ## 📸 Screenshots
 
-> _Dashboard & workspace previews coming soon_
+![image1](https://github.com/user-attachments/assets/f0f47c48-8295-449d-9ea5-fc355056f190)
+
+![image2](https://github.com/user-attachments/assets/f0b5e302-eb76-4d17-90c9-50377bf96cd4)
+
+![image3](https://github.com/user-attachments/assets/dcfcd90c-087f-4adc-87b6-7aecf29cd372)
 
 ---
 
