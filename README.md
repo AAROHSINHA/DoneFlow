@@ -28,10 +28,10 @@
 ## 📦 Tech Stack
 
 - **Frontend:** React, TypeScript, TailwindCSS  
-- **Backend:** Node.js, Express, MongoDB  
+- **Backend:** Node.js, Express, MongoDB
 - **Auth:** Cookie-based authentication, Passport-js  
 - **Charting:** Chart.js  
-- **Design:** Figma (custom mockups)
+- **Others:** Sentry.io (Error Logging), MailTrap (Sending Emails), Figma (custom mockups)
 
 ---
 
