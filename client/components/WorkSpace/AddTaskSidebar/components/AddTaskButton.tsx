@@ -113,6 +113,18 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                 {withCredentials: true}
             )
         }catch(error: any){
+            Sentry.withScope(scope => {
+        if (error.response) {
+        scope.setContext("axios_response", {
+            status: error.response.status,
+            data: error.response.data,
+            headers: error.response.headers,
+            url: error.response.config?.url,
+            method: error.response.config?.method
+        });
+        }
+        Sentry.captureException(error);
+    });
             if(typeof error == "object"){
                 const error_body = error.response.data;
             const error_type: 'validation' | 'server' | 'other' = error_body.type;
@@ -121,14 +133,14 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                     setMessage(addTaskError[error_type][validation_error_type])
                 }else if(addTaskError[error_type]){
                     setMessage(addTaskError[error_type]);
-                    Sentry.captureException(error);
+                    
                 }else{
                     setMessage("Some Error Occurred!")
                 }
             }else{
                 // console.log(error);
                 setMessage(addTaskError["other"]);
-                Sentry.captureException(error);
+                
             }
         }
     }

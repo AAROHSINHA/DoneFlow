@@ -49,7 +49,18 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       )
       if(res.data.type == "success" && email_id) decrementTaskInStats(email_id);
     }catch(error) {
-      Sentry.captureException(error);
+      Sentry.withScope(scope => {
+    if (error.response) {
+      scope.setContext("axios_response", {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+        url: error.response.config?.url,
+        method: error.response.config?.method
+      });
+    }
+    Sentry.captureException(error);
+  });
       toast.error("Some Error Occurred!");
     }finally{
       setDeleteLoad(false);
@@ -68,8 +79,18 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
         {withCredentials: true}
       )
     }catch(error){
-      if(error.response) Sentry.captureException(error.response);
-      else Sentry.captureException(error);
+      Sentry.withScope(scope => {
+    if (error.response) {
+      scope.setContext("axios_response", {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+        url: error.response.config?.url,
+        method: error.response.config?.method
+      });
+    }
+    Sentry.captureException(error);
+  });
       toast.error("Some Error Occurred!");
     }
   }
@@ -91,8 +112,18 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       toast.success("Task completed!");
     }
     }catch(error){
-      if(error.response) Sentry.captureException(error.response);
-      else Sentry.captureException(error);
+      Sentry.withScope(scope => {
+    if (error.response) {
+      scope.setContext("axios_response", {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+        url: error.response.config?.url,
+        method: error.response.config?.method
+      });
+    }
+    Sentry.captureException(error);
+  });
       toast.error("Some Error Occurred!");
     }finally{
       setCompleteLoad(false);

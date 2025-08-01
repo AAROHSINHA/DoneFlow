@@ -65,8 +65,18 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
       setTaskLoaded(false);
       }catch(error){
         toast.error("Error Loading Tasks");
-        if(error.response) Sentry.captureException(error.response);
-        else Sentry.captureException(error);
+        Sentry.withScope(scope => {
+    if (error.response) {
+      scope.setContext("axios_response", {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers,
+        url: error.response.config?.url,
+        method: error.response.config?.method
+      });
+    }
+    Sentry.captureException(error);
+  });
       }
     }
 
