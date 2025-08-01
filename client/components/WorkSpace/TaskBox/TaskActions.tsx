@@ -5,6 +5,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import * as Sentry from "@sentry/react";
 import TaskActionLoadingOverlay from '../../Loading/TaskActionLoadingOverlay';
+import { captureHandledError } from "../../SentryHandler.ts";
 
 interface ActionOptionsProps {
   taskIndex: number
@@ -49,24 +50,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       )
       if(res.data.type == "success" && email_id) decrementTaskInStats(email_id);
     }catch(error) {
-       if (axios.isAxiosError(error)) {
-    Sentry.withScope(scope => {
-      scope.setContext("axios_response", {
-        status: error.response?.status,
-        data: error.response?.data,
-        headers: error.response?.headers,
-        url: error.config?.url,
-        method: error.config?.method,
-      });
-      Sentry.captureException(error);
-    });
-  } else if (error instanceof Error) {
-    Sentry.captureException(error);
-  } else {
-    Sentry.captureMessage("Unknown error type caught", {
-      extra: { error },
-    });
-  }
+       captureHandledError(error, "Task Fetch Failure");
       toast.error("Some Error Occurred!");
     }finally{
       setDeleteLoad(false);
@@ -85,24 +69,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
         {withCredentials: true}
       )
     }catch(error){
-       if (axios.isAxiosError(error)) {
-    Sentry.withScope(scope => {
-      scope.setContext("axios_response", {
-        status: error.response?.status,
-        data: error.response?.data,
-        headers: error.response?.headers,
-        url: error.config?.url,
-        method: error.config?.method,
-      });
-      Sentry.captureException(error);
-    });
-  } else if (error instanceof Error) {
-    Sentry.captureException(error);
-  } else {
-    Sentry.captureMessage("Unknown error type caught", {
-      extra: { error },
-    });
-  }
+       captureHandledError(error, "Task Fetch Failure");
       toast.error("Some Error Occurred!");
     }
   }
@@ -124,24 +91,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       toast.success("Task completed!");
     }
     }catch(error){
-       if (axios.isAxiosError(error)) {
-    Sentry.withScope(scope => {
-      scope.setContext("axios_response", {
-        status: error.response?.status,
-        data: error.response?.data,
-        headers: error.response?.headers,
-        url: error.config?.url,
-        method: error.config?.method,
-      });
-      Sentry.captureException(error);
-    });
-  } else if (error instanceof Error) {
-    Sentry.captureException(error);
-  } else {
-    Sentry.captureMessage("Unknown error type caught", {
-      extra: { error },
-    });
-  }
+       captureHandledError(error, "Task Fetch Failure");
       toast.error("Some Error Occurred!");
     }finally{
       setCompleteLoad(false);
