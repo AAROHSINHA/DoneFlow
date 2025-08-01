@@ -9,6 +9,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import LoadingOverlay from "../Loading/LoadingOverlay.tsx";
+import * as Sentry from "@sentry/react";
 
 const WorkSpace = () => {
     const navigate = useNavigate();
@@ -40,6 +41,8 @@ const WorkSpace = () => {
           }
          }catch(error){
             toast.error("Error Showing Workspace!");
+            if(error.response) Sentry.captureException(error.response);
+            else Sentry.captureException(error);
             navigate("/");
          }finally{
           setIsAppReady(true);

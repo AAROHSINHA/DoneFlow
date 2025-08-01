@@ -4,6 +4,7 @@ import AddTask from "./AddTask.tsx";
 import axios from "axios";
 import StopwatchModal from "../TaskArea/StopwatchModal.tsx";
 import toast from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 interface TaskInterface {
   title: string;
@@ -64,6 +65,8 @@ const TaskArea:React.FC<TaskAreaProp> = ({taskReload, setShowOverlay, setTaskRel
       setTaskLoaded(false);
       }catch(error){
         toast.error("Error Loading Tasks");
+        if(error.response) Sentry.captureException(error.response);
+        else Sentry.captureException(error);
       }
     }
 

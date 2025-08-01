@@ -109,7 +109,8 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
       )
     }catch(error){
       toast.error("Error Starting Task!");
-      Sentry.captureException(error);
+      if(error.response) Sentry.captureException(error.response);
+      else Sentry.captureException(error);
     }
   }
 

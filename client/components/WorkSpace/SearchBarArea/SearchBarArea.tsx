@@ -49,7 +49,8 @@ export default function SearchBarArea({updateStats, setSearchBarLoaded}: Props) 
           tasksProgress: res.data.tasksProgress
         })
       }catch(error){
-        Sentry.captureException(error);
+        if(error.response) Sentry.captureException(error.response);
+        else Sentry.captureException(error);
         toast.error("Unable to load quick analytics...");
         setTaskStats({
           tasksCompleted: 0,

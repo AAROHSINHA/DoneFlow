@@ -145,6 +145,13 @@ router.post("/tasks/add-time",
     const data = express_validator.matchedData(req);
     const { email, title, spendTime } = data;
 
+    // update one
+    if (spendTime <= 0) {
+      return res.status(200).json({
+        message: "No time to log — focus session was too short or cancelled"
+      });
+    }
+
     try {
       // 1. Increment spendTime in Task
       await Task.findOneAndUpdate(

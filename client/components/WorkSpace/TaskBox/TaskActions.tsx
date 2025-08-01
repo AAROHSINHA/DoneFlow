@@ -68,7 +68,8 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
         {withCredentials: true}
       )
     }catch(error){
-      Sentry.captureException(error);
+      if(error.response) Sentry.captureException(error.response);
+      else Sentry.captureException(error);
       toast.error("Some Error Occurred!");
     }
   }
@@ -90,6 +91,8 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       toast.success("Task completed!");
     }
     }catch(error){
+      if(error.response) Sentry.captureException(error.response);
+      else Sentry.captureException(error);
       toast.error("Some Error Occurred!");
     }finally{
       setCompleteLoad(false);

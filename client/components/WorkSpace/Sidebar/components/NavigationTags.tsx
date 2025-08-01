@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { SidebarContext } from "../../SidebarContext.ts";
 import toast from "react-hot-toast";
+import * as Sentry from "@sentry/react";
 
 interface TagProp {
   updateTags: boolean
@@ -26,7 +27,9 @@ const NavigationTags = ({updateTags}: TagProp) => {
 
           }
         }catch(error){
-          toast.error("Unable to get tags...");
+          // toast.error("Unable to get tags...");
+          if(error.response) Sentry.captureException(error.response);
+          else Sentry.captureException(error);
         }
       }
 

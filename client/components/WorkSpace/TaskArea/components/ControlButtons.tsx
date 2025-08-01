@@ -34,7 +34,8 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
           }
           return res.data.user.email;
          }catch(error){
-              Sentry.captureException(error);
+                  if(error.response) Sentry.captureException(error.response);
+                  else Sentry.captureException(error);
          }
          return null;
   }
@@ -80,7 +81,8 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
         icon: '👏',
       });
     }catch(error){
-      Sentry.captureException(error);
+      if(error.response) Sentry.captureException(error.response);
+      else Sentry.captureException(error);
       toast.error("Error in saving time! Sorry...");
     }finally{
       setLoading(false);

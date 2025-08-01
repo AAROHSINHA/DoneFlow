@@ -30,7 +30,8 @@ const getEmail = async () => {
           }
           return res.data.user.email;
          }catch(error){
-              console.log(error);
+              if(error.response) Sentry.captureException(error.response);
+              else Sentry.captureException(error);
          }
          return null;
   }
@@ -54,7 +55,8 @@ const getEmail = async () => {
         icon: '👏',
       });
     }catch(error){
-      Sentry.captureException(error);
+      if(error.response) Sentry.captureException(error.response);
+      else Sentry.captureException(error);
       toast.error("Error in saving time. Sorry...")
     }finally{
       setLoading(false);

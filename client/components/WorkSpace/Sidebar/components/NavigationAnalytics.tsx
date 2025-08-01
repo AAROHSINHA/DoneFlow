@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChevronDownIcon, ChevronRightIcon } from "../icons.tsx";
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import * as Sentry from "@sentry/react";
 
 function NavigationAnalytics() {
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -30,7 +31,9 @@ function NavigationAnalytics() {
         setHoursFocused(res.data.hours);
         setTasksCompleted(res.data.tasks);
       }catch(error){
-        toast.error("Unable to getch Sidebar Stats");
+          // toast.error("Unable to getch Sidebar Stats");
+         if(error.response) Sentry.captureException(error.response);
+         else Sentry.captureException(error);
       }
     }
     getNavigationAnalytics();

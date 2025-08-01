@@ -14,7 +14,8 @@ function LogoutButton() {
             );
         navigate("/");
     }catch(error){
-        Sentry.captureException(error);
+        if(error.response) Sentry.captureException(error.response);
+        else Sentry.captureException(error);
         toast.error("Error logging out! Try again in some time...")
     }
   };
