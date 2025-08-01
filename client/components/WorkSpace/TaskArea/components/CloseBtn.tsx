@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useContext, useState } from 'react';
 import { SidebarContext } from '../../SidebarContext';
 import TaskActionLoadingOverlay from "../../../Loading/TaskActionLoadingOverlay.tsx";
+import { captureHandledError } from "../../../SentryHandler.ts";
 
 interface Prop {
     onClose: () => void
@@ -30,18 +31,7 @@ const getEmail = async () => {
           }
           return res.data.user.email;
          }catch(error){
-              Sentry.withScope(scope => {
-    if (error.response) {
-      scope.setContext("axios_response", {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-        url: error.response.config?.url,
-        method: error.response.config?.method
-      });
-    }
-    Sentry.captureException(error);
-  });
+            captureHandledError(error, "Error Checking Login On TaskArea");
          }
          return null;
   }
@@ -65,18 +55,7 @@ const getEmail = async () => {
         icon: '👏',
       });
     } catch (error) {
-  Sentry.withScope(scope => {
-    if (error.response) {
-      scope.setContext("axios_response", {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-        url: error.response.config?.url,
-        method: error.response.config?.method
-      });
-    }
-    Sentry.captureException(error);
-  });
+      captureHandledError(error, "Error Adding Time From CloseBtn");
   toast.error("Error in saving time. Sorry...");
 }
 finally{

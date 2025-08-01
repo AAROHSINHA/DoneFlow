@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import * as Sentry from "@sentry/react";
+import { captureHandledError } from "../../../SentryHandler.ts";
 
 function LogoutButton() {
       const navigate = useNavigate();
@@ -14,18 +15,7 @@ function LogoutButton() {
             );
         navigate("/");
     }catch(error){
-        Sentry.withScope(scope => {
-    if (error.response) {
-      scope.setContext("axios_response", {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-        url: error.response.config?.url,
-        method: error.response.config?.method
-      });
-    }
-    Sentry.captureException(error);
-  });
+        captureHandledError(error, "Error Logging Out Workspace Sidebar");
         toast.error("Error logging out! Try again in some time...")
     }
   };

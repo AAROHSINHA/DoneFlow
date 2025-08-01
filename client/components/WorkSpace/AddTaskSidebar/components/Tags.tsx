@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from 'react-hot-toast';
 import * as Sentry from "@sentry/react";
+import { captureHandledError } from "../../../SentryHandler.ts";
 
 interface TagsInterface {
     selectedTags: string[],
@@ -60,18 +61,7 @@ const Tags:React.FC<TagsInterface> = ({selectedTags, setSelectedTags, updateTags
           // toast.error("Could not fetch user tags...");
           // console.log(`Error loading tags ${error}`);
           // console.log(error.response);
-          Sentry.withScope(scope => {
-              if (error.response) {
-                scope.setContext("axios_response", {
-                  status: error.response.status,
-                  data: error.response.data,
-                  headers: error.response.headers,
-                  url: error.response.config?.url,
-                  method: error.response.config?.method
-                });
-              }
-              Sentry.captureException(error);
-            });
+          captureHandledError(error, "Error Getting Tags AddTaskSidebar");
         }
       }
 

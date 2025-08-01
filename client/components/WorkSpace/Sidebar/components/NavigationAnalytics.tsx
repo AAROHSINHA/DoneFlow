@@ -3,6 +3,7 @@ import { ChevronDownIcon, ChevronRightIcon } from "../icons.tsx";
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import * as Sentry from "@sentry/react";
+import { captureHandledError } from "../../../SentryHandler.ts";
 
 function NavigationAnalytics() {
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -32,18 +33,7 @@ function NavigationAnalytics() {
         setTasksCompleted(res.data.tasks);
       }catch(error){
           // toast.error("Unable to getch Sidebar Stats");
-         Sentry.withScope(scope => {
-    if (error.response) {
-      scope.setContext("axios_response", {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-        url: error.response.config?.url,
-        method: error.response.config?.method
-      });
-    }
-    Sentry.captureException(error);
-  });
+          captureHandledError(error, "Error Loading Navigation Analytics");
       }
     }
     getNavigationAnalytics();

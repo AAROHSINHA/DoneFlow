@@ -5,6 +5,7 @@ import axios from "axios";
 import { addTaskError } from "../../../error_handler";
 import { useNavigate } from "react-router-dom";
 import * as Sentry from "@sentry/react";
+import { captureHandledError } from "../../../SentryHandler.ts";
 
 /*
 WORKFLOW - 
@@ -83,6 +84,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
             )
             return true;
         }catch(error: any){
+            captureHandledError(error, "Error Adding Task");
             setShowCreate(false);
             if(typeof error == "object"){
                 const error_body = error.response.data;
@@ -92,11 +94,11 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                     setMessage(addTaskError[error_type][validation_error_type])
                 }else if(addTaskError[error_type]){
                     setMessage(addTaskError[error_type]);
-                    Sentry.captureException(error);
+                    
                 }
             }else{
                 setMessage(addTaskError["other"]);
-                Sentry.captureException(error);
+                
             }
             
         }finally{
@@ -113,18 +115,7 @@ const AddTaskButton:React.FC<AddTaskButtonInterface> = ({setTaskReload, setReloa
                 {withCredentials: true}
             )
         }catch(error: any){
-            Sentry.withScope(scope => {
-        if (error.response) {
-        scope.setContext("axios_response", {
-            status: error.response.status,
-            data: error.response.data,
-            headers: error.response.headers,
-            url: error.response.config?.url,
-            method: error.response.config?.method
-        });
-        }
-        Sentry.captureException(error);
-    });
+            captureHandledError(error, "Error Adding TASKS in stats DB");
             if(typeof error == "object"){
                 const error_body = error.response.data;
             const error_type: 'validation' | 'server' | 'other' = error_body.type;

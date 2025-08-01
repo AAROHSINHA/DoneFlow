@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/react";
 import { useContext, useState } from 'react';
 import { SidebarContext } from '../../SidebarContext';
 import TaskActionLoadingOverlay from "../../../Loading/TaskActionLoadingOverlay.tsx";
+import { captureHandledError } from "../../../SentryHandler.ts";
 
 interface Props {
     time: number
@@ -34,18 +35,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
           }
           return res.data.user.email;
          }catch(error){
-            Sentry.withScope(scope => {
-    if (error.response) {
-      scope.setContext("axios_response", {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-        url: error.response.config?.url,
-        method: error.response.config?.method
-      });
-    }
-    Sentry.captureException(error);
-  });
+            captureHandledError(error, "Error Checking Login On TaskArea");
          }
          return null;
   }
@@ -91,18 +81,7 @@ function ControlButtons({isRunning, isPaused, setIsRunning, setIsPaused, setTime
         icon: '👏',
       });
     }catch(error){
-      Sentry.withScope(scope => {
-    if (error.response) {
-      scope.setContext("axios_response", {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers,
-        url: error.response.config?.url,
-        method: error.response.config?.method
-      });
-    }
-    Sentry.captureException(error);
-  });
+      captureHandledError(error, "Error Adding Time From Controls");
       toast.error("Error in saving time! Sorry...");
     }finally{
       setLoading(false);

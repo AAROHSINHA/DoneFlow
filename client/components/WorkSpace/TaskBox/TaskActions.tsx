@@ -50,7 +50,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       )
       if(res.data.type == "success" && email_id) decrementTaskInStats(email_id);
     }catch(error) {
-       captureHandledError(error, "Task Fetch Failure");
+       captureHandledError(error, "Error Deleting Task");
       toast.error("Some Error Occurred!");
     }finally{
       setDeleteLoad(false);
@@ -69,7 +69,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
         {withCredentials: true}
       )
     }catch(error){
-       captureHandledError(error, "Task Fetch Failure");
+       captureHandledError(error, "Task Decrementing Task In Stats");
       toast.error("Some Error Occurred!");
     }
   }
@@ -91,7 +91,7 @@ const TaskActionOptions: React.FC<ActionOptionsProps> = ({ taskIndex, hidden, ti
       toast.success("Task completed!");
     }
     }catch(error){
-       captureHandledError(error, "Task Fetch Failure");
+       captureHandledError(error, "Task Completing Task");
       toast.error("Some Error Occurred!");
     }finally{
       setCompleteLoad(false);

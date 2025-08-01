@@ -12,6 +12,7 @@ import { useContext } from "react";
 import { SidebarContext } from "../SidebarContext.ts";
 import {toast} from "react-hot-toast";
 import * as Sentry from "@sentry/react";
+import { captureHandledError } from "../../SentryHandler.ts";
 
 interface TaskBoxInterface {
   color: string;
@@ -109,18 +110,7 @@ const TaskBox: React.FC<TaskBoxInterface> = ({
       )
     }catch(error){
       toast.error("Error Starting Task!");
-      Sentry.withScope(scope => {
-          if (error.response) {
-            scope.setContext("axios_response", {
-              status: error.response.status,
-              data: error.response.data,
-              headers: error.response.headers,
-              url: error.response.config?.url,
-              method: error.response.config?.method
-            });
-          }
-          Sentry.captureException(error);
-        });
+      captureHandledError(error, "Error Starting Task Progress");
     }
   }
 
